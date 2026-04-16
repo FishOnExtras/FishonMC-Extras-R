@@ -55,7 +55,7 @@ public class MainScreen extends DefaultModScreen {
         drawContext.drawText(textRenderer, hudText, width / 2 - textRenderer.getWidth(hudText) / 2, height / 2 - PADDING_QUART - textRenderer.fontHeight, 0xFFFFFF, true);
 
         Text configText = Text.literal("Configuration");
-        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, configText, width / 2 - textRenderer.getWidth(configText) / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3 + BUTTON_HEIGHT + PADDING, 0xFFFFFF, true);
 
         //Versions
         drawContext.drawText(textRenderer, Text.literal("Mod Version: v" + FishOnMCExtras.VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - textRenderer.fontHeight - PADDING_QUART, 0xFFFFFF, true);
@@ -64,6 +64,7 @@ public class MainScreen extends DefaultModScreen {
         drawContext.drawText(textRenderer, Text.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 4, 0xFFFFFF, true);
         drawContext.drawText(textRenderer, Text.literal("Notification Version: v" + FishOnMCExtras.NOTIFICATION_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 5, 0xFFFFFF, true);
         drawContext.drawText(textRenderer, Text.literal("Button Version: v" + FishOnMCExtras.BUTTON_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 6, 0xFFFFFF, true);
+        drawContext.drawText(textRenderer, Text.literal("Chat Notification Version: v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION).formatted(Formatting.DARK_GRAY), PADDING_QUART, height - (textRenderer.fontHeight + PADDING_QUART) * 7, 0xFFFFFF, true);
     }
 
     private void renderWidgets() {
@@ -74,6 +75,7 @@ public class MainScreen extends DefaultModScreen {
         widgets.add(customChatTriggerButton());
         widgets.add(customTimerButton());
         widgets.add(customNotificationButton());
+        widgets.add(customChatNotificationButton());
         widgets.add(configButton());
 
         widgets.forEach(this::addDrawableChild);
@@ -124,10 +126,19 @@ public class MainScreen extends DefaultModScreen {
                 .build();
     }
 
+    private ButtonWidget customChatNotificationButton() {
+        return ButtonWidget.builder(Text.literal("Create Chat Notifications"), button ->
+                        minecraftClient.setScreen(new CustomChatNotificationMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom Chat Notification Creator Screen")))
+                .build();
+    }
+
     private ButtonWidget configButton() {
         return ButtonWidget.builder(Text.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
-                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2 + BUTTON_HEIGHT + PADDING + textRenderer.fontHeight + PADDING_QUART)
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3 + BUTTON_HEIGHT + PADDING + textRenderer.fontHeight + PADDING_QUART)
                 .size(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .tooltip(Tooltip.of(Text.literal("Open Config Screen")))
                 .build();

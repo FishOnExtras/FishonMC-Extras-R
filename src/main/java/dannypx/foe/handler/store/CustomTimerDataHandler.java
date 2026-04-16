@@ -82,22 +82,22 @@ public class CustomTimerDataHandler extends Handler {
         return customTimerData.timerList.remove(id);
     }
 
-    public void updateTimer(String currentSelectedTimer, String newName, int timer, int offset, String notificationToTrigger, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
-        updateTimer(currentSelectedTimer, newName, timer, 0, offset, notificationToTrigger, "", cleanUpChatTrigger, useTimer, isPeriod);
+    public void updateTimer(String currentSelectedTimer, String newName, int timer, int offset, String notificationToTrigger, String chatNotificationToTrigger, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
+        updateTimer(currentSelectedTimer, newName, timer, 0, offset, notificationToTrigger, "", chatNotificationToTrigger, "",cleanUpChatTrigger, useTimer, isPeriod);
     }
 
-    public void updateTimer(String currentSelectedTimer, String newName, int timer, int offTimer, int offset, String notificationToTrigger, String notificationToTriggerEnd, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
+    public void updateTimer(String currentSelectedTimer, String newName, int timer, int offTimer, int offset, String notificationToTrigger, String notificationToTriggerEnd, String chatNotificationToTrigger, String chatNotificationToTriggerEnd, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
         if(!Objects.equals(currentSelectedTimer, newName)) {
             deleteCustomTimer(currentSelectedTimer);
             currentSelectedTimer = newName;
         }
 
         if(isPeriod) {
-            CustomTimerPeriod newCustomTimerPeriod = new CustomTimerPeriod(newName, timer, offTimer, offset, notificationToTrigger, notificationToTriggerEnd, cleanUpChatTrigger, useTimer, true);
+            CustomTimerPeriod newCustomTimerPeriod = new CustomTimerPeriod(newName, timer, offTimer, offset, notificationToTrigger, notificationToTriggerEnd, chatNotificationToTrigger, chatNotificationToTriggerEnd, cleanUpChatTrigger, useTimer, true);
 
             customTimerData.timerList.put(currentSelectedTimer, newCustomTimerPeriod);
         } else {
-            CustomTimer newCustomTimer = new CustomTimer(newName, timer, offset, notificationToTrigger, cleanUpChatTrigger, useTimer, false);
+            CustomTimer newCustomTimer = new CustomTimer(newName, timer, offset, notificationToTrigger, chatNotificationToTrigger, cleanUpChatTrigger, useTimer, false);
 
             customTimerData.timerList.put(currentSelectedTimer, newCustomTimer);
         }
@@ -114,7 +114,7 @@ public class CustomTimerDataHandler extends Handler {
 
     //region Model
     public static class CustomTimerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_TIMER_DATA_MODEL_VERSION = "0.1";
+        private static final String CUSTOM_TIMER_DATA_MODEL_VERSION = "0.2";
 
         private static final Map<String, CustomTimer> defaultTimers = Map.of(
                 "Contest Timer", new CustomTimerPeriod(
@@ -124,6 +124,8 @@ public class CustomTimerDataHandler extends Handler {
                         -5,
                         "Contest Start",
                         "Contest End",
+                        "",
+                        "",
                         "Contest Type, Contest Location, Contest Level, Contest 1st, Contest 2nd, Contest 3rd, Contest Placement",
                         true,
                         true
@@ -145,15 +147,17 @@ public class CustomTimerDataHandler extends Handler {
         public int timer;
         public int offset;
         public String notificationToTrigger;
+        public String chatNotificationToTrigger;
         public String cleanUpChatTrigger;
         public boolean useTimer;
         public boolean isPeriod;
 
-        public CustomTimer(String name, int timer, int offset, String notificationToTrigger, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
+        public CustomTimer(String name, int timer, int offset, String notificationToTrigger, String chatNotificationToTrigger, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
             this.name = name;
             this.timer = timer;
             this.offset = offset;
             this.notificationToTrigger = notificationToTrigger;
+            this.chatNotificationToTrigger = chatNotificationToTrigger;
             this.cleanUpChatTrigger = cleanUpChatTrigger;
             this.useTimer = useTimer;
             this.isPeriod = isPeriod;
@@ -164,6 +168,7 @@ public class CustomTimerDataHandler extends Handler {
             this.timer = 60;
             this.offset = 0;
             this.notificationToTrigger = "";
+            this.chatNotificationToTrigger = "";
             this.cleanUpChatTrigger = "";
             this.useTimer = true;
             this.isPeriod = false;
@@ -173,17 +178,20 @@ public class CustomTimerDataHandler extends Handler {
     public static class CustomTimerPeriod extends CustomTimer {
         public int offTimer;
         public String notificationToTriggerEnd;
+        public String chatNotificationToTriggerEnd;
 
-        public CustomTimerPeriod(String name, int timer, int offTimer, int offset, String notificationToTrigger, String notificationToTriggerEnd, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
-            super(name, timer, offset, notificationToTrigger, cleanUpChatTrigger, useTimer, isPeriod);
+        public CustomTimerPeriod(String name, int timer, int offTimer, int offset, String notificationToTrigger, String notificationToTriggerEnd, String chatNotificationToTrigger, String chatNotificationToTriggerEnd, String cleanUpChatTrigger, boolean useTimer, boolean isPeriod) {
+            super(name, timer, offset, notificationToTrigger, chatNotificationToTrigger, cleanUpChatTrigger, useTimer, isPeriod);
             this.offTimer = offTimer;
             this.notificationToTriggerEnd = notificationToTriggerEnd;
+            this.chatNotificationToTriggerEnd = chatNotificationToTriggerEnd;
         }
 
         public CustomTimerPeriod(String name) {
             super(name);
             this.offTimer = 60;
             this.notificationToTriggerEnd = "";
+            this.chatNotificationToTriggerEnd = "";
         }
     }
     //endregion

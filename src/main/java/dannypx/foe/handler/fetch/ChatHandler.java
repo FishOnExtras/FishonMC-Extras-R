@@ -1,10 +1,7 @@
 package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.handler.logic.NotifierHandler;
-import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.handler.logic.*;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.TextHelper;
@@ -15,7 +12,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,11 +102,21 @@ public class ChatHandler extends Handler {
                     && trigger.pattern.matcher(text.getString()).matches()
             ) {
                 storedChatTriggerText.put(name, text);
-                if(!trigger.notificationToTrigger.isBlank()
+                if(trigger.notificationToTrigger != null
+                        && !trigger.notificationToTrigger.isBlank()
                         && trigger.useChatTrigger
                 ) {
                     CodeExecuterHandler.runLater(1, () -> {
-                        NotifierHandler.instance().notifyChatTrigger(trigger.notificationToTrigger);
+                        NotifierHandler.instance().notifyNotifier(trigger.notificationToTrigger);
+                    });
+                }
+
+                if(trigger.chatNotificationToTrigger != null
+                        && !trigger.chatNotificationToTrigger.isBlank()
+                        && trigger.useChatTrigger
+                ) {
+                    CodeExecuterHandler.runLater(1, () -> {
+                        ChatNotifierHandler.instance().notifyChat(trigger.chatNotificationToTrigger);
                     });
                 }
             }
