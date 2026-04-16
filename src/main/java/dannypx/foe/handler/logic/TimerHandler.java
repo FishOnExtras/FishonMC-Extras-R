@@ -206,11 +206,13 @@ public class TimerHandler extends Handler {
 
                     this.register(timerPeriod, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyChatTrigger(timerPeriod.notificationToTrigger);
+                            NotifierHandler.instance().notifyNotifier(timerPeriod.notificationToTrigger);
+                            ChatNotifierHandler.instance().notifyChat(timerPeriod.chatNotificationToTrigger);
                         });
                     }, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyChatTrigger(timerPeriod.notificationToTriggerEnd);
+                            NotifierHandler.instance().notifyNotifier(timerPeriod.notificationToTriggerEnd);
+                            ChatNotifierHandler.instance().notifyChat(timerPeriod.chatNotificationToTriggerEnd);
                         });
                     });
                 } else {
@@ -218,7 +220,8 @@ public class TimerHandler extends Handler {
 
                     this.register(timer, () -> {
                         CodeExecuterHandler.runLater(1, () -> {
-                            NotifierHandler.instance().notifyChatTrigger(timer.notificationToTrigger);
+                            NotifierHandler.instance().notifyNotifier(timer.notificationToTrigger);
+                            ChatNotifierHandler.instance().notifyChat(timer.chatNotificationToTrigger);
                         });
                     });
                 }

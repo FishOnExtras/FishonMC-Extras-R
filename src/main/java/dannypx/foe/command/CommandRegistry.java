@@ -192,7 +192,6 @@ public class CommandRegistry {
                         Text.literal("» ").formatted(Formatting.DARK_GRAY),
                         feedback
                 )
-
         );
         return 1;
     }

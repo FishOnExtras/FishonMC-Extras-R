@@ -53,6 +53,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     private TextFieldWidget offsetTextField;
     private TextFieldWidget notificationToTriggerTextField;
     private TextFieldWidget notificationToTriggerEndTextField;
+    private TextFieldWidget chatNotificationToTriggerTextField;
+    private TextFieldWidget chatNotificationToTriggerEndTextField;
     private TextFieldWidget cleanUpChatTriggersTextField;
     //endregion
 
@@ -143,6 +145,32 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             ), mouseX, mouseY);
         }
 
+        if(chatNotificationToTriggerTextField.isMouseOver(mouseX, mouseY)) {
+            context.drawTooltip(textRenderer, List.of(
+                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
+                    Text.empty(),
+                    Text.literal("When not in 'period' mode").formatted(Formatting.GRAY),
+                    Text.literal("Triggers when timer hits 0").formatted(Formatting.GRAY),
+                    Text.empty(),
+                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
+                    Text.literal("Trigger when OFF timer hits 0").formatted(Formatting.GRAY),
+                    Text.empty(),
+                    Text.literal("- Chat Notification Name").formatted(Formatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
+        if(chatNotificationToTriggerEndTextField.isMouseOver(mouseX, mouseY)) {
+            context.drawTooltip(textRenderer, List.of(
+                    Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
+                    Text.literal("Only for 'period' mode").formatted(Formatting.GRAY),
+                    Text.empty(),
+                    Text.literal("When in 'period' mode").formatted(Formatting.GRAY),
+                    Text.literal("Trigger when ON timer hits 0").formatted(Formatting.GRAY),
+                    Text.empty(),
+                    Text.literal("- Chat Notification Name").formatted(Formatting.GRAY)
+            ), mouseX, mouseY);
+        }
+
         if(cleanUpChatTriggersTextField.isMouseOver(mouseX, mouseY)) {
             context.drawTooltip(textRenderer, List.of(
                     Text.literal("Optional").formatted(Formatting.DARK_GRAY, Formatting.ITALIC),
@@ -215,9 +243,25 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         );
 
         context.drawText(textRenderer,
-                Text.literal("Clear Triggers"),
+                Text.literal("Trigger C.Notif."),
                 (BUTTON_WIDTH + PADDING * 2) + PADDING,
                 PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 7,
+                0xFFFFFF,
+                true
+        );
+
+        context.drawText(textRenderer,
+                Text.literal("Trigger C.Notif. End"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
+                0xFFFFFF,
+                true
+        );
+
+        context.drawText(textRenderer,
+                Text.literal("Clear Triggers"),
+                (BUTTON_WIDTH + PADDING * 2) + PADDING,
+                PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 9,
                 0xFFFFFF,
                 true
         );
@@ -265,7 +309,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     context.drawText(textRenderer,
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 10,
                             0xFFFFFF,
                             true
                     );
@@ -273,7 +317,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     context.drawText(textRenderer,
                             offTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 1,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 10 + (textRenderer.fontHeight + PADDING_QUART) * 1,
                             0xFFFFFF,
                             true
                     );
@@ -287,7 +331,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     context.drawText(textRenderer,
                             isOnTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8 + (textRenderer.fontHeight + PADDING_QUART) * 2,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 10 + (textRenderer.fontHeight + PADDING_QUART) * 2,
                             0xFFFFFF,
                             true
                     );
@@ -310,7 +354,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     context.drawText(textRenderer,
                             onTimerText,
                             (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 8,
+                            PADDING + widgetHeight / 2 - textRenderer.fontHeight / 2 + (widgetHeight + PADDING) * 10,
                             0xFFFFFF,
                             true
                     );
@@ -362,6 +406,8 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         widgets.add(getOffsetTextField());
         widgets.add(getNotificationToTriggerTextField());
         widgets.add(getNotificationToTriggerEndTextField());
+        widgets.add(getChatNotificationToTriggerTextField());
+        widgets.add(getChatNotificationToTriggerEndTextField());
         widgets.add(getCleanUpChatTriggersTextField());
 
         widgets.forEach(this::addDrawableChild);
@@ -527,11 +573,51 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return notificationToTriggerEndTextField;
     }
 
+    private ClickableWidget getChatNotificationToTriggerTextField() {
+        chatNotificationToTriggerTextField = new TextFieldWidget(
+                textRenderer,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 7,
+                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Text.empty()
+        );
+        chatNotificationToTriggerTextField.setMaxLength(Integer.MAX_VALUE);
+
+        chatNotificationToTriggerTextField.setChangedListener(s -> {
+            if(selectedTimerId != null) {
+                chatNotificationToTriggerTextField.setPlaceholder(Text.literal(s));
+            }
+        });
+
+        return chatNotificationToTriggerTextField;
+    }
+
+    private ClickableWidget getChatNotificationToTriggerEndTextField() {
+        chatNotificationToTriggerEndTextField = new TextFieldWidget(
+                textRenderer,
+                (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
+                PADDING + (widgetHeight + PADDING) * 8,
+                minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
+                widgetHeight,
+                Text.empty()
+        );
+        chatNotificationToTriggerEndTextField.setMaxLength(0);
+
+        chatNotificationToTriggerEndTextField.setChangedListener(s -> {
+            if(selectedTimerId != null) {
+                chatNotificationToTriggerEndTextField.setPlaceholder(Text.literal(s));
+            }
+        });
+
+        return chatNotificationToTriggerEndTextField;
+    }
+
     private ClickableWidget getCleanUpChatTriggersTextField() {
         cleanUpChatTriggersTextField = new TextFieldWidget(
                 textRenderer,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
-                PADDING + (widgetHeight + PADDING) * 7,
+                PADDING + (widgetHeight + PADDING) * 9,
                 minecraftClient.getWindow().getScaledWidth() - (BUTTON_WIDTH + PADDING * 2) - PADDING * 2 - sideWidth,
                 widgetHeight,
                 Text.empty()
@@ -777,9 +863,28 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                 }
 
                 if(isPeriodCheckBox.isChecked()) {
-                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameTextField.getText(), Integer.parseInt(timerTextField.getText()), Integer.parseInt(offTimerTextField.getText()), Integer.parseInt(offsetTextField.getText()), notificationToTriggerTextField.getText(), notificationToTriggerEndTextField.getText(), cleanUpChatTriggersTextField.getText(), useTimerCheckBox.isChecked(), isPeriodCheckBox.isChecked());
+                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId,
+                            nameTextField.getText(),
+                            Integer.parseInt(timerTextField.getText()),
+                            Integer.parseInt(offTimerTextField.getText()),
+                            Integer.parseInt(offsetTextField.getText()),
+                            notificationToTriggerTextField.getText(),
+                            notificationToTriggerEndTextField.getText(),
+                            chatNotificationToTriggerTextField.getText(),
+                            chatNotificationToTriggerEndTextField.getText(),
+                            cleanUpChatTriggersTextField.getText(),
+                            useTimerCheckBox.isChecked(),
+                            isPeriodCheckBox.isChecked());
                 } else {
-                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId, nameTextField.getText(), Integer.parseInt(timerTextField.getText()), Integer.parseInt(offsetTextField.getText()), notificationToTriggerTextField.getText(), cleanUpChatTriggersTextField.getText(), useTimerCheckBox.isChecked(), isPeriodCheckBox.isChecked());
+                    CustomTimerDataHandler.instance().updateTimer(selectedTimerId,
+                            nameTextField.getText(),
+                            Integer.parseInt(timerTextField.getText()),
+                            Integer.parseInt(offsetTextField.getText()),
+                            notificationToTriggerTextField.getText(),
+                            chatNotificationToTriggerTextField.getText(),
+                            cleanUpChatTriggersTextField.getText(),
+                            useTimerCheckBox.isChecked(),
+                            isPeriodCheckBox.isChecked());
                 }
 
                 TimerHandler.instance().initTimers();
@@ -838,6 +943,9 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             notificationToTriggerTextField.setText(selectedTimer.notificationToTrigger);
             notificationToTriggerTextField.setPlaceholder(Text.literal(selectedTimer.notificationToTrigger));
 
+            chatNotificationToTriggerTextField.setText(selectedTimer.chatNotificationToTrigger);
+            chatNotificationToTriggerTextField.setPlaceholder(Text.literal(selectedTimer.chatNotificationToTrigger != null ? selectedTimer.chatNotificationToTrigger : ""));
+
             cleanUpChatTriggersTextField.setText(selectedTimer.cleanUpChatTrigger);
             cleanUpChatTriggersTextField.setPlaceholder(Text.literal(selectedTimer.cleanUpChatTrigger));
 
@@ -850,6 +958,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     notificationToTriggerEndTextField.setMaxLength(Integer.MAX_VALUE);
                     notificationToTriggerEndTextField.setText(selectedTimerPeriod.notificationToTriggerEnd);
                     notificationToTriggerEndTextField.setPlaceholder(Text.literal(selectedTimerPeriod.notificationToTriggerEnd));
+
+                    chatNotificationToTriggerEndTextField.setMaxLength(Integer.MAX_VALUE);
+                    chatNotificationToTriggerEndTextField.setText(selectedTimerPeriod.chatNotificationToTriggerEnd);
+                    chatNotificationToTriggerEndTextField.setPlaceholder(Text.literal(selectedTimerPeriod.chatNotificationToTriggerEnd != null ? selectedTimerPeriod.chatNotificationToTriggerEnd : ""));
                 } else {
                     offTimerTextField.setMaxLength(0);
                     offTimerTextField.setText("");
@@ -858,6 +970,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                     notificationToTriggerEndTextField.setMaxLength(0);
                     notificationToTriggerEndTextField.setText("");
                     notificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
+
+                    chatNotificationToTriggerEndTextField.setMaxLength(0);
+                    chatNotificationToTriggerEndTextField.setText("");
+                    chatNotificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
                 }
             });
         }
@@ -891,6 +1007,12 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
 
         notificationToTriggerEndTextField.setText("");
         notificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
+
+        chatNotificationToTriggerTextField.setText("");
+        chatNotificationToTriggerTextField.setPlaceholder(Text.literal(""));
+
+        chatNotificationToTriggerEndTextField.setText("");
+        chatNotificationToTriggerEndTextField.setPlaceholder(Text.literal(""));
 
         cleanUpChatTriggersTextField.setText("");
         cleanUpChatTriggersTextField.setPlaceholder(Text.literal(""));
