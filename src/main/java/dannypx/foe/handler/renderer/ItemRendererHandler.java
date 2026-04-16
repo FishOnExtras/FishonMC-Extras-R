@@ -206,7 +206,7 @@ public class ItemRendererHandler extends Handler {
                 drawContext.getMatrices().push();
                 drawContext.getMatrices().translate(0.0F, 0.0F, 200.0F);
 
-                drawContext.drawText(textRenderer, qualityText, x + 17 - textRenderer.getWidth(qualityText), y + 18 - textRenderer.fontHeight, 0xFFFFFF, true);
+                drawContext.drawText(textRenderer, qualityText, x + 17 - textRenderer.getWidth(qualityText), y + 17 - textRenderer.fontHeight, 0xFFFFFF, true);
 
                 drawContext.getMatrices().pop();
             }
