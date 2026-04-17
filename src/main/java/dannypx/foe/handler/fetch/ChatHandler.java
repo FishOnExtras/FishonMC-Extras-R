@@ -2,6 +2,7 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.*;
+import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.TextHelper;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,6 +123,21 @@ public class ChatHandler extends Handler {
                 }
             }
         });
+    }
+
+    public String onModifyChatMessage(String text) {
+        AtomicReference<String> modified = new AtomicReference<>(text);
+        ConstantDataHandler.instance().getConstantData().fishData.forEach((category, fieldMap) -> {
+            fieldMap.forEach((stringField, textField) -> {
+                if(modified.get().contains(textField.getString().trim())) {
+                    modified.set(modified.get().replace(textField.getString().trim(), TextHelper.capitalize(stringField)));
+                }
+            });
+        });
+
+        modified.set(modified.get().replace("FoER » ", ""));
+
+        return modified.get();
     }
 
     public Text onModifyMessage(Text text) {

@@ -2,6 +2,8 @@ package dannypx.foe.item;
 
 import com.mojang.serialization.DataResult;
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.helper.TextHelper;
+import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
@@ -140,7 +142,8 @@ public class NbtObject {
         ) {
             try {
                 List<Text> textList = this.getLore();
-                return textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+                Text rarity = textList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
+                return TextHelper.trim(rarity);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Text.empty();
             }

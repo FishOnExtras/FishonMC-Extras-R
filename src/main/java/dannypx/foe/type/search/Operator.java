@@ -1,6 +1,8 @@
 package dannypx.foe.type.search;
 
 public enum Operator {
+    SEPARATOR(","),
+
     EQUAL("=="),
     SHORT_EQUAL("="),
     NOT_EQUAL("!="),
@@ -8,8 +10,6 @@ public enum Operator {
     LESS_EQUAL("<="),
     GREATER(">"),
     LESS("<"),
-
-    SEPARATOR(","),
 
     ADDITION("\\+"),
     SUBTRACTION("\\-"),

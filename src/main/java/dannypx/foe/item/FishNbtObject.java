@@ -1,6 +1,7 @@
 package dannypx.foe.item;
 
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.helper.TextHelper;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -59,7 +60,8 @@ public class FishNbtObject extends NbtObject {
         ) {
             try {
                 List<Text> textList = this.getLore();
-                return textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
+                Text variant = textList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
+                return TextHelper.trim(variant);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Text.empty();
             }
@@ -77,7 +79,8 @@ public class FishNbtObject extends NbtObject {
         ) {
             try {
                 List<Text> textList = this.getLore();
-                return textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+                Text fishSize = textList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);
+                return TextHelper.trim(fishSize);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Text.empty();
             }

@@ -26,7 +26,7 @@ public class ChatNotifierHandler extends Handler {
             String notification = CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.getOrDefault(notificationId, "");
 
             if(!notification.isBlank()) {
-                Pair<Boolean, MutableText> message = PlaceholderHandler.parsePlaceholderFromString(notification);
+                Pair<Boolean, MutableText> message = PlaceholderHandler.parsePlaceholderFromString(notification.replace("&", "§"));
 
                 if(message.value1()) {
                     this.sendChatMessage(message.value2());

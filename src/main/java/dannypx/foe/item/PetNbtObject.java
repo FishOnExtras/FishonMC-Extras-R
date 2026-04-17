@@ -1,6 +1,7 @@
 package dannypx.foe.item;
 
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.helper.TextHelper;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -58,7 +59,8 @@ public class PetNbtObject extends NbtObject {
         ) {
             try {
                 List<Text> textList = this.getLore();
-                return textList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
+                Text rating = textList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
+                return TextHelper.trim(rating);
             } catch (ArrayIndexOutOfBoundsException e) {
                 return Text.empty();
             }
