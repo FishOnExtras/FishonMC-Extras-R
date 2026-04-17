@@ -313,7 +313,7 @@ public class TextHelper {
     }
 
     public static String convertField(String s) {
-        return splitTitleCase(capitalize(s));
+        return splitTitleCase(capitalize(s)).replace("_", " ");
     }
 
     public static int getWidth(TextRenderer textRenderer, Text text, boolean isSmall) {
@@ -488,6 +488,27 @@ public class TextHelper {
         }, Style.EMPTY);
 
         return result;
+    }
+
+    public static Text trim(Text text) {
+        String full = text.getString();
+        int length = full.length();
+
+        int start = 0;
+        while (start < length && Character.isWhitespace(full.charAt(start))) {
+            start++;
+        }
+
+        int end = length;
+        while (end > start && Character.isWhitespace(full.charAt(end - 1))) {
+            end--;
+        }
+
+        if (start >= end) {
+            return Text.empty();
+        }
+
+        return substring(text, start, end);
     }
 
     public static byte[] compress(final String str) throws IOException {

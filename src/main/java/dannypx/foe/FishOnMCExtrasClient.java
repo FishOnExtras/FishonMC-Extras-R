@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
@@ -53,6 +54,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
         ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
+        ClientSendMessageEvents.MODIFY_CHAT.register(this::modifyChatMessage);
         HudLayerRegistrationCallback.EVENT.register(this::onHudRenderCallback);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         UseItemCallback.EVENT.register(this::onUseItem);
@@ -78,6 +80,10 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
     private Text modifyGameMessage(Text text, boolean over) {
         return ChatHandler.instance().onModifyMessage(text);
+    }
+
+    private String modifyChatMessage(String text) {
+        return ChatHandler.instance().onModifyChatMessage(text);
     }
 
     private ActionResult onUseItem(PlayerEntity player, World world, Hand hand) {
@@ -168,6 +174,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             CustomChatTriggerDataHandler.instance().init();
             CustomChatNotificationDataHandler.instance().init();
             CustomTimerDataHandler.instance().init();
+            CustomEventTriggerDataHandler.instance().init();
 
             ScoreboardHandler.instance().init();
             CrewHandler.instance().init();

@@ -44,6 +44,7 @@ public class CommandRegistry {
                         .then(command("button").executes(Command.Reset::resetButton))
                         .then(command("chat_trigger").executes(Command.Reset::resetChatTrigger))
                         .then(command("notification").executes(Command.Reset::resetNotification))
+                        .then(command("chat_notification").executes(Command.Reset::resetChatNotification))
                         .then(command("timer").executes(Command.Reset::resetTimer))
                         .then(command("hud").executes(Command.Reset::resetHud))
                 )
@@ -128,6 +129,11 @@ public class CommandRegistry {
 
             public static int resetHud(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Text.literal("Reset HUDs to default config").formatted(Formatting.GREEN), () -> CustomHudDataHandler.instance().resetHuds());
+            }
+
+            public static int resetChatNotification(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Text.literal("Reset chat notifications to default config")
+                        .formatted(Formatting.GREEN), () -> CustomChatNotificationDataHandler.instance().resetChatNotifications());
             }
         }
 

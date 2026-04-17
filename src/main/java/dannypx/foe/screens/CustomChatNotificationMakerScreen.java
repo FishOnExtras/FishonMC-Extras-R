@@ -50,7 +50,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
 
     //region Methods
     public CustomChatNotificationMakerScreen(Screen parent) {
-        super(Text.literal("Custom Chat Trigger Maker Screen"));
+        super(Text.literal("Custom Chat Chat Notification Maker Screen"));
         this.parentScreen = parent;
     }
 
@@ -226,8 +226,8 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                             try {
                                 String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
-                                Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, Integer.class).getType());
+                                Gson gson = new GsonBuilder().create();
+                                Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.CHAT_NOTIFICATION_VERSION) {
                                     SystemToast.add(minecraftClient.getToastManager(),
@@ -238,9 +238,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                 }
 
                                 if(CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.containsKey(data.value1())) {
-                                    String notification = data.value1() + " (Duplicate)";
-
-                                    data = Triplet.of(data.value1() + " (Duplicate)", notification, data.value3());
+                                    data = Triplet.of(data.value1() + " (Duplicate)", data.value2(), data.value3());
                                 }
 
                                 String id = data.value1();
@@ -279,19 +277,19 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                 try {
                                     Triplet<String, String, Integer> dataButton = Triplet.of(
                                             selectedChatNotificationId,
-                                            selectedChatNotificationId,
+                                            stringTextField.getText(),
                                             FishOnMCExtras.CHAT_NOTIFICATION_VERSION
                                     );
 
                                     String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                                            TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
                                     );
 
                                     String dataToCopy = "**Custom Chat Notification: **" + selectedChatNotificationId + "\n" +
                                             "```\n" +
                                             rawData + "\n" +
                                             "```\n" +
-                                            "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION + "`";
+                                            "-# Using Chat Notification version: " + "`v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION + "`";
 
                                     minecraftClient.keyboard.setClipboard(dataToCopy);
 
@@ -323,7 +321,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                 0,
                 BUTTON_HEIGHT + PADDING_HALF,
                 BUTTON_HEIGHT,
-                "Custom Chat Triggers"
+                "Custom Chat Notifications"
         );
 
         CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.forEach((name, text) -> {
@@ -401,7 +399,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
     }
 
     private void resetFields() {
-        this.header = Text.literal("No Chat Trigger Selected");
+        this.header = Text.literal("No Chat Notification Selected");
 
         nameTextField.setText("");
         nameTextField.setPlaceholder(Text.literal(""));

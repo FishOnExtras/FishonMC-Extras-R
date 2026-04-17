@@ -2,6 +2,7 @@ package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.fetch.TitleHandler;
+import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.QuestDataHandler;
 import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.item.FishNbtObject;
@@ -20,7 +21,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Box;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -127,6 +130,7 @@ public class CatchingHandler extends Handler {
 
                 lastDataFish = prevStats;
                 lastCaughtFish = foundFish.value2();
+                CodeExecuterHandler.runLater(1, EventHandler.instance()::onCatch);
                 this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){

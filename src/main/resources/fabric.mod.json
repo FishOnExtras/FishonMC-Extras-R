@@ -41,6 +41,7 @@
 		"notification_version": 2,
 		"chat_notification_version": 1,
 		"chat_trigger_version": 1,
-		"timer_version": 2
+		"timer_version": 2,
+		"event_trigger": 1
 	}
 }
