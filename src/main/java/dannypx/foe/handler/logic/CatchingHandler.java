@@ -126,11 +126,11 @@ public class CatchingHandler extends Handler {
                 QuestDataHandler.instance().setFish(foundFish.value2());
                 LoggerHandler._debug("Found Fish: " + foundFish.value2().getName().getString());
 
-                CodeExecuterHandler.runLater(Configs.handlerConfig.catchingItemsDelayCheck.get(), this::checkForCaughtItems);
+                CodeExecuterHandler.runLater(Configs.handlerConfig.catchingItemsDelayCheck.get(), "scanFish > checkForCaughtItems", this::checkForCaughtItems);
 
                 lastDataFish = prevStats;
                 lastCaughtFish = foundFish.value2();
-                CodeExecuterHandler.runLater(1, EventHandler.instance()::onCatch);
+                CodeExecuterHandler.runLater(1, "scanFish > onCatch", EventHandler.instance()::onCatch);
                 this.scanDone = true;
             }
         } else if (!scanDone && System.currentTimeMillis() > startScanTime + (Configs.handlerConfig.catchingStatusCooldown.get() * 1000L)){

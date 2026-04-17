@@ -39,7 +39,7 @@ public class ArmorRollScreenHandler extends Handler {
 
     //region Methods
     public void checkArmorRolls(GenericContainerScreenHandler screenHandler) {
-        CodeExecuterHandler.runLater(2, () -> {
+        CodeExecuterHandler.runLater(2, "checkArmorRolls", () -> {
             rollList.clear();
             armor = ArmorNbtObject.empty();
             for (int i = 11; i < 16; i++) {

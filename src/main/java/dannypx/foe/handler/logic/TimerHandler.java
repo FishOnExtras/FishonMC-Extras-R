@@ -205,12 +205,12 @@ public class TimerHandler extends Handler {
                     tempTimers.add(timerPeriod);
 
                     this.register(timerPeriod, () -> {
-                        CodeExecuterHandler.runLater(1, () -> {
+                        CodeExecuterHandler.runLater(1, "initTimers(timerPeriod) > ToTrigger", () -> {
                             NotifierHandler.instance().notifyNotifier(timerPeriod.notificationToTrigger);
                             ChatNotifierHandler.instance().notifyChat(timerPeriod.chatNotificationToTrigger);
                         });
                     }, () -> {
-                        CodeExecuterHandler.runLater(1, () -> {
+                        CodeExecuterHandler.runLater(1, "initTimers(timerPeriod > ToTriggerEnd", () -> {
                             NotifierHandler.instance().notifyNotifier(timerPeriod.notificationToTriggerEnd);
                             ChatNotifierHandler.instance().notifyChat(timerPeriod.chatNotificationToTriggerEnd);
                         });
@@ -219,7 +219,7 @@ public class TimerHandler extends Handler {
                     tempTimers.add(timer);
 
                     this.register(timer, () -> {
-                        CodeExecuterHandler.runLater(1, () -> {
+                        CodeExecuterHandler.runLater(1, "initTimers(timer) > ToTriggerEnd", () -> {
                             NotifierHandler.instance().notifyNotifier(timer.notificationToTrigger);
                             ChatNotifierHandler.instance().notifyChat(timer.chatNotificationToTrigger);
                         });

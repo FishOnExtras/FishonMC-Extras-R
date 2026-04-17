@@ -77,7 +77,7 @@ public class GenericContainerScreenHandler extends Handler {
     }
 
     private void checkIsOfItem(GenericContainerScreen genericContainerScreen) {
-        CodeExecuterHandler.runLater(2, () -> {
+        CodeExecuterHandler.runLater(2, "checkIsOfItem", () -> {
             net.minecraft.screen.GenericContainerScreenHandler genericContainerScreenHandler = genericContainerScreen.getScreenHandler();
 
             // Crew Info

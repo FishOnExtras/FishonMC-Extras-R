@@ -35,7 +35,7 @@ public class QuestScreenHandler extends Handler {
     public void checkQuests(GenericContainerScreenHandler genericContainerScreenHandler) {
         List<QuestDataHandler.Quest> questList = new ArrayList<>();
 
-        CodeExecuterHandler.runLater(2, () -> {
+        CodeExecuterHandler.runLater(2, "checkQuests", () -> {
             genericContainerScreenHandler.slots.forEach(slot -> {
                 if (minecraftClient.player != null
                         && slot.inventory != minecraftClient.player.getInventory()

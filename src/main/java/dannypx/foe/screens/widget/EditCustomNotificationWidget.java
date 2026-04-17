@@ -137,12 +137,12 @@ public class EditCustomNotificationWidget extends ClickableWidget implements Scr
         return new LineEntry.Callback() {
             @Override
             public void onDelete(LineEntry lineEntry) {
-                CodeExecuterHandler.runLater(1, () -> removeEntry(lineEntry));
+                CodeExecuterHandler.runLater(1, "EditCustomNotificationWidget > getDefaultCallback > onDelete", () -> removeEntry(lineEntry));
             }
 
             @Override
             public void onAdd(LineEntry lineEntry) {
-                CodeExecuterHandler.runLater(1, () -> addNewEntry(entries.indexOf(lineEntry)));
+                CodeExecuterHandler.runLater(1, "EditCustomNotificationWidget > getDefaultCallback > onAdd", () -> addNewEntry(entries.indexOf(lineEntry)));
             }
         };
     }

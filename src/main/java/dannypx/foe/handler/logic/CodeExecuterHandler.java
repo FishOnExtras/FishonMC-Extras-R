@@ -22,31 +22,42 @@ public class CodeExecuterHandler extends Handler {
 
     //region Fields
     private static final List<ScheduledTask> TASKS = new ArrayList<>();
+    private static final List<ScheduledTask> PENDING = new ArrayList<>();
 
     public void init() {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            TASKS.addAll(PENDING);
+            PENDING.clear();
+
             Iterator<ScheduledTask> iterator = TASKS.iterator();
             while (iterator.hasNext()) {
                 ScheduledTask task = iterator.next();
                 task.ticks--;
                 if (task.ticks <= 0) {
-                    task.runnable.run();
-                    iterator.remove();
+                    try {
+                        task.runnable.run();
+                        iterator.remove();
+                    } catch (Exception e) {
+                        LoggerHandler.error(task.taskName);
+                        throw e;
+                    }
                 }
             }
         });
     }
 
-    public static void runLater(int ticks, Runnable runnable) {
-        TASKS.add(new ScheduledTask(ticks, runnable));
+    public static void runLater(int ticks, String taskName, Runnable runnable) {
+        PENDING.add(new ScheduledTask(ticks, taskName, runnable));
     }
 
     private static class ScheduledTask {
         int ticks;
+        String taskName;
         Runnable runnable;
 
-        ScheduledTask(int ticks, Runnable runnable) {
+        ScheduledTask(int ticks, String taskName, Runnable runnable) {
             this.ticks = ticks;
+            this.taskName = taskName;
             this.runnable = runnable;
         }
     }
