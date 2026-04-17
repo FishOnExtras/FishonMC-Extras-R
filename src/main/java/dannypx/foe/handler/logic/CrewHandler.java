@@ -115,7 +115,7 @@ public class CrewHandler extends Handler {
         }
 
         pendingLeavesList.forEach(((uuid, time) -> {
-            if(System.currentTimeMillis() > time + (leaveDelay * 50L) + 1000L) CodeExecuterHandler.runLater(1, () -> pendingLeavesList.remove(uuid));
+            if(System.currentTimeMillis() > time + (leaveDelay * 50L) + 1000L) CodeExecuterHandler.runLater(1, "CrewHandler > tick > pendingLeavesList.forEach", () -> pendingLeavesList.remove(uuid));
         }));
     }
 
@@ -176,7 +176,7 @@ public class CrewHandler extends Handler {
 
             offlineMembers.add(updatedMember.get());
             NotifierHandler.instance().notifyPlayerStatus(false, crewMember);
-            CodeExecuterHandler.runLater(1, EventHandler.instance()::onCrewLeave);
+            CodeExecuterHandler.runLater(1, "updatePlayerToOffline > onCrewLeave", EventHandler.instance()::onCrewLeave);
         }
     }
 
@@ -198,7 +198,7 @@ public class CrewHandler extends Handler {
 
             onlineMembers.add(updatedMember.get());
             NotifierHandler.instance().notifyPlayerStatus(true, crewMember);
-            CodeExecuterHandler.runLater(1, EventHandler.instance()::onCrewJoin);
+            CodeExecuterHandler.runLater(1, "updatePlayerToOnline > onCrewJoin", EventHandler.instance()::onCrewJoin);
         }
     }
 
@@ -223,7 +223,7 @@ public class CrewHandler extends Handler {
             this.pendingLeavesList.put(uuid, System.currentTimeMillis());
 
             // Delay leaves in case of proxy change
-            CodeExecuterHandler.runLater(leaveDelay, () -> {
+            CodeExecuterHandler.runLater(leaveDelay, "onPlayerLeave", () -> {
                 if(this.pendingLeavesList.containsKey(uuid)) {
                     this.pendingLeavesList.remove(uuid);
                     updatePlayerToOffline(uuid);

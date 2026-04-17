@@ -294,7 +294,7 @@ public class InventoryHandler extends Handler {
         } else {
             if(!currentlyLoading) {
                 currentlyLoading = true;
-                CodeExecuterHandler.runLater(100, this::snapshotInventory);
+                CodeExecuterHandler.runLater(100, "tickInventory > snapshotInventory", this::snapshotInventory);
             }
         }
     }

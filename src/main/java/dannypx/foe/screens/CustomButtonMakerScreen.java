@@ -500,7 +500,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                 ).width(BUTTON_WIDTH / 4 * 3).build(),
                 ButtonWidget.builder(
                                 Text.literal("Add"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                button -> CodeExecuterHandler.runLater(1, "createButtonEntry > Add", () -> {
                                     String newId = "Custom Hud #" + UUID.randomUUID();
 
                                     int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
@@ -517,7 +517,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                         .build(),
                 ButtonWidget.builder(
                                 Text.literal("⏶"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                button -> CodeExecuterHandler.runLater(1, "createButtonEntry > Move Up", () -> {
                                     int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
                                     if(pos > 0) {
@@ -531,7 +531,7 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                         .build(),
                 ButtonWidget.builder(
                                 Text.literal("⏷"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
+                                button -> CodeExecuterHandler.runLater(1, "createButtonEntry > Move Down", () -> {
                                     int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
                                     if(pos < buttonList.children().size() - 1) {

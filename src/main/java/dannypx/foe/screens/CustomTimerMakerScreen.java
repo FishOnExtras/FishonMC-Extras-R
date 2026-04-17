@@ -949,7 +949,7 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
             cleanUpChatTriggersTextField.setText(selectedTimer.cleanUpChatTrigger);
             cleanUpChatTriggersTextField.setPlaceholder(Text.literal(selectedTimer.cleanUpChatTrigger));
 
-            CodeExecuterHandler.runLater(1, () -> {
+            CodeExecuterHandler.runLater(1, "CustomTimerMakerScreen > setFields", () -> {
                 if(selectedTimer.isPeriod && selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod selectedTimerPeriod) {
                     offTimerTextField.setMaxLength(Integer.MAX_VALUE);
                     offTimerTextField.setText(String.valueOf(selectedTimerPeriod.offTimer));

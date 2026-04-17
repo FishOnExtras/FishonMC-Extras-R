@@ -49,7 +49,7 @@ public class StatsScreenHandler extends Handler {
     //region Methods
     public void checkStats(GenericContainerScreenHandler genericContainerScreenHandler) {
         if(this.importStats) {
-            CodeExecuterHandler.runLater(2, () -> {
+            CodeExecuterHandler.runLater(2, "checkStats", () -> {
                 Slot statSlot = genericContainerScreenHandler.getSlot(23);
                 Pair<Boolean, Map<String, Map<String, StatsDataHandler.Stat<Integer, Integer>>>> completed = this.extractData(statSlot.getStack());
 

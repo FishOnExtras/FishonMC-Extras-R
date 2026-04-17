@@ -108,7 +108,7 @@ public class ChatHandler extends Handler {
                         && !trigger.notificationToTrigger.isBlank()
                         && trigger.useChatTrigger
                 ) {
-                    CodeExecuterHandler.runLater(1, () -> {
+                    CodeExecuterHandler.runLater(1, "checkChatTrigger > notifyNotifier", () -> {
                         NotifierHandler.instance().notifyNotifier(trigger.notificationToTrigger);
                     });
                 }
@@ -117,7 +117,7 @@ public class ChatHandler extends Handler {
                         && !trigger.chatNotificationToTrigger.isBlank()
                         && trigger.useChatTrigger
                 ) {
-                    CodeExecuterHandler.runLater(1, () -> {
+                    CodeExecuterHandler.runLater(1, "checkChatTrigger > notifyChat", () -> {
                         ChatNotifierHandler.instance().notifyChat(trigger.chatNotificationToTrigger);
                     });
                 }
@@ -191,7 +191,7 @@ public class ChatHandler extends Handler {
     public void cleanChatTriggerStore(String[] chatTriggers) {
         for (String chatTrigger : chatTriggers) {
             if(storedChatTriggerText.containsKey(chatTrigger)) {
-                CodeExecuterHandler.runLater(2, () -> {
+                CodeExecuterHandler.runLater(2, "cleanChatTriggerStore", () -> {
                     storedChatTriggerText.put(chatTrigger, Text.empty());
                 });
             }
