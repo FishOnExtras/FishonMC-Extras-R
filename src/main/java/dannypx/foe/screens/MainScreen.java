@@ -147,6 +147,24 @@ public class MainScreen extends DefaultModScreen {
                 .build();
     }
 
+    private ButtonWidget customChatNotificationButton() {
+        return ButtonWidget.builder(Text.literal("Create Chat Notifications"), button ->
+                        minecraftClient.setScreen(new CustomChatNotificationMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 + PADDING_HALF, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 2)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom Chat Notification Creator Screen")))
+                .build();
+    }
+
+    private ButtonWidget customEventTriggerButton() {
+        return ButtonWidget.builder(Text.literal("Create Event Triggers"), button ->
+                        minecraftClient.setScreen(new CustomEventTriggerMakerScreen(minecraftClient.currentScreen)))
+                .position(width / 2 - BUTTON_WIDTH / 2, height / 2 + (BUTTON_HEIGHT + PADDING_HALF) * 3)
+                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
+                .tooltip(Tooltip.of(Text.literal("Open Custom Event Trigger Creator Screen")))
+                .build();
+    }
+
     private ButtonWidget configButton() {
         return ButtonWidget.builder(Text.literal("Config Screen"), button ->
                         ConfigApiJava.INSTANCE.openScreen(FishOnMCExtras.MOD_ID))
