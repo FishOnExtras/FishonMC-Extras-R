@@ -24,6 +24,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static Integer CHAT_TRIGGER_VERSION = FishOnMCExtras.getVersion("chat_trigger_version");
 	public static Integer TIMER_VERSION = FishOnMCExtras.getVersion("timer_version");
 	public static Integer EVENT_TRIGGER_VERSION = FishOnMCExtras.getVersion("event_trigger");
+	public static Integer TRACKER_VERSION = FishOnMCExtras.getVersion("tracker_version");
 
 	@Override
 	public void onInitialize() {

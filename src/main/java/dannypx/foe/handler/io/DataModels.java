@@ -26,7 +26,8 @@ public class DataModels {
         CUSTOM_CHAT_NOTIFICATION_DATA("custom_chat_notification"),
         CUSTOM_CHAT_TRIGGER_DATA("custom_chat_trigger"),
         CUSTOM_EVENT_TRIGGER_DATA("custom_event_trigger"),
-        CUSTOM_TIMER_DATA("custom_timer");
+        CUSTOM_TIMER_DATA("custom_timer"),
+        CUSTOM_TRACKER_DATA("custom_tracker");
 
         public final String FILENAME;
 
