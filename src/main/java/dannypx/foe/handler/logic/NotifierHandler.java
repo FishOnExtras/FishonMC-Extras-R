@@ -372,7 +372,10 @@ public class NotifierHandler extends Handler {
                     itemStack = ItemStackHelper.valueOf(notification.getIcon());
                 }
 
-                List<MutableComponent> lines = notification.getStringLines().stream().map(PlaceholderHandlerV2.instance()::resolve).filter(result -> result.success() || !result.errors().isEmpty()).map(PlaceholderResult::text).toList();
+                List<MutableComponent> lines = notification.getStringLines().stream()
+                        .map(PlaceholderHandlerV2.instance()::resolve)
+                        .filter(result -> (result.success()[0] && !result.success()[1]) || !result.errors().isEmpty())
+                        .map(PlaceholderResult::text).toList();
                 List<Component> newLines = new ArrayList<>();
 
                 lines.forEach(line -> newLines.addAll(TextHelper.wrapStyledComponent(line, notification.getIcon().isBlank() ? CONTENT_WIDTH : ICON_CONTENT_WIDTH, true, minecraft.font)));

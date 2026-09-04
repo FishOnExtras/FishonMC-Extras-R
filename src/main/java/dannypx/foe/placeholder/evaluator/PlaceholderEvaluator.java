@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PlaceholderEvaluator {
     public PlaceholderResult eval(Group group) {
-        boolean[] success = { true };
+        boolean[] success = { true, false };
         List<String> errors = new ArrayList<>();
         MutableComponent combined = Component.empty();
         PlaceholderColorCodes.Tracker colorCodesTracker = new PlaceholderColorCodes.Tracker();
@@ -33,7 +33,7 @@ public class PlaceholderEvaluator {
                 combined.append(colorCodesTracker.applyActiveStyle(resolved));
             }
         }
-        return new PlaceholderResult(combined, success[0], errors);
+        return new PlaceholderResult(combined, success, errors);
     }
 
     public String evalToPlainText(Group group) {
@@ -62,6 +62,8 @@ public class PlaceholderEvaluator {
                     successAcc[0] = false;
                 }
 
+                successAcc[1] = successAcc[1] || result.isForcedFailure();
+
                 yield result.isNull() ? PlaceholderValue.text("") : result;
             }
             case FunctionCall f -> {
@@ -82,6 +84,9 @@ public class PlaceholderEvaluator {
                 if(!isSuccess(treeNode, result)) {
                     successAcc[0] = false;
                 }
+
+                successAcc[1] = successAcc[1] || result.isForcedFailure();
+
                 yield result.isNull() ? PlaceholderValue.text("") : result;
             }
             case BinaryOp b -> {
@@ -105,7 +110,6 @@ public class PlaceholderEvaluator {
     }
 
     private boolean isSuccess(PlaceholderTreeNode node, PlaceholderValue result) {
-        if(result.isForcedFailure()) return false;
         if(result.isNull()) return false;
         return !result.isEmpty() || node.allowsEmpty();
     }

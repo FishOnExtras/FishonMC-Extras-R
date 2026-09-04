@@ -265,7 +265,7 @@ public class PlaceholderRegistry {
                                         .branch(node("lore").branch(nodeIndex().valueComponent(InventoryContext::getChestplateLore))
                                                 .description("Returns the lore line of the specified index.")
                                         )
-                                        .branch(nodeStringArray().value(InventoryContext::getBootsNbt)
+                                        .branch(nodeStringArray().value(InventoryContext::getChestplateNbt)
                                                 .description("Returns the custom data NBT value of the specified values.")
                                         )
                                 )
@@ -699,6 +699,9 @@ public class PlaceholderRegistry {
                                 .branch(node("current").valueNumber(QuestDataContext::getCurrent)
                                         .description("Returns the current amount towards the goal of the quest at the specified index slot.")
                                 )
+                                .branch(node("has_quest").valueBoolean(QuestDataContext::getHasQuest)
+                                        .description("Returns whether the start at the specified index has a quest.")
+                                )
                         )
                 )
         );
@@ -844,6 +847,14 @@ public class PlaceholderRegistry {
                 .param("value", "string|component")
                 .param("prefix", "string|component")
         );
+        register(node("is_infinite").evalBoolean(EvaluationContext::evalIsInfinite)
+                .description("Returns true if the specified number is infinitely large in magnitude.")
+                .param("value", "number")
+        );
+        register(node("is_nan").evalBoolean(EvaluationContext::evalIsNaN)
+                .description("Returns true if the specified number is a Not-a-Number (NaN) value.")
+                .param("value", "number")
+        );
         register(node("or").evalBoolean(EvaluationContext::evalOr)
                 .description("Returns true if at least one value is true.")
                 .paramVariadic("value", "boolean")
@@ -875,6 +886,12 @@ public class PlaceholderRegistry {
                 .param("search", "string|component")
                 .paramOptional("from_index", "number")
         );
+        register(node("last_index_of").evalNumber(EvaluationContext::evalLastIndexOf)
+                .description("Returns the index within this string of the last occurrence of the specified search value, or searching backward starting at the specified from_index index.")
+                .param("value", "string|component")
+                .param("search", "string|component")
+                .paramOptional("from_index", "number")
+        );
         register(node("repeat").evalValue(EvaluationContext::evalRepeat)
                 .description("Returns a value whose value is the concatenation of this value repeated count times.")
                 .param("value", "string|component")
@@ -886,6 +903,16 @@ public class PlaceholderRegistry {
         );
         register(node("lowercase").evalValue(EvaluationContext::evalLowercase)
                 .description("Converts all of the characters in this value to lower case.")
+                .param("value", "string|component")
+        );
+        register(node("replace").evalValue(EvaluationContext::evalReplace)
+                .description("Replaces each target substring inside the value string with the specified replacement string. The replacement proceeds from the beginning of the string to the end.")
+                .param("value", "string|component")
+                .param("target", "string")
+                .param("replacement", "string")
+        );
+        register(node("length").evalNumber(EvaluationContext::evalLength)
+                .description("Returns the length of the specified value")
                 .param("value", "string|component")
         );
         register(node("shorten_number").evalString(EvaluationContext::evalShortenNumber)
@@ -2011,6 +2038,15 @@ public class PlaceholderRegistry {
             if(!quests.isEmpty() && index >= 0 && index < quests.size()) return quests.get(index).current;
             return null;
         }
+
+        static Boolean getHasQuest(List<String> indices) {
+            String location = BossEventHandler.instance().getLocation().getString();
+            List<QuestDataHandler.Quest> quests = QuestDataHandler.instance().getQuestData().questList.getOrDefault(location, List.of());
+            int index = Integer.parseInt(indices.getFirst());
+            if(quests.isEmpty() || index >= quests.size()) return false;
+            if(index >= 0) return true;
+            return null;
+        }
     }
 
     static class StatsDataContext {
@@ -2244,6 +2280,24 @@ public class PlaceholderRegistry {
             return args.getFirst().toString().startsWith(args.get(1).toString());
         }
 
+        static Boolean evalIsInfinite(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return Double.isInfinite(args.getFirst().toDouble());
+        }
+
+        static Boolean evalIsNaN(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return Double.isNaN(args.getFirst().toDouble());
+        }
+
         /// Math
 
         static Number evalExpression(List<PlaceholderValue> args) {
@@ -2313,6 +2367,8 @@ public class PlaceholderRegistry {
             int decimals = 0;
             if(args.size() > 1) decimals = args.get(1).toInteger();
 
+            if(Double.isInfinite(args.getFirst().toDouble())) return args.getFirst().toDouble();
+
             BigDecimal bd = new BigDecimal(args.getFirst().toDouble());
             bd = bd.setScale(decimals, RoundingMode.HALF_UP);
             return bd.doubleValue();
@@ -2364,7 +2420,6 @@ public class PlaceholderRegistry {
 
             return Math.pow(a, b);
         }
-
         /// String Manipulation
 
         static PlaceholderValue evalSubstring(List<PlaceholderValue> args) {
@@ -2404,6 +2459,23 @@ public class PlaceholderRegistry {
             } else {
                 int fromIndex = args.get(2).toInteger();
                 return value.indexOf(valueToSearch, fromIndex);
+            }
+        }
+
+        static Number evalLastIndexOf(List<PlaceholderValue> args) {
+            if(args.size() < 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 2 arguments, got " + args.size()
+                );
+            };
+            String value = args.getFirst().toString();
+            String valueToSearch = args.get(1).toString();
+
+            if(args.size() < 3) {
+                return value.lastIndexOf(valueToSearch);
+            } else {
+                int fromIndex = args.get(2).toInteger();
+                return value.lastIndexOf(valueToSearch, fromIndex);
             }
         }
 
@@ -2462,6 +2534,31 @@ public class PlaceholderRegistry {
             } else {
                 return PlaceholderValue.text(value.toString().toLowerCase(Locale.US));
             }
+        }
+
+        static PlaceholderValue evalReplace(List<PlaceholderValue> args) {
+            if(args.size() != 3) {
+                throw new PlaceholderEvaluationException(
+                        "expects 3 arguments, got " + args.size()
+                );
+            };
+
+            PlaceholderValue value = args.getFirst();
+
+            if(value.isComponent()) {
+                return PlaceholderValue.component(TextHelper.replace(value.toComponent(), args.get(1).toString(), args.get(2).toString()));
+            } else {
+                return PlaceholderValue.text(value.toString().replace(args.get(1).toString(), args.get(2).toString()));
+            }
+        }
+
+        static Number evalLength(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            }
+            return args.getFirst().toString().length();
         }
 
         static String evalShortenNumber(List<PlaceholderValue> args) {

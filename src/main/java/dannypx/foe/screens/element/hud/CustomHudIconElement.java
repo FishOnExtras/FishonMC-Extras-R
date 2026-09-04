@@ -136,7 +136,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
             case PLACEHOLDER -> {
                 PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(customHudIcon.getIcon());
 
-                if(result.success()) {
+                if(result.success()[0] && !result.success()[1]) {
                     try {
                         int slot = Integer.parseInt(result.text().getString());
                         yield slot >= 0 && slot < 36 ? Minecraft.getInstance().player.getInventory().getItem(slot) : ItemStack.EMPTY;

@@ -165,7 +165,9 @@ public class PlaceholderParser {
 
     private Token expectPathSegment() {
         Token token = this.peek();
-        if(token.type() == TokenType.IDENTIFIER || token.type() == TokenType.NUMBER) {
+        if(token.type() == TokenType.IDENTIFIER || token.type() == TokenType.NUMBER
+                || token.type() == TokenType.LITERAL || token.type() == TokenType.ESCAPED_LITERAL
+        ) {
             return this.advance();
         }
         throw new PlaceholderParseException(
@@ -248,7 +250,8 @@ public class PlaceholderParser {
     }
 
     private boolean isExtendableToken(TokenType type) {
-        return type == TokenType.WHITESPACE || type == TokenType.IDENTIFIER || type == TokenType.NUMBER;
+        return type == TokenType.WHITESPACE || type == TokenType.IDENTIFIER || type == TokenType.NUMBER
+                || type == TokenType.LITERAL || type == TokenType.ESCAPED_LITERAL;
     }
 
     /// Helpers

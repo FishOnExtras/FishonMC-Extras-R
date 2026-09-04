@@ -4,4 +4,4 @@ import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
 
-public record PlaceholderResult(MutableComponent text, boolean success, List<String> errors) {}
+public record PlaceholderResult(MutableComponent text, boolean[] success, List<String> errors) {}

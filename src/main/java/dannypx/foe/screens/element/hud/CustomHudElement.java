@@ -3,6 +3,7 @@ package dannypx.foe.screens.element.hud;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.fetch.TabOverlayHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomHudDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
@@ -254,7 +255,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         customHud.getStringLines().forEach(componentParts -> {
             PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(componentParts.value1());
 
-            if(result.success() || !result.errors().isEmpty()) {
+            if((result.success()[0] && !result.success()[1]) || !result.errors().isEmpty()) {
                 componentLines.add(Triplet.of(componentParts.value2(), componentParts.value3(), result.text()));
                 hasData.set(true);
             }

@@ -94,7 +94,7 @@ public class PlaceholderCompiler {
 
     public static class ThrottledPlaceholder {
         private final Group ast;
-        private PlaceholderResult lastResult = new PlaceholderResult(Component.empty(), true, List.of());
+        private PlaceholderResult lastResult = new PlaceholderResult(Component.empty(), new boolean[]{ true, false }, List.of());
         private long lastSeenGeneration = -1;
 
         public ThrottledPlaceholder(String source) {

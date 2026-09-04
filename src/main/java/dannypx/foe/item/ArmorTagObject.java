@@ -78,7 +78,7 @@ public class ArmorTagObject extends TagObject {
             try {
                 qualityComponent = components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
                 return qualityComponent.getString().contains("%") ? qualityComponent : components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 return Component.empty();
             }
         }

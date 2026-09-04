@@ -538,6 +538,17 @@ public class TextHelper {
         return result;
     }
 
+    public static MutableComponent replace(Component component, String target, String replacement) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.replace(target, replacement)).setStyle(style));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
     public static Component trim(Component component) {
         String full = component.getString();
         int length = full.length();
