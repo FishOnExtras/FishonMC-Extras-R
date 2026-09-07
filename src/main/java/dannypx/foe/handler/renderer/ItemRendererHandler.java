@@ -185,7 +185,7 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                if (Configs.rendererConfig.petRatingStyle.get() == PetRatingStyle.TIER) {
+                if (Configs.rendererConfig.petRatingStyle.get() == PetRatingStyle.LETTER) {
                     ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
                 } else {
                     int percent = Math.round(validatedPet.value2().getTotalPercent() * 100);
