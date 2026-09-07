@@ -532,6 +532,30 @@ public class TextHelper {
         return result;
     }
 
+    public static MutableComponent getNumberFromString(Component component) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(string.replaceAll("(?!\\.\\d)\\D", "")));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
+    public static MutableComponent getRoundedNumberFromString(Component component) {
+        MutableComponent result = Component.empty();
+        Component numComponent = getNumberFromString(component);
+
+        numComponent.visit((style, string) -> {
+            float num = Float.parseFloat(string);
+            result.append(Component.literal(String.valueOf(Math.round(num))));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
     public static MutableComponent replace(Component component, String target, String replacement) {
         MutableComponent result = Component.empty();
 
