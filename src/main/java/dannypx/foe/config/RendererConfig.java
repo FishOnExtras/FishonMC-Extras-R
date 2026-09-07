@@ -39,7 +39,7 @@ public class RendererConfig extends Config {
     @Name("Pet Rating Style")
     public ValidatedChoice<PetRatingStyle> petRatingStyle =
             new ValidatedChoice<>(
-                    PetRatingStyle.PERCENTAGE, List.of(PetRatingStyle.values()),
+                    PetRatingStyle.LETTER, List.of(PetRatingStyle.values()),
                     new ValidatedEnum<>(PetRatingStyle.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING
             );
 
