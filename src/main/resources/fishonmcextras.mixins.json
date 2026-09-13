@@ -34,6 +34,7 @@
     "inject.GuiMixin",
     "inject.HumanoidArmorLayerMixin",
     "inject.InventoryScreenMixin",
+    "inject.ItemInHandLayerMixin",
     "inject.JumpableVehicleBarMixin",
     "inject.LevelRendererBrightnessGetterMixin",
     "inject.LocatorBarMixin",

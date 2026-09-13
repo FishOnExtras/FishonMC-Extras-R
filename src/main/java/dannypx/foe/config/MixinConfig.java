@@ -126,6 +126,12 @@ public class MixinConfig extends Config {
     @ConfigGroup.Pop
     public ValidatedBoolean inventoryScreenMixinRenderBg = new ValidatedBoolean(true);
 
+    @Name("ItemInHandLayer Mixin")
+    public ConfigGroup itemInHandLayerMixinGroup = new ConfigGroup("item_in_hand_layer_mixin");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean itemInHandLayerMixinSubmitArmWithItem = new ValidatedBoolean(true);
+
     @Name("LevelRendererBrightnessGetter Mixin")
     public ConfigGroup levelRendererBrightnessGetterMixinGroup = new ConfigGroup("level_renderer_brightness_getter_mixin");
 

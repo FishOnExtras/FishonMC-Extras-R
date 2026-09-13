@@ -827,7 +827,7 @@ public class PlaceholderRegistry {
                 .param("a", DocTypeKind.VALUE)
                 .param("b", DocTypeKind.VALUE)
         );
-        register(node("if").evalValue(EvaluationContext::evalConditionIf)
+        register(node("if").evalValue(EvaluationContext::evalConditionIf).allowEmpty()
                 .description("Returns the true value or false value based on the specified valid condition using the following operators; <, <=, >, >=, ==, !=.")
                 .param("condition", DocTypeKind.BOOLEAN)
                 .param("true", DocTypeKind.VALUE)
@@ -1015,6 +1015,10 @@ public class PlaceholderRegistry {
         register(node("capitalize").evalValue(EvaluationContext::evalCapitalize)
                 .description("Capitalizes a text changing the first character to upper case")
                 .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
+        );
+        register(node("concat").evalValue(EvaluationContext::evalConcat)
+                .description("Returns the concatenated text of all specified values")
+                .paramVariadic("value", DocTypeKind.VALUE)
         );
         //endregion
 
@@ -2322,7 +2326,7 @@ public class PlaceholderRegistry {
             };
             return args.getFirst().toBoolean()
                     ? args.get(1)
-                    : (args.size() >= 3 ? args.get(2) : PlaceholderValue.bool(false));
+                    : (args.size() >= 3 ? args.get(2) : PlaceholderValue.emptyText());
         }
 
         static Boolean evalOr(List<PlaceholderValue> args) {
@@ -2493,7 +2497,9 @@ public class PlaceholderRegistry {
             String value = args.getFirst().toString();
             boolean oneOf = false;
 
-            for (PlaceholderValue arg : args.subList(1, args.size())) {
+            List<PlaceholderValue> candidates = args.subList(1, args.size());
+
+            for (PlaceholderValue arg : candidates) {
                 if(value.equals(arg.toString())) oneOf = true;
             }
 
@@ -2774,7 +2780,7 @@ public class PlaceholderRegistry {
             PlaceholderValue value = args.getFirst();
 
             int count = args.get(1).toInteger();
-            if(count <= 0) return value;
+            if(count <= 0) return PlaceholderValue.emptyText();
 
             if(value.isComponent()) {
                 MutableComponent repeatedComponent = Component.empty();
@@ -2876,11 +2882,15 @@ public class PlaceholderRegistry {
                 );
             };
 
-            MutableComponent result = args.get(1).toComponent();
+            MutableComponent result = Component.empty().append(args.get(1).toComponent());
             MutableComponent separator = args.getFirst().toComponent();
 
-            if(args.size() > 2) for (PlaceholderValue arg : args.subList(2, args.size())) {
-                result.append(separator).append(arg.toComponent());
+            if(args.size() > 2) {
+                List<PlaceholderValue> values = args.subList(2, args.size());
+
+                for (PlaceholderValue arg : values) {
+                    result.append(separator).append(arg.toComponent());
+                }
             }
 
             return result;
@@ -3024,6 +3034,25 @@ public class PlaceholderRegistry {
             return PlaceholderValue.component(TextHelper.capitalize(args.getFirst().toComponent()));
         }
 
+        static PlaceholderValue evalConcat(List<PlaceholderValue> args) {
+            if(args.isEmpty()) {
+                throw new PlaceholderEvaluationException(
+                        "expects at least 1 argument, got " + args.size()
+                );
+            };
+
+            MutableComponent result = Component.empty().append(args.getFirst().toComponent());
+
+            if(args.size() > 1) {
+                List<PlaceholderValue> values = args.subList(1, args.size());
+                for (PlaceholderValue arg : values) {
+                    result.append(arg.toComponent());
+                }
+            }
+
+            return PlaceholderValue.component(result);
+        }
+
         /// Misc
 
         static String evalTypeOf(List<PlaceholderValue> args) {
@@ -3154,6 +3183,9 @@ public class PlaceholderRegistry {
         if(node.getDescription() != null) {
             obj.addProperty("description", node.getDescription());
         }
+        if(node.allowsEmpty()) {
+            obj.addProperty("allow_empty", true);
+        }
         return obj;
     }
 
@@ -3167,6 +3199,9 @@ public class PlaceholderRegistry {
             obj.addProperty("returns", returnTag);
             if(node.getDescription() != null) {
                 obj.addProperty("description", node.getDescription());
+            }
+            if(node.allowsEmpty()) {
+                obj.addProperty("allow_empty", true);
             }
             return obj;
         }
@@ -3194,6 +3229,9 @@ public class PlaceholderRegistry {
         obj.addProperty("returns", returnTag);
         if(node.getDescription() != null) {
             obj.addProperty("description", node.getDescription());
+        }
+        if(node.allowsEmpty()) {
+            obj.addProperty("allow_empty", true);
         }
         obj.add("params", paramsArray);
         return obj;

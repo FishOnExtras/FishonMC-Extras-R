@@ -92,11 +92,11 @@ public class StatsScreenHandler extends Handler {
             if(loreLines.size() > 7) {
                 Map<String, Map<String, StatsDataHandler.Stat<Integer, Integer>>> newData = StatsDataHandler.instance().getStatsData().fishData;
 
-                int totalFish = this.extractTotal(loreLines.get(5));
+                int totalFish = this.extractTotal(loreLines.get(6));
                 StatsDataHandler.instance().getStatsData().fishTotal = totalFish;
 
                 // Rarity
-                for (int i = 7; i < 12; i++) {
+                for (int i = 8; i < 13; i++) {
                     Component line = loreLines.get(i);
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishTagObject.RARITY, new HashMap<>()), line);
@@ -112,7 +112,7 @@ public class StatsScreenHandler extends Handler {
                 }
 
                 // Fish Size
-                for (int i = 13; i < 18; i++) {
+                for (int i = 14; i < 19; i++) {
                     Component line = loreLines.get(i);
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishTagObject.FISH_SIZE, new HashMap<>()), line);
@@ -129,7 +129,7 @@ public class StatsScreenHandler extends Handler {
 
                 // Variant
                 AtomicInteger normalCount = new AtomicInteger(totalFish);
-                for (int i = 19; i < 23; i++) {
+                for (int i = 20; i < 24; i++) {
                     Component line = loreLines.get(i);
                     Triplet<Boolean, String, Integer> data =
                             this.extractStat(ConstantDataHandler.instance().getConstantData().fishData.getOrDefault(FishTagObject.VARIANT, new HashMap<>()), line);
@@ -168,7 +168,10 @@ public class StatsScreenHandler extends Handler {
     }
 
     private int extractTotal(Component component) {
-        return TextHelper.toIntFromString(component.getSiblings().get(2).getString());
+        if(component.getSiblings().size() > 1) {
+            return TextHelper.toIntFromString(component.getSiblings().get(2).getString());
+        }
+        return 1;
     }
     //endregion
 

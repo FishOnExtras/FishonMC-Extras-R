@@ -6,6 +6,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 
+import java.util.Optional;
+
 public class PlaceholderColorCodes {
     public static class Tracker {
         private Style currentStyle = Style.EMPTY;
@@ -58,7 +60,18 @@ public class PlaceholderColorCodes {
             if(component.getStyle().getColor() != null) {
                 return component;
             }
-            return component.setStyle(currentStyle);
+
+            MutableComponent result = Component.empty();
+            component.visit((style, text) -> {
+                if(!text.isEmpty()) {
+                    Style styled = style.getColor() != null
+                            ? style
+                            : style.withColor(currentStyle.getColor());
+                    result.append(Component.literal(text).setStyle(styled));
+                }
+                return Optional.empty();
+            }, Style.EMPTY);
+            return result;
         }
 
         private void flush(MutableComponent result, StringBuilder segment) {
