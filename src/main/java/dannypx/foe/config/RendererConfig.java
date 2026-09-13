@@ -41,6 +41,9 @@ public class RendererConfig extends Config {
     @Desc("§7This is the model renderer for entities")
     public ConfigGroup entityModelGroup = new ConfigGroup("entity_model_renderer_group");
 
+    @Name("Show pet")
+    public ValidatedBoolean showPet = new ValidatedBoolean(true);
+
     @Name("Show pet names")
     public ValidatedBoolean showPetName = new ValidatedBoolean(true);
 
