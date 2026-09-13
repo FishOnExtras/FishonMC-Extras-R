@@ -2,7 +2,6 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
