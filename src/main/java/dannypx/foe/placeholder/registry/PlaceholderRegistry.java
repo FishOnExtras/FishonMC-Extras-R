@@ -3183,6 +3183,9 @@ public class PlaceholderRegistry {
         if(node.getDescription() != null) {
             obj.addProperty("description", node.getDescription());
         }
+        if(node.allowsEmpty()) {
+            obj.addProperty("allow_empty", true);
+        }
         return obj;
     }
 
@@ -3196,6 +3199,9 @@ public class PlaceholderRegistry {
             obj.addProperty("returns", returnTag);
             if(node.getDescription() != null) {
                 obj.addProperty("description", node.getDescription());
+            }
+            if(node.allowsEmpty()) {
+                obj.addProperty("allow_empty", true);
             }
             return obj;
         }
@@ -3223,6 +3229,9 @@ public class PlaceholderRegistry {
         obj.addProperty("returns", returnTag);
         if(node.getDescription() != null) {
             obj.addProperty("description", node.getDescription());
+        }
+        if(node.allowsEmpty()) {
+            obj.addProperty("allow_empty", true);
         }
         obj.add("params", paramsArray);
         return obj;
