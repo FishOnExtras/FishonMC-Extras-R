@@ -7,6 +7,7 @@ import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
+import dannypx.foe.type.PetRatingStyle;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
@@ -184,7 +185,14 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
+                if (Configs.rendererConfig.petRatingStyle.get() == PetRatingStyle.LETTER) {
+                    ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
+                } else {
+                    int percent = Math.round(validatedPet.value2().getTotalPercent() * 100);
+                    String percentFormatted = TextHelper.smallNumber(String.valueOf(percent));
+                    ratingComponent = TextHelper.replaceText(ratingComponent, percentFormatted);
+                }
+
 
                 guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
             }

@@ -1,17 +1,22 @@
 package dannypx.foe.config;
 
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.type.PetRatingStyle;
 import me.fzzyhmstrs.fzzy_config.annotations.Version;
 import me.fzzyhmstrs.fzzy_config.api.FileType;
 import me.fzzyhmstrs.fzzy_config.config.Config;
 import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice;
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @Version(version = 7)
 @Translatable.Name("Renderer Configuration")
@@ -30,6 +35,13 @@ public class RendererConfig extends Config {
 
     @Name("Show Rarity marker")
     public ValidatedBoolean showRarityMarker = new ValidatedBoolean(true);
+
+    @Name("Pet Rating Style")
+    public ValidatedChoice<PetRatingStyle> petRatingStyle =
+            new ValidatedChoice<>(
+                    PetRatingStyle.LETTER, List.of(PetRatingStyle.values()),
+                    new ValidatedEnum<>(PetRatingStyle.class).instanceEntry(), ValidatedChoice.WidgetType.CYCLING
+            );
 
     @ConfigGroup.Pop
     @Name("Blacklist items from rendering rarity marker")

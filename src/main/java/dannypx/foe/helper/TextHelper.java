@@ -532,6 +532,17 @@ public class TextHelper {
         return result;
     }
 
+    public static MutableComponent replaceText(Component component, String newText) {
+        MutableComponent result = Component.empty();
+
+        component.visit((style, string) -> {
+            result.append(Component.literal(newText).setStyle(style));
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
     public static MutableComponent replace(Component component, String target, String replacement) {
         if (target.isEmpty()) {
             return component.copy();
