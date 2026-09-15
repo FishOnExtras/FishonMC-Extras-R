@@ -86,6 +86,9 @@ public class PlaceholderRegistry {
                         .branch(node("fps").valueNumber(PlayerContext::getFps)
                                 .description("Returns the screens FPS.")
                         )
+                        .branch(node("is_fishing").valueBoolean(PlayerContext::isFishing)
+                                .description("Returns whether the player is fishing.")
+                        )
         );
 
         register(
@@ -1182,6 +1185,10 @@ public class PlaceholderRegistry {
 
         static Number getFps() {
             return Minecraft.getInstance().getFps();
+        }
+
+        static Boolean isFishing() {
+            return Minecraft.getInstance().player.fishing != null;
         }
     }
 
