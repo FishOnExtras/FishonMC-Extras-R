@@ -11,6 +11,7 @@ import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.PetTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
+import dannypx.foe.placeholder.evaluator.PlaceholderColorCodes;
 import dannypx.foe.placeholder.evaluator.PlaceholderEvaluationException;
 import dannypx.foe.placeholder.functions.PlaceholderValue;
 import dannypx.foe.type.custom_value.*;
@@ -978,6 +979,15 @@ public class PlaceholderRegistry {
         register(node("shorten_number").evalString(EvaluationContext::evalShortenNumber)
                 .description("Returns the value to numeric abbreviations like 1K (1.000), 1M (1.000.000), 1B (1.000.000.000), with up to 2 decimals.")
                 .param("value", DocTypeKind.NUMBER)
+        );
+        register(node("apply_format").evalComponent(EvaluationContext::evalApplyFormat)
+                .description("Returns the value with the specified style")
+                .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
+                .param("style", DocTypeKind.STRING)
+        );
+        register(node("format").evalComponent(EvaluationContext::evalFormat)
+                .description("Returns the value with the format")
+                .param("value", DocTypeKind.STRING)
         );
         register(node("remove_format").evalString(EvaluationContext::evalRemoveFormat)
                 .description("Returns the plain text of the specified value.")
@@ -2926,6 +2936,24 @@ public class PlaceholderRegistry {
             Number number = args.getFirst().toDouble();
 
             return TextHelper.shortenNumber(number.floatValue(), 2);
+        }
+
+        static MutableComponent evalApplyFormat(List<PlaceholderValue> args) {
+            if(args.size() != 2) {
+                throw new PlaceholderEvaluationException(
+                        "expects 2 arguments, got " + args.size()
+                );
+            };
+            return PlaceholderColorCodes.applyFormat(args.getFirst().toString(), args.get(1).toString());
+        }
+
+        static MutableComponent evalFormat(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
+            return PlaceholderColorCodes.applyFormat(args.getFirst().toString());
         }
 
         static String evalRemoveFormat(List<PlaceholderValue> args) {
