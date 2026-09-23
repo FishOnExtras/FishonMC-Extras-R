@@ -4,7 +4,6 @@ import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.EventHandler;
 import dannypx.foe.handler.logic.InventoryHandler;
-import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.renderer.ChatScreenRenderHandler;
 import dannypx.foe.handler.renderer.InventoryScreenRenderHandler;
 import dannypx.foe.type.tuple.Pair;

@@ -132,7 +132,7 @@ public class ChatHandler extends Handler {
     }
 
     public String onModifyChatMessage(String text) {
-        if(LoadingHandler.instance().isLoadingDone()) {
+        if(ConnectionHandler.instance().isOnServer()) {
             AtomicReference<String> modified = new AtomicReference<>(text);
             ConstantDataHandler.instance().getConstantData().fishData.forEach((category, fieldMap) -> {
                 fieldMap.forEach((stringField, textField) -> {

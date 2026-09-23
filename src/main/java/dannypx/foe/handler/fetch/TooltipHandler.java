@@ -2,8 +2,8 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.KeyBindHandler;
-import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorTagObject;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -38,7 +37,7 @@ public class TooltipHandler extends Handler {
 
     //region Methods
     public void fetchTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
-        if(LoadingHandler.instance().isLoadingDone()) {
+        if(ConnectionHandler.instance().isOnServer()) {
             Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack, true);
             if(validatedItem.value1()) {
                 Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
