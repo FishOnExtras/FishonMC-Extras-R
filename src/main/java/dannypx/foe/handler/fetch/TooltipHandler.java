@@ -3,6 +3,7 @@ package dannypx.foe.handler.fetch;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.KeyBindHandler;
+import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorTagObject;
@@ -37,16 +38,18 @@ public class TooltipHandler extends Handler {
 
     //region Methods
     public void fetchTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> components) {
-        Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack, true);
-        if(validatedItem.value1()) {
-            Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
-            if(validatedArmor.value1()) this.setArmorRolls(validatedArmor.value2(), components);
-        } else {
-            if(itemStack.getItem() == Items.ENDER_EYE
-                    && itemStack.get(DataComponents.LORE) != null
-                    && itemStack.get(DataComponents.LORE).lines().getFirst().getString().contains("Bonus Slot")
-            ) {
-                this.setArmorRoll(itemStack, components);
+        if(LoadingHandler.instance().isLoadingDone()) {
+            Pair<Boolean, TagObject> validatedItem = ValidateItem.isServerItem(itemStack, true);
+            if(validatedItem.value1()) {
+                Pair<Boolean, ArmorTagObject> validatedArmor = ValidateItem.isArmor(validatedItem.value2());
+                if(validatedArmor.value1()) this.setArmorRolls(validatedArmor.value2(), components);
+            } else {
+                if(itemStack.getItem() == Items.ENDER_EYE
+                        && itemStack.get(DataComponents.LORE) != null
+                        && itemStack.get(DataComponents.LORE).lines().getFirst().getString().contains("Bonus Slot")
+                ) {
+                    this.setArmorRoll(itemStack, components);
+                }
             }
         }
     }
