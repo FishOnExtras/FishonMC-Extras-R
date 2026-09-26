@@ -1974,7 +1974,7 @@ public class PlaceholderRegistry {
 
         static MutableComponent getLastCaughtPetRatingIcon() {
             if(!CatchingHandler.instance().getLastCaughtPet().getItemStack().isEmpty()) {
-                return CatchingHandler.instance().getLastCaughtPet().getRarityComponent().copy();
+                return CatchingHandler.instance().getLastCaughtPet().getRatingComponent().copy();
             }
             return Component.empty();
         }
