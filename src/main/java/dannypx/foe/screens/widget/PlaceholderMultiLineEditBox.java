@@ -43,6 +43,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
     private static final int GUTTER_NUMBER_COLOR = 0xFF6A6A6A;
     private static final int GUTTER_CURRENT_LINE_COLOR = 0xFFCFCFCF;
     private static final int GUTTER_DIVIDER_COLOR = 0xFF3A3A3A;
+    private static final int INDENT_GUIDE_COLOR = 0x883A3A3A;
 
     private static final int RESULT_AWAITING_COLOR = 0xFF808080;
     private static final long RESOLVE_DEBOUNCE_MS = 1000;
@@ -77,18 +78,13 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
             shortcut("Ctrl+C / Ctrl+X / Ctrl+V", "Copy / Cut / Paste"),
             shortcut("Ctrl+Z / Ctrl+Y", "Undo / Redo"),
             shortcut("Ctrl+S", "Save"),
-            shortcut("Enter", "New line, keeps indentation"),
             shortcut("Tab", "Insert 2 spaces / indent selected lines"),
             shortcut("Shift+Tab", "Un-indent line / selected lines"),
-            shortcut("Backspace / Delete", "Delete character"),
             shortcut("Ctrl+Backspace / Ctrl+Delete", "Delete word"),
-            shortcut("Arrow keys", "Move cursor"),
             shortcut("Ctrl+Left / Ctrl+Right", "Jump by word"),
             shortcut("Home / End", "Start / end of line"),
             shortcut("Page Up / Page Down", "Move one page"),
             shortcut("Shift + any movement", "Extend selection"),
-            shortcut("Double / Triple click", "Select word / line"),
-            shortcut("Mouse wheel", "Scroll"),
             Component.empty(),
             Component.literal("While suggestions are shown").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
             shortcut("Tab / Click", "Accept suggestion"),
@@ -1287,6 +1283,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
             int drawY = getY() + PAD + row * lineHeight;
 
             if (!vl.continuation()) this.renderGutterNumber(guiGraphics, vl, lineIdx, drawY);
+            this.renderIndentGuides(guiGraphics, vl, textX, drawY);
             if (selecting) this.renderSelection(guiGraphics, vl, textX, drawY);
             this.renderBrackets(guiGraphics, bracket, structure, strippedToRaw, vl, textX, drawY);
             this.renderLineText(guiGraphics, spans, vl, textX, drawY);
@@ -1327,6 +1324,26 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
         int numX = getX() + GUTTER_LEFT_PAD + (gutterNumberWidth - font.width(numStr));
         int numColor = (lineIdx == cursorLine) ? GUTTER_CURRENT_LINE_COLOR : GUTTER_NUMBER_COLOR;
         guiGraphics.drawString(font, numStr, numX, drawY, numColor, false);
+    }
+
+    private int logicalLineStart(int pos) {
+        int i = value.lastIndexOf('\n', pos - 1);
+        return i < 0 ? 0 : i + 1;
+    }
+
+    private void renderIndentGuides(GuiGraphics guiGraphics, VisualLine vl, int textX, int drawY) {
+        int logicalStart = this.logicalLineStart(vl.start());
+        int i = logicalStart;
+        while (i < value.length() && value.charAt(i) == ' ') i++;
+
+        int levels = (i - logicalStart) / INDENT.length();
+        if (levels <= 0) return;
+
+        int indentWidth = font.width(INDENT);
+        for (int level = 1; level <= levels; level++) {
+            int x = textX + (level - 1) * indentWidth;
+            guiGraphics.fill(x, drawY, x + 1, drawY + lineHeight, INDENT_GUIDE_COLOR);
+        }
     }
 
     private void renderSelection(GuiGraphics guiGraphics, VisualLine vl, int textX, int drawY) {
