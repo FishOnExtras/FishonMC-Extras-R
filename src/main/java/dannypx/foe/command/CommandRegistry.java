@@ -45,9 +45,6 @@ public class CommandRegistry {
                         .then(command("config").executes(Command.Foe::openConfig))
                         .then(command("main").executes(Command.Foe::openMainScreen))
                         .then(command("export_placeholder_data").executes(Command.Foe::exportPlaceholderData))
-                        .then(command("update")
-                                .then(command("0.3.8").then(command("confirm").executes(Command.Update::confirmV038)))
-                        )
                         .then(command("stats")
                                 .then(command("import").executes(Command.Stats::importStats))
                                 .then(command("cancel").executes(Command.Stats::cancelStats))
@@ -203,12 +200,6 @@ public class CommandRegistry {
 
             public static int exportPlaceholderData(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Exported placeholder schema and list to file").withStyle(ChatFormatting.GREEN), () -> DataFileHandler.instance().saveSchemaToFile());
-            }
-        }
-
-        static class Update {
-            public static int confirmV038(CommandContext<FabricClientCommandSource> context) {
-                return executeCommand(() -> NotifierHandler.instance().removeNotification(UpdateHandler.V_0_3_8_KEY));
             }
         }
 
