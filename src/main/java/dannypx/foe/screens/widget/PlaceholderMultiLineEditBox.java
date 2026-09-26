@@ -292,7 +292,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
                 first = false;
                 lineStart = breakAt;
                 lastBreakable = -1;
-                lineWidth = 0f;
+                lineWidth = font.width(value.substring(lineStart, i));
                 i--;
                 continue;
             }
