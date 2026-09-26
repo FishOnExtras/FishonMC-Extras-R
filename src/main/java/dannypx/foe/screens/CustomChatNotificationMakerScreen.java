@@ -268,7 +268,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                 try {
                                     Triplet<String, String, Integer> dataButton = Triplet.of(
                                             selectedChatNotificationId,
-                                            selectedChatNotificationId,
+                                            stringEditBox.getValue(),
                                             FishOnMCExtras.CHAT_NOTIFICATION_VERSION
                                     );
 
