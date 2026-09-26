@@ -48,10 +48,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientPlayConnectionEvents.DISCONNECT.register(this::onLeave);
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
-        ClientReceiveMessageEvents.MODIFY_GAME.register(this::modifyGameMessage);
         ClientSendMessageEvents.MODIFY_CHAT.register(this::modifyChatMessage);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
-        UseItemCallback.EVENT.register(this::onUseItem);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
 
         this.initHudRenderer();
@@ -73,16 +71,8 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ChatHandler.instance().onReceiveMessage(message);
     }
 
-    private Component modifyGameMessage(Component message, boolean over) {
-        return ChatHandler.instance().onModifyGameMessage(message);
-    }
-
     private String modifyChatMessage(String text) {
         return ChatHandler.instance().onModifyChatMessage(text);
-    }
-
-    private InteractionResult onUseItem(Player player, Level level, InteractionHand hand) {
-        return InteractionResult.PASS;
     }
 
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {

@@ -127,7 +127,6 @@ public class PlaceholderSuggestionEngine {
 
         if(top.committed.isEmpty()) {
             List<Suggestion> matches = PlaceholderRegistry.getRootNames().stream()
-                    .filter(name -> matches(name, prefix))
 //                    .filter(name -> !name.equals(prefix))
                     .sorted()
                     .map(name -> new Suggestion(name, PlaceholderRegistry.getRoot(name).hasEval()))
@@ -142,7 +141,6 @@ public class PlaceholderSuggestionEngine {
         if(node == null) return PlaceholderSuggestionContext.NONE;
 
         List<Suggestion> matches = node.getChildren().entrySet().stream()
-                .filter(e -> matches(e.getKey(), prefix))
 //                .filter(e -> !e.getKey().equals(prefix))
                 .sorted(Map.Entry.comparingByKey())
                 .map(e -> new Suggestion(e.getKey(), e.getValue().hasEval()))

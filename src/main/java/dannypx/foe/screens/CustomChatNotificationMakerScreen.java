@@ -7,6 +7,7 @@ import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomChatNotificationDataHandler;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.placeholder.editbox.PlaceholderEditBox;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.tuple.Triplet;
@@ -36,7 +37,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
     private EditBox nameEditBox;
 
     private final int sideWidth = 100;
-    private EditBox stringEditBox;
+    private PlaceholderEditBox stringEditBox;
     private String stringField;
     //endregion
 
@@ -148,7 +149,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
     }
 
     private AbstractWidget getStringEditBox() {
-        stringEditBox = new EditBox(
+        stringEditBox = new PlaceholderEditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 2,
@@ -268,7 +269,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                 try {
                                     Triplet<String, String, Integer> dataButton = Triplet.of(
                                             selectedChatNotificationId,
-                                            selectedChatNotificationId,
+                                            stringEditBox.getValue(),
                                             FishOnMCExtras.CHAT_NOTIFICATION_VERSION
                                     );
 
@@ -280,7 +281,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                             "```\n" +
                                             rawData + "\n" +
                                             "```\n" +
-                                            "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION + "`";
+                                            "-# Using Chat Notification version: " + "`v" + FishOnMCExtras.CHAT_NOTIFICATION_VERSION + "`";
 
                                     this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
@@ -312,7 +313,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                 0,
                 BUTTON_HEIGHT + PADDING_HALF,
                 BUTTON_HEIGHT,
-                "Custom Chat Triggers"
+                "Custom Chat Notification"
         );
 
         CustomChatNotificationDataHandler.instance().getCustomChatNotificationData().notificationList.forEach((name, text) -> {
@@ -391,7 +392,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
     }
 
     private void resetFields() {
-        this.header = Component.literal("No Chat Trigger Selected");
+        this.header = Component.literal("No Chat Notification Selected");
 
         nameEditBox.setValue("");
         nameEditBox.setHint(Component.literal(""));
