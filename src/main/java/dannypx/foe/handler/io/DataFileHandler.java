@@ -59,6 +59,7 @@ public class DataFileHandler extends Handler {
         CustomEventTriggerDataHandler.instance().tick();
         CustomTimerDataHandler.instance().tick();
         CustomTrackerDataHandler.instance().tick();
+        CustomSnippetDataHandler.instance().tick();
     }
 
     public void init() {
@@ -175,6 +176,7 @@ public class DataFileHandler extends Handler {
             case CUSTOM_CHAT_NOTIFICATION_DATA -> CustomChatNotificationDataHandler.instance().getCustomChatNotificationData();
             case CUSTOM_EVENT_TRIGGER_DATA -> CustomEventTriggerDataHandler.instance().getCustomEventTriggerData();
             case CUSTOM_TRACKER_DATA -> CustomTrackerDataHandler.instance().getCustomTrackerData();
+            case CUSTOM_SNIPPET_DATA -> CustomSnippetDataHandler.instance().getCustomSnippetData();
         };
     }
 
@@ -218,6 +220,8 @@ public class DataFileHandler extends Handler {
                     CustomEventTriggerDataHandler.instance().setCustomEventTriggerData(gson.fromJson(json, CustomEventTriggerDataHandler.CustomEventTriggerDataModel.class));
             case CUSTOM_TRACKER_DATA ->
                     CustomTrackerDataHandler.instance().setCustomTrackerData(gson.fromJson(json, CustomTrackerDataHandler.CustomTrackerDataModel.class));
+            case CUSTOM_SNIPPET_DATA ->
+                    CustomSnippetDataHandler.instance().setCustomSnippetData(gson.fromJson(json, CustomSnippetDataHandler.CustomSnippetDataModel.class));
         }
     }
     //endregion

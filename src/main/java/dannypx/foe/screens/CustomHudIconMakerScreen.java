@@ -8,6 +8,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.placeholder.editbox.PlaceholderEditBox;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.type.tuple.Triplet;
@@ -48,7 +49,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
 
     private final int sideWidth = 100;
 
-    private EditBox iconEditBox;
+    private PlaceholderEditBox iconEditBox;
     //endregion
 
     //region Methods
@@ -251,7 +252,7 @@ public class CustomHudIconMakerScreen extends Screen implements ScreenConstants 
     }
 
     private AbstractWidget getIconEditBox() {
-        iconEditBox = new EditBox(
+        iconEditBox = new PlaceholderEditBox(
                 font,
                 (BUTTON_WIDTH + PADDING * 2) + PADDING + sideWidth,
                 PADDING + (widgetHeight + PADDING) * 3,
