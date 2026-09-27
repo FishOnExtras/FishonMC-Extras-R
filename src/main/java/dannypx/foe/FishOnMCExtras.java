@@ -15,6 +15,7 @@ import java.util.Optional;
 public class FishOnMCExtras implements ModInitializer {
 	public static final String MOD_ID = "fishonmcextras";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final String SLUG = "iau5kAOK";
 	public static String VERSION = FishOnMCExtras.getModVersion();
 	public static List<String> AUTHORS = FishOnMCExtras.getAuthors();
 	public static List<String> CONTRIBUTORS = FishOnMCExtras.getContributors();
@@ -64,5 +65,12 @@ public class FishOnMCExtras implements ModInitializer {
 
 	private static Optional<ModContainer> getModContainer() {
 		return FabricLoader.getInstance().getModContainer(MOD_ID);
+	}
+
+	public static String getMinecraftVersion() {
+		return FabricLoader.getInstance()
+				.getModContainer("minecraft")
+				.map(container -> container.getMetadata().getVersion().getFriendlyString())
+				.orElse(null);
 	}
 }
