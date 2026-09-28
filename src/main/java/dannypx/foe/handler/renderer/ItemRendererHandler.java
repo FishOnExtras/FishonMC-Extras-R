@@ -184,9 +184,18 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                ratingComponent = TextHelper.substring(ratingComponent, 0, 1);
+                Component result = TextHelper.replace(
+                        ratingComponent,
+                        ratingComponent.getString().substring(1),
+                        TextHelper.smallNumber(TextHelper.shortenNumber(validatedPet.value2().getTotalPercent() * 100, 0))
+                );
 
-                guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight, CommonColors.WHITE, true);
+                ratingComponent = TextHelper.substring(
+                        result,
+                        1
+                );
+
+                guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight - 1, CommonColors.WHITE, true);
             }
         }
     }
