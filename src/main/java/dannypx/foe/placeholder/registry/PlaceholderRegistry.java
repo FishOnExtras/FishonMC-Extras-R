@@ -1121,6 +1121,10 @@ public class PlaceholderRegistry {
                 .description("Returns the type of the specified value.")
                 .param("value", DocTypeKind.VALUE)
         );
+        register(node("no_hide").evalValue(EvaluationContext::evalNoHide).allowEmpty()
+                .description("Returns the value, including blank values without hiding the line.")
+                .param("value", DocTypeKind.VALUE)
+        );
         register(node("hide_line").evalValue(EvaluationContext::evalHideLine).allowEmpty()
                 .description("Hides the full line if and only if the specified should_hide value is true.")
                 .param("should_hide", DocTypeKind.BOOLEAN)
@@ -3110,6 +3114,15 @@ public class PlaceholderRegistry {
             else if (value.isBoolean()) return "boolean";
             else if (value.isNumber()) return "number";
             return "unknown";
+        }
+
+        static PlaceholderValue evalNoHide(List<PlaceholderValue> args) {
+            if(args.size() != 1) {
+                throw new PlaceholderEvaluationException(
+                        "expects 1 argument, got " + args.size()
+                );
+            };
+            return args.getFirst();
         }
 
         static PlaceholderValue evalHideLine(List<PlaceholderValue> args) {
