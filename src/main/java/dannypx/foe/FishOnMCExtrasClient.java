@@ -3,6 +3,7 @@ package dannypx.foe;
 import dannypx.foe.command.CommandRegistry;
 import dannypx.foe.entity.FishingHookEntityModel;
 import dannypx.foe.handler.fetch.*;
+import dannypx.foe.handler.io.ChangelogFetcherHandler;
 import dannypx.foe.handler.logic.*;
 import dannypx.foe.handler.renderer.*;
 import dannypx.foe.handler.store.*;
@@ -88,6 +89,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
         PlaceholderHandlerV2.instance().init();
+        ChangelogFetcherHandler.instance().fetch(false);
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
