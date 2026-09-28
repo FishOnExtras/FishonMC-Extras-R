@@ -7,7 +7,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.CreditsAndAttributionScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -74,7 +76,7 @@ public class MainScreen extends DefaultModScreen {
         );
 
         //Versions
-        guiGraphics.drawString(font, Component.literal("Mod Version: v" + FishOnMCExtras.VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - font.lineHeight - PADDING_QUART, CommonColors.WHITE, true);
+//        guiGraphics.drawString(font, Component.literal("Mod Version: v" + FishOnMCExtras.VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - font.lineHeight - PADDING_QUART, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("HUD Version: v" + FishOnMCExtras.HUD_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 2, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Chat Trigger Version: v" + FishOnMCExtras.CHAT_TRIGGER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 3, CommonColors.WHITE, true);
         guiGraphics.drawString(font, Component.literal("Timer Version: v" + FishOnMCExtras.TIMER_VERSION).withStyle(ChatFormatting.DARK_GRAY), PADDING_QUART, height - (font.lineHeight + PADDING_QUART) * 4, CommonColors.WHITE, true);
@@ -212,6 +214,19 @@ public class MainScreen extends DefaultModScreen {
                 .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
                 .tooltip(Tooltip.create(Component.literal("Open Controls Screen")))
                 .build()
+        );
+
+        Component modVersion = Component.literal("Mod Version: v" + FishOnMCExtras.VERSION + " (Click for Changelog)").withStyle(ChatFormatting.YELLOW);
+        widgets.add(
+                new PlainTextButton(
+                        PADDING_QUART,
+                        height - font.lineHeight - PADDING_QUART,
+                        font.width(modVersion),
+                        font.lineHeight,
+                        modVersion,
+                        button -> minecraft.setScreen(new ChangelogScreen(this)),
+                        font
+                )
         );
 
         widgets.forEach(this::addRenderableWidget);

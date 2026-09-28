@@ -125,6 +125,34 @@ public class DataFileHandler extends Handler {
         return true;
     }
 
+    public boolean saveChangelogToFile(String json) {
+        try {
+            Path exportDir = getExportDevConfigDir();
+            Files.createDirectories(exportDir);
+            Path changelogPath = exportDir.resolve("changelog.json");
+            Files.writeString(changelogPath, json);
+        } catch (IOException e) {
+            LoggerHandler.error(e);
+        }
+        return false;
+    }
+
+    public String getChangelogFile() {
+        try {
+            Path exportDir = getExportDevConfigDir();
+            Files.createDirectories(exportDir);
+            Path changelogPath = exportDir.resolve("changelog.json");
+            if(!checkIfFileExist(changelogPath)) {
+                return null;
+            }
+            return Files.readString(changelogPath);
+
+        } catch (IOException e) {
+            LoggerHandler.error(e);
+        }
+        return null;
+    }
+
     private Path getUserConfigDir(UUID uuid) {
         return getConfigDir()
                 .resolve(DATA_FOLDER)
