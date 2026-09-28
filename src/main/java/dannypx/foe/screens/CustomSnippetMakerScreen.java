@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dannypx.foe.FishOnMCExtras;
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomChatNotificationDataHandler;
 import dannypx.foe.handler.store.CustomChatTriggerDataHandler;
@@ -21,10 +22,12 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -110,6 +113,7 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.saveBackButton());
+        widgets.add(this.saveButton());
         widgets.add(this.backButton());
 
         widgets.add(getButtonList());
@@ -121,6 +125,8 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
 
         widgets.add(getNameEditBox());
         widgets.add(getSnippetEditBox());
+
+        widgets.add(this.wikiButton());
 
         widgets.forEach(this::addRenderableWidget);
     }
@@ -326,11 +332,44 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
         .build();
 }
 
+    private Button saveButton() {
+        return Button.builder(Component.literal("Save"), button -> {
+                    if(this.save()) {
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("HUD saved"),
+                                Component.literal(selectedSnippetId));
+                    }
+                })
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
+                .build();
+    }
+
     private Button backButton() {
         return Button.builder(Component.literal("Return"), button ->
-                    this.onClose())
-                .pos(width - (PADDING_HALF + BUTTON_WIDTH / 2) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
+                        this.onClose())
+                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .build();
+    }
+
+    private AbstractWidget wikiButton() {
+        return Button.builder(Component.literal("Wiki"), button -> {
+                    String url = Configs.mainConfig.wikiPageUrl.get();
+
+                    this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
+                        if (confirmed) {
+                            Util.getPlatform().openUri(url);
+                        }
+
+                        this.minecraft.setScreen(null);
+                    }, url, true));
+                })
+                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
+                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
                 .build();
     }
 
