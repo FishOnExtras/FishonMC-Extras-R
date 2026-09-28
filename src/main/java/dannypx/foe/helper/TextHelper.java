@@ -296,10 +296,6 @@ public class TextHelper {
         }
     }
 
-    public static String shortenNumber(int i, int decimals) {
-        return shortenNumber((float) i, decimals);
-    }
-
     public static String floatToString(float f) {
         return floatToString(f, 0);
     }
