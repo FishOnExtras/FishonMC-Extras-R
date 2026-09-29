@@ -11,6 +11,7 @@ import dannypx.foe.type.search.*;
 import dannypx.foe.screens.widget.SearchBarWidget;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
@@ -32,6 +33,7 @@ public class SearchHandler extends Handler {
     //region Fields
     private List<SearchFilter> filters = new ArrayList<>();
     private String searchRemainder = "";
+    private Predicate<String> nameQuery;
     private String lastInput = "";
     private boolean isFocused = false;
     private boolean isOnScreen = false;
@@ -104,6 +106,7 @@ public class SearchHandler extends Handler {
             matcher.appendTail(remaining);
 
             this.searchRemainder = remaining.toString().trim();
+            this.nameQuery = NameSearch.parse(searchRemainder);
         }
     }
 
@@ -112,6 +115,7 @@ public class SearchHandler extends Handler {
                 Component.literal("Search Bar"),
                 new ArrayList<>(Arrays.asList(
                         Component.literal("Search Item Names in the search bar").withStyle(ChatFormatting.WHITE),
+                        Component.literal("Name terms: spaces = AND, | = OR; use parentheses to group them").withStyle(ChatFormatting.GRAY),
                         Component.literal("NBT fields can be compared against specific values for more granular filtering").withStyle(ChatFormatting.GRAY),
                         Component.empty(),
                         Component.literal("Granular filtering").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
@@ -136,6 +140,10 @@ public class SearchHandler extends Handler {
                                 Component.literal("Pet ").withStyle(ChatFormatting.GREEN),
                                 Component.literal("in it").withStyle(ChatFormatting.GRAY)
                         ).withStyle(ChatFormatting.ITALIC),
+                        Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
+                        Component.literal("Subtropical (boot|leg) | capy pet").withStyle(ChatFormatting.GREEN),
+                        Component.empty(),
+                        Component.literal("(Subtropical AND (boot OR leg)) OR (capy AND pet)").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
                         Component.literal("----------------------------------------").withStyle(ChatFormatting.DARK_GRAY),
                         TextHelper.concat(
                                 Component.literal("tooltip").withStyle(ChatFormatting.DARK_AQUA),
@@ -234,11 +242,14 @@ public class SearchHandler extends Handler {
             return false;
         }
 
-        // Filter out if name doesn't contain search
-        if(!itemStack.getHoverName().getString().toLowerCase(Locale.US).contains(searchRemainder.toLowerCase(Locale.US))
-                || (itemStack.get(DataComponents.TOOLTIP_DISPLAY) != null
-                && itemStack.get(DataComponents.TOOLTIP_DISPLAY).hideTooltip())
-        ) {
+        // Hidden items never appear in search results.
+        if(itemStack.get(DataComponents.TOOLTIP_DISPLAY) != null
+                && itemStack.get(DataComponents.TOOLTIP_DISPLAY).hideTooltip()) {
+            return false;
+        }
+
+        if(!searchRemainder.isEmpty()
+                && (nameQuery == null || !nameQuery.test(itemStack.getHoverName().getString().toLowerCase(Locale.US)))) {
             return false;
         }
 
