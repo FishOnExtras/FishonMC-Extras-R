@@ -1,5 +1,6 @@
 package dannypx.foe.handler.logic;
 
+import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.helper.MathHelper;
 import dannypx.foe.helper.TextHelper;
@@ -226,10 +227,10 @@ public class SearchHandler extends Handler {
                         ).withStyle(ChatFormatting.ITALIC)
                 ))
         );
-        searchBarWidget.setValue(SearchHandler.instance().getLastInput());
+        searchBarWidget.setMaxLength(Configs.inventoryScreenConfig.searchCharacterLimit.get());
         searchBarWidget.setHint(Component.literal("Search Item Names").withStyle(ChatFormatting.GRAY));
-
         searchBarWidget.setResponder(SearchHandler.instance()::parseSearch);
+        searchBarWidget.setValue(SearchHandler.instance().getLastInput());
 
         return searchBarWidget;
     }
