@@ -116,7 +116,6 @@ public class SearchHandler extends Handler {
                 Component.literal("Search Bar"),
                 new ArrayList<>(Arrays.asList(
                         Component.literal("Search Item Names in the search bar").withStyle(ChatFormatting.WHITE),
-                        Component.literal("Name terms: spaces = AND, | = OR; use parentheses to group them").withStyle(ChatFormatting.GRAY),
                         Component.literal("NBT fields can be compared against specific values for more granular filtering").withStyle(ChatFormatting.GRAY),
                         Component.empty(),
                         Component.literal("Granular filtering").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
