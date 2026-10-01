@@ -1,4 +1,4 @@
-package dannypx.foe.placeholder.handler;
+package dannypx.foe.placeholder.compiler;
 
 import dannypx.foe.placeholder.evaluator.PlaceholderEvaluator;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;

@@ -3,16 +3,14 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
-import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
+import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.type.tuple.Triplet;
-import dannypx.foe.type.version.Version;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -136,7 +134,7 @@ public class CustomTrackerDataHandler extends Handler {
                     if(tracker.actions.containsKey(trackerAndActionSplitString[1])) {
                         Triplet<TrackerAction, String, TrackerValue> action = tracker.actions.get(trackerAndActionSplitString[1]);
 
-                        PlaceholderResult condition = PlaceholderHandlerV2.instance().resolve(action.value2(), false);
+                        PlaceholderResult condition = PlaceholderHandler.instance().resolve(action.value2(), false);
 
                         if((condition.success()[0] && !condition.success()[1]) && (Boolean.parseBoolean(condition.text().getString()) || condition.text().getString().isBlank())) {
 
@@ -145,7 +143,7 @@ public class CustomTrackerDataHandler extends Handler {
                                     BooleanValue valueToUse = action.value3() instanceof EmptyValue
                                             ? (BooleanValue) BooleanValue.getFalse()
                                             : action.value3() instanceof PlaceholderStringValue(String value)
-                                              ? (BooleanValue) BooleanValue.of(Boolean.parseBoolean(PlaceholderHandlerV2.instance().resolve(value, false).text().getString()))
+                                              ? (BooleanValue) BooleanValue.of(Boolean.parseBoolean(PlaceholderHandler.instance().resolve(value, false).text().getString()))
                                               : (BooleanValue) action.value3();
                                     BooleanValue value = (BooleanValue) tracker.value;
 
@@ -156,7 +154,7 @@ public class CustomTrackerDataHandler extends Handler {
                                 }
                                 case INTEGER -> {
                                     NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
-                                            ? (NumberValue) NumberValue.of(Float.parseFloat(PlaceholderHandlerV2.instance().resolve(value, false).text().getString()))
+                                            ? (NumberValue) NumberValue.of(Float.parseFloat(PlaceholderHandler.instance().resolve(value, false).text().getString()))
                                             : (NumberValue) action.value3();
                                     NumberValue value = (NumberValue) tracker.value;
 
@@ -170,7 +168,7 @@ public class CustomTrackerDataHandler extends Handler {
                                     TrackerValue valueToUse;
 
                                     if(action.value3() instanceof PlaceholderStringValue(String value)) {
-                                        int index = Integer.parseInt(PlaceholderHandlerV2.instance().resolve(value, false).text().getString());
+                                        int index = Integer.parseInt(PlaceholderHandler.instance().resolve(value, false).text().getString());
 
                                         if(index >= 0) {
                                             try {
@@ -216,7 +214,7 @@ public class CustomTrackerDataHandler extends Handler {
                     if(valueToUse instanceof BooleanValue || valueToUse instanceof NumberValue || valueToUse instanceof ItemStackValue) {
                         newTracker.value = valueToUse;
                     } else if(valueToUse instanceof PlaceholderStringValue(String value1)) {
-                        newTracker.value = BooleanValue.of(Boolean.parseBoolean(PlaceholderHandlerV2.instance().resolve(value1, false).text().getString()));
+                        newTracker.value = BooleanValue.of(Boolean.parseBoolean(PlaceholderHandler.instance().resolve(value1, false).text().getString()));
                     }
 
                     customTrackerData.trackerList.put(tracker, newTracker);
@@ -242,7 +240,7 @@ public class CustomTrackerDataHandler extends Handler {
                     } else if(newTracker.value instanceof NumberValue currentValue
                             && valueToUse instanceof PlaceholderStringValue(String value1)
                     ) {
-                        newTracker.value = currentValue.addValue(Float.parseFloat(PlaceholderHandlerV2.instance().resolve(value1, false).text().getString()));
+                        newTracker.value = currentValue.addValue(Float.parseFloat(PlaceholderHandler.instance().resolve(value1, false).text().getString()));
                     }
 
                     customTrackerData.trackerList.put(tracker, newTracker);
@@ -258,7 +256,7 @@ public class CustomTrackerDataHandler extends Handler {
                     } else if(newTracker.value instanceof NumberValue currentValue
                             && valueToUse instanceof PlaceholderStringValue(String value1)
                     ) {
-                        newTracker.value = currentValue.subtractValue(Float.parseFloat(PlaceholderHandlerV2.instance().resolve(value1, false).text().getString()));
+                        newTracker.value = currentValue.subtractValue(Float.parseFloat(PlaceholderHandler.instance().resolve(value1, false).text().getString()));
                     }
 
                     customTrackerData.trackerList.put(tracker, newTracker);

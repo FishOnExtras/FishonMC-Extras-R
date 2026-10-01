@@ -14,8 +14,6 @@ import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.config.Configs;
-import dannypx.foe.placeholder.evaluator.PlaceholderResult;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.screens.element.*;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
@@ -37,7 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class HudRenderHandler extends Handler {
     private static HudRenderHandler INSTANCE = new HudRenderHandler();

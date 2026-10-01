@@ -1,9 +1,9 @@
-package dannypx.foe.placeholder.handler;
+package dannypx.foe.handler.logic;
 
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.placeholder.evaluator.PlaceholderEvaluator;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
+import dannypx.foe.placeholder.compiler.PlaceholderCompiler;
 import dannypx.foe.placeholder.registry.PlaceholderRegistry;
 import dannypx.foe.type.tuple.Pair;
 import net.minecraft.network.chat.Component;
@@ -12,12 +12,12 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlaceholderHandlerV2 extends Handler {
-    private static PlaceholderHandlerV2 INSTANCE = new PlaceholderHandlerV2();
+public class PlaceholderHandler extends Handler {
+    private static PlaceholderHandler INSTANCE = new PlaceholderHandler();
 
-    public static PlaceholderHandlerV2 instance() {
+    public static PlaceholderHandler instance() {
         if (INSTANCE == null) {
-            INSTANCE = new PlaceholderHandlerV2();
+            INSTANCE = new PlaceholderHandler();
         }
         return INSTANCE;
     }

@@ -9,7 +9,7 @@ import dannypx.foe.handler.renderer.*;
 import dannypx.foe.handler.store.*;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
+import dannypx.foe.handler.logic.PlaceholderHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,23 +19,15 @@ import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+
 import java.util.List;
 
 public class FishOnMCExtrasClient implements ClientModInitializer {
@@ -88,7 +80,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
-        PlaceholderHandlerV2.instance().init();
+        PlaceholderHandler.instance().init();
         ChangelogFetcherHandler.instance().fetch(false);
     }
 
@@ -165,7 +157,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
                 if(Configs.handlerConfig.hudRenderHandler.get()) HudRenderHandler.instance().tick();
 
                 // Placeholder Engine
-                PlaceholderHandlerV2.instance().tick();
+                PlaceholderHandler.instance().tick();
 
             } else {
                 if(Configs.handlerConfig.loadingHandler.get()) LoadingHandler.instance().tick();

@@ -8,7 +8,6 @@ import dannypx.foe.item.FishTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.PetTagObject;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import java.util.*;
@@ -368,7 +367,7 @@ public class NotifierHandler extends Handler {
                 }
 
                 List<MutableComponent> lines = notification.getStringLines().stream()
-                        .map(line -> PlaceholderHandlerV2.instance().resolve(line, false))
+                        .map(line -> PlaceholderHandler.instance().resolve(line, false))
                         .filter(result -> (result.success()[0] || !result.errors().isEmpty()) && !result.success()[1])
                         .map(PlaceholderResult::text).toList();
                 List<Component> newLines = new ArrayList<>();

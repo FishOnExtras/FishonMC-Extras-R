@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.placeholder.editbox.*;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
+import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -515,7 +515,7 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
     }
 
     private PlaceholderResult resolvePlaceholder(String resolved) {
-        return PlaceholderHandlerV2.instance().resolve(resolved, false);
+        return PlaceholderHandler.instance().resolve(resolved, false);
     }
 
     private boolean hasSelection() {

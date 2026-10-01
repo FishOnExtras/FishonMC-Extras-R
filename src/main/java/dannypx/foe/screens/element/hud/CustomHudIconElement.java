@@ -7,7 +7,7 @@ import dannypx.foe.handler.store.CustomHudIconDataHandler;
 import dannypx.foe.handler.store.CustomTrackerDataHandler;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
-import dannypx.foe.placeholder.handler.PlaceholderHandlerV2;
+import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.type.Alignment;
@@ -134,7 +134,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
             }
             case ITEM -> ItemStackHelper.valueOf(customHudIcon.getIcon());
             case PLACEHOLDER -> {
-                PlaceholderResult result = PlaceholderHandlerV2.instance().resolve(customHudIcon.getIcon());
+                PlaceholderResult result = PlaceholderHandler.instance().resolve(customHudIcon.getIcon());
 
                 if(result.success()[0] && !result.success()[1]) {
                     try {
