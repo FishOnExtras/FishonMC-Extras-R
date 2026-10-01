@@ -1,4 +1,4 @@
-package dannypx.foe.placeholder.editbox;
+package dannypx.foe.placeholder.highlight;
 
 import dannypx.foe.placeholder.lexer.PlaceholderTokenizer;
 import dannypx.foe.placeholder.token.PlaceholderParseException;

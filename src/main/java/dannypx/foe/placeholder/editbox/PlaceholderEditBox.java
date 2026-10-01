@@ -1,5 +1,8 @@
 package dannypx.foe.placeholder.editbox;
 
+import dannypx.foe.placeholder.highlight.PlaceholderSuggestionContext;
+import dannypx.foe.placeholder.highlight.PlaceholderSuggestionEngine;
+import dannypx.foe.placeholder.highlight.PlaceholderSyntaxHighlighter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

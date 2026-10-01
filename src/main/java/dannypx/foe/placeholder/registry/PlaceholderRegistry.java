@@ -971,12 +971,12 @@ public class PlaceholderRegistry {
                 .paramVariadic("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
         );
         register(node("count").evalNumber(EvaluationContext::evalCount)
-                .description("Returns the count of specified search text in specified value")
+                .description("Returns the count of specified search text in specified value.")
                 .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
                 .param("search", DocTypeKind.STRING, DocTypeKind.COMPONENT)
         );
         register(node("length").evalNumber(EvaluationContext::evalLength)
-                .description("Returns the length of the specified value")
+                .description("Returns the length of the specified value.")
                 .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
         );
         register(node("shorten_number").evalString(EvaluationContext::evalShortenNumber)
@@ -984,12 +984,12 @@ public class PlaceholderRegistry {
                 .param("value", DocTypeKind.NUMBER)
         );
         register(node("apply_format").evalComponent(EvaluationContext::evalApplyFormat)
-                .description("Returns the value with the specified style")
+                .description("Returns the value with the specified style.")
                 .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
                 .param("style", DocTypeKind.STRING)
         );
         register(node("format").evalComponent(EvaluationContext::evalFormat)
-                .description("Returns the value with the format")
+                .description("Returns the value with the format. e.g. \"&aTest\".")
                 .param("value", DocTypeKind.STRING)
         );
         register(node("remove_format").evalString(EvaluationContext::evalRemoveFormat)
@@ -1026,11 +1026,11 @@ public class PlaceholderRegistry {
                 .paramOptional("suffix", DocTypeKind.STRING, DocTypeKind.COMPONENT)
         );
         register(node("capitalize").evalValue(EvaluationContext::evalCapitalize)
-                .description("Capitalizes a text changing the first character to upper case")
+                .description("Capitalizes a text changing the first character to upper case.")
                 .param("value", DocTypeKind.STRING, DocTypeKind.COMPONENT)
         );
         register(node("concat").evalValue(EvaluationContext::evalConcat)
-                .description("Returns the concatenated text of all specified values")
+                .description("Returns the concatenated text of all specified values.")
                 .paramVariadic("value", DocTypeKind.VALUE)
         );
         //endregion

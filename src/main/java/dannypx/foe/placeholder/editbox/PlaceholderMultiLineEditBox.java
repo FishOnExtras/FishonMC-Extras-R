@@ -1,10 +1,10 @@
-package dannypx.foe.screens.widget;
+package dannypx.foe.placeholder.editbox;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import dannypx.foe.helper.TextHelper;
-import dannypx.foe.placeholder.editbox.*;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
 import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.placeholder.highlight.*;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

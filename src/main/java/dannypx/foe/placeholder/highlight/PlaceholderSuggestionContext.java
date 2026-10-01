@@ -1,4 +1,4 @@
-package dannypx.foe.placeholder.editbox;
+package dannypx.foe.placeholder.highlight;
 
 import java.util.List;
 
