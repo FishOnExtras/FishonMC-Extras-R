@@ -112,7 +112,7 @@ public class CustomChatNotificationDataHandler extends Handler {
 
     //region Model
     public static class CustomChatNotificationDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_CHAT_NOTIFICATION_DATA_MODEL_VERSION = "0.1";
+        private static final String CUSTOM_CHAT_NOTIFICATION_DATA_MODEL_VERSION = "0.2";
 
         private static final Map<String, String> defaultNotifications = Map.of(
             "Variant Notification",
