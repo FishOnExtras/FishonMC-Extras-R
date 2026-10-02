@@ -93,7 +93,7 @@ public class ChangelogFetcherHandler extends Handler {
         try {
             JsonObject root = JsonParser.parseString(json).getAsJsonObject();
             String cachedVersion = getAsStringOrNull(root, "modVersion");
-            if (!FishOnMCExtras.VERSION.equals(cachedVersion)) return false;
+            if (!FishOnMCExtras.VERSION_PARSED.get().equals(cachedVersion)) return false;
 
             List<ChangelogEntry> parsed = new ArrayList<>();
             JsonArray array = root.getAsJsonArray("entries");
@@ -122,7 +122,7 @@ public class ChangelogFetcherHandler extends Handler {
         if (this.entries == null) return null;
 
         JsonObject root = new JsonObject();
-        root.addProperty("modVersion", FishOnMCExtras.VERSION);
+        root.addProperty("modVersion", FishOnMCExtras.VERSION_PARSED.get());
 
         JsonArray array = new JsonArray();
         for (ChangelogEntry entry : this.entries) {

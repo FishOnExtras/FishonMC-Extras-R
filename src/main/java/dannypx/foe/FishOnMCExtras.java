@@ -1,6 +1,7 @@
 package dannypx.foe;
 
 import dannypx.foe.config.Configs;
+import dannypx.foe.type.version.Version;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -17,6 +18,7 @@ public class FishOnMCExtras implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final String SLUG = "iau5kAOK";
 	public static String VERSION = FishOnMCExtras.getModVersion();
+	public static Version VERSION_PARSED = Version.of(VERSION);
 	public static List<String> AUTHORS = FishOnMCExtras.getAuthors();
 	public static List<String> CONTRIBUTORS = FishOnMCExtras.getContributors();
 	public static Integer HUD_VERSION = FishOnMCExtras.getVersion("hud_version");

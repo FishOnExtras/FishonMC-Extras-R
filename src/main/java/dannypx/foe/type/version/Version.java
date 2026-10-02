@@ -19,6 +19,11 @@ public class Version implements Comparable<Version> {
             version = version.substring(0, buildDelimPos);
         }
 
+        int preReleaseDelimPos = version.indexOf('-');
+        if (preReleaseDelimPos >= 0) {
+            version = version.substring(0, preReleaseDelimPos);
+        }
+
         if(!version.matches("[0-9]+(\\.[0-9]+)*"))
             throw new IllegalArgumentException("Invalid version format");
 
