@@ -126,7 +126,7 @@ public class CustomChatTriggerDataHandler extends Handler {
 
     //region Model
     public static class CustomChatTriggerDataModel extends DataModels.DataModel {
-        private static final String CUSTOM_CHAT_TRIGGER_DATA_MODEL_VERSION = "0.3";
+        private static final String CUSTOM_CHAT_TRIGGER_DATA_MODEL_VERSION = "0.4";
 
         private static final Map<String, CustomChatTrigger> defaultChatTriggers = Map.ofEntries(
                 Map.entry("Contest Type", new CustomChatTrigger(
