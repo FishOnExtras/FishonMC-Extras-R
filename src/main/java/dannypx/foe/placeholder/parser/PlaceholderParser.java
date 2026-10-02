@@ -11,11 +11,19 @@ import dannypx.foe.placeholder.token.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PlaceholderParser {
     private final String source;
     private final List<Token> tokens;
     private int pos = 0;
+
+    private static final Map<String, Integer> PRECEDENCE = Map.of(
+            "==", 1, "!=", 1,
+            "<", 2, ">", 2, "<=", 2, ">=", 2,
+            "+", 3, "-", 3,
+            "*", 4, "/", 4
+    );
 
     public PlaceholderParser(String source) {
         PlaceholderBalanceHelper.checkBalanced(source);
@@ -178,16 +186,27 @@ public class PlaceholderParser {
     /// Arguments / Expressions
 
     private Node parseArgument() {
-        return this.parseExpression();
+        return this.parseExpression(1);
     }
 
-    private Node parseExpression() {
+    private Node parseExpression(int minPrecedence) {
         Node left = this.parseOperand();
+
+        int saved = this.pos;
         String op = this.detectAndConsumeOperator();
 
-        if(op != null) {
-            Node right = this.parseOperand();
-            return new BinaryOp(op, left, right);
+        while(op != null) {
+            int precedence = PRECEDENCE.get(op);
+            if(precedence < minPrecedence) {
+                this.pos = saved;
+                break;
+            }
+
+            Node right = this.parseExpression(precedence + 1);
+            left = new BinaryOp(op, left, right);
+
+            saved = this.pos;
+            op = this.detectAndConsumeOperator();
         }
 
         return left;
