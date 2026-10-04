@@ -184,12 +184,12 @@ public class ItemRendererHandler extends Handler {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
             if(!ratingComponent.getString().isEmpty()) {
-                String percent = TextHelper.shortenNumber((float) Math.floor(validatedPet.value2().getTotalPercent() * 100), 0);
-
                 Component result = TextHelper.replace(
                         ratingComponent,
                         ratingComponent.getString().substring(1),
-                        TextHelper.smallNumber(percent)
+                        TextHelper.smallNumber(
+                                TextHelper.shortenNumber(validatedPet.value2().getTotalPercent() * 100, 0)
+                        )
                 );
 
                 ratingComponent = TextHelper.substring(
