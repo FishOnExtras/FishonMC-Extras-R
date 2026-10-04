@@ -3,7 +3,7 @@ package dannypx.foe.handler.renderer;
 import dannypx.foe.handler.ScreenHandler;
 import dannypx.foe.handler.logic.LoadingHandler;
 import dannypx.foe.handler.logic.SearchHandler;
-import dannypx.foe.screens.widget.SearchBarWidget;
+import dannypx.foe.search.editbox.SearchBarEditBox;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -28,7 +28,7 @@ public class ChestScreenRenderHandler extends ScreenHandler {
     }
 
     //region Fields
-    SearchBarWidget searchBarWidget;
+    SearchBarEditBox searchBarWidget;
     //endregion
 
     //region Methods
@@ -61,7 +61,7 @@ public class ChestScreenRenderHandler extends ScreenHandler {
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
 
-        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, mouseX, mouseY, tickDelta);
     }
 
     public boolean checkMouseClick(Screen screen, MouseButtonEvent context, boolean consumed) {

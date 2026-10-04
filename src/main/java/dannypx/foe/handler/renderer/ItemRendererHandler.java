@@ -2,11 +2,11 @@ package dannypx.foe.handler.renderer;
 
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
-import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.handler.store.ConstantDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
+import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
@@ -138,7 +138,6 @@ public class ItemRendererHandler extends Handler {
             guiGraphics.vLine(x + 16, y, y + 16, CommonColors.RED);
         }
     }
-
 
     public void drawPetItemEquipped(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
         if(!Configs.rendererConfig.showPetEquippedMarker.get()) {

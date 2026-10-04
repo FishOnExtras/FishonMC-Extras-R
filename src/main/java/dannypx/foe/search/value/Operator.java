@@ -1,4 +1,4 @@
-package dannypx.foe.type.search;
+package dannypx.foe.search.value;
 
 public enum Operator {
     EQUAL("=="),
@@ -7,8 +7,7 @@ public enum Operator {
     GREATER_EQUAL(">="),
     LESS_EQUAL("<="),
     GREATER(">"),
-    LESS("<"),
-    ;
+    LESS("<");
 
     public final String symbol;
 

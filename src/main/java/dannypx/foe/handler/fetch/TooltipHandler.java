@@ -9,6 +9,8 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorTagObject;
 import dannypx.foe.item.TagObject;
 import dannypx.foe.item.ValidateItem;
+import dannypx.foe.handler.logic.SearchHandler;
+import dannypx.foe.search.field.SearchContext;
 import dannypx.foe.type.tuple.Pair;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,15 @@ public class TooltipHandler extends Handler {
                 ) {
                     this.setArmorRoll(itemStack, components);
                 }
+            }
+
+            if(SearchHandler.instance().isOnScreen()
+                    && !SearchHandler.instance().getQuery().isEmpty()
+                    && !new SearchContext(itemStack).tooltipHidden()
+                    && !components.isEmpty()
+            ) {
+                components.add(Component.empty());
+                components.addAll(SearchHandler.instance().getMatchLines(itemStack));
             }
         }
     }

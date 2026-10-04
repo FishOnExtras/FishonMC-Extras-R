@@ -2,7 +2,6 @@ package dannypx.foe.handler.renderer;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.ScreenHandler;
-import dannypx.foe.handler.logic.SearchHandler;
 import dannypx.foe.type.tuple.Pair;
 import java.util.Map;
 import net.minecraft.client.gui.screens.Screen;
