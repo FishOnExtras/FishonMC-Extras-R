@@ -1,6 +1,7 @@
 package dannypx.foe.placeholder.editbox;
 
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.placeholder.evaluator.PlaceholderResult;
 import dannypx.foe.handler.logic.PlaceholderHandler;
@@ -74,28 +75,62 @@ public class PlaceholderMultiLineEditBox extends AbstractWidget implements Scree
 
     private static final List<Component> SHORTCUTS_TOOLTIP = List.of(
             Component.literal("Keyboard shortcuts").withStyle(ChatFormatting.WHITE, ChatFormatting.BOLD),
-            shortcut("Ctrl+A", "Select all"),
-            shortcut("Ctrl+C / Ctrl+X / Ctrl+V", "Copy / Cut / Paste"),
-            shortcut("Ctrl+Z / Ctrl+Y", "Undo / Redo"),
-            shortcut("Ctrl+S", "Save"),
-            shortcut("Tab", "Insert 2 spaces / indent selected lines"),
-            shortcut("Shift+Tab", "Un-indent line / selected lines"),
-            shortcut("Ctrl+Backspace / Ctrl+Delete", "Delete word"),
-            shortcut("Ctrl+Left / Ctrl+Right", "Jump by word"),
-            shortcut("Home / End", "Start / end of line"),
-            shortcut("Page Up / Page Down", "Move one page"),
-            shortcut("Shift + any movement", "Extend selection"),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(
+                            GLFW.GLFW_KEY_LEFT_SHIFT,
+                            GLFW.GLFW_KEY_A
+                    ), "Select all"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_C) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_X) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_V), "Copy / Cut / Paste"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_Z) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_Y), "Undo / Redo"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_S), "Save"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_TAB), "Insert 2 spaces / indent selected lines"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_TAB), "Un-indent line / selected lines"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_BACKSPACE) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_DELETE), "Delete word"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_LEFT) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_LEFT_CONTROL, GLFW.GLFW_KEY_RIGHT), "Jump by word"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_HOME) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_END), "Start / end of line"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_PAGE_UP) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_PAGE_DOWN), "Move one page"
+            ),
             Component.empty(),
             Component.literal("While suggestions are shown").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
-            shortcut("Tab / Click", "Accept suggestion"),
-            shortcut("Up / Down", "Choose suggestion"),
-            shortcut("Mouse wheel", "Scroll suggestions"),
-            shortcut("Esc", "Close suggestions")
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_TAB) + " / " +
+                    "\uDB80\uDC68", "Accept suggestion"
+            ),
+            shortcut(
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_UP) + " / " +
+                    KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_DOWN), "Choose suggestion"
+            ),
+            shortcut("\uDB80\uDC67", "Scroll suggestions"),
+            shortcut(KeyBindHelper.getKeyFromCodes(GLFW.GLFW_KEY_ESCAPE), "Close suggestions")
     );
 
     private static Component shortcut(String keys, String action) {
-        return Component.literal(keys).withStyle(ChatFormatting.YELLOW)
-                .append(Component.literal(" - " + action).withStyle(ChatFormatting.GRAY));
+        return Component.literal(keys).append(Component.literal(" - " + action).withStyle(ChatFormatting.GRAY));
     }
 
     private final Font font;

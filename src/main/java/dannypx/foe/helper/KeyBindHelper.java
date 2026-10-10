@@ -5,6 +5,8 @@ import me.fzzyhmstrs.fzzy_config.screen.context.FzzyKeybindUnbound;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedKeybind;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
+import org.lwjgl.glfw.GLFW;
+
 import java.util.Map;
 
 public class KeyBindHelper {
@@ -134,7 +136,7 @@ public class KeyBindHelper {
     public static String getKeyUnicode(ValidatedKeybind validatedKeybind) {
         if(validatedKeybind.get() instanceof FzzyKeybindSimple) {
             String translatableKey = getTranslatableKey(validatedKeybind);
-            String key = KEY_UNICODE_MAP.getOrDefault(translatableKey, translatableKey);
+            String key = getKey(translatableKey);
 
             if(validatedKeybind.needsAlt()) key = "\uDB80\uDC5A " + key;
             if(validatedKeybind.needsShift()) key = "\uDB80\uDC59 " + key;
@@ -189,5 +191,18 @@ public class KeyBindHelper {
         }
 
         return false;
+    }
+
+    public static String getKey(String key) {
+        return KEY_UNICODE_MAP.getOrDefault(key, key);
+    }
+
+    public static String getKeyFromCodes(int ...codes) {
+        StringBuilder keysBuilder = new StringBuilder();
+        for (int code : codes) {
+            String key = InputConstants.Type.KEYSYM.getOrCreate(code).getName();
+            keysBuilder.append(getKey(key));
+        }
+        return keysBuilder.toString();
     }
 }

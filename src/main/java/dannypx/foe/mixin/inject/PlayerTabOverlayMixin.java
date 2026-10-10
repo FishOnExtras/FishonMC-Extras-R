@@ -21,6 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
@@ -33,6 +35,8 @@ public abstract class PlayerTabOverlayMixin {
     @Shadow @Final private Minecraft minecraft;
 
     @Shadow protected abstract List<PlayerInfo> getPlayerInfos();
+
+    @Shadow @Final private static Comparator<PlayerInfo> PLAYER_COMPARATOR;
 
     @Unique
     private int indexPlayerEntry;
@@ -72,13 +76,13 @@ public abstract class PlayerTabOverlayMixin {
                     .map(Pair::value1)
                     .collect(Collectors.toSet());
 
-            List<PlayerInfo> sorted = new ArrayList<>(cir.getReturnValue());
+            Stream<PlayerInfo> sorted = this.minecraft.player.connection.getListedOnlinePlayers().stream().sorted(PLAYER_COMPARATOR);
 
-            sorted.sort(Comparator.comparing(
+            sorted = sorted.sorted(Comparator.comparing(
                     e -> !priorityUUIDs.contains(e.getProfile().id())
             ));
 
-            cir.setReturnValue(sorted);
+            cir.setReturnValue(sorted.limit(80L).toList());
         } else {
             cir.setReturnValue(cir.getReturnValue());
         }

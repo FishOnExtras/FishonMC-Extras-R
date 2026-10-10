@@ -15,6 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
@@ -28,20 +29,21 @@ public class ItemStackHelper {
 
     public static ItemStack jsonToItemStack(String json) {
         return ItemStack.CODEC
-                .decode(JsonOps.INSTANCE, gson.create().fromJson(json, JsonElement.class))
+                .decode(RegistryOps.create(JsonOps.INSTANCE, Minecraft.getInstance().player.registryAccess()), gson.create().fromJson(json, JsonElement.class))
                 .mapOrElse((Pair::getFirst), (pairError -> ItemStack.EMPTY));
     }
 
     public static String itemStackToJson(ItemStack itemStack) {
         if(!itemStack.isEmpty()) {
-            return gson.setPrettyPrinting().create().toJson(ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, itemStack).getOrThrow());
+            return gson.setPrettyPrinting().create().toJson(ItemStack.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Minecraft.getInstance().player.registryAccess()), itemStack).getOrThrow());
         }
         return "{}";
     }
 
     public static String itemStackListToJson(List<ItemStack> itemStacks) {
         List<ItemStack> stacksToSerialize = itemStacks.stream().filter(stack -> !stack.isEmpty()).toList();
-        return gson.setPrettyPrinting().create().toJson(ItemStack.CODEC.listOf().encodeStart(JsonOps.INSTANCE, stacksToSerialize).getOrThrow());
+        if (stacksToSerialize.isEmpty()) return "[]";
+        return gson.setPrettyPrinting().create().toJson(ItemStack.CODEC.listOf().encodeStart(RegistryOps.create(JsonOps.INSTANCE, Minecraft.getInstance().player.registryAccess()), stacksToSerialize).getOrThrow());
     }
 
     public static <T> NonNullList<T> deepCopy(
