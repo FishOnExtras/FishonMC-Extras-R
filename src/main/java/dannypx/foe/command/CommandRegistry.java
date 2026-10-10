@@ -10,10 +10,9 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.fetch.ChatHandler;
 import dannypx.foe.handler.fetch.StatsScreenHandler;
 import dannypx.foe.handler.io.DataFileHandler;
-import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.handler.logic.TimerHandler;
-import dannypx.foe.handler.logic.UpdateHandler;
 import dannypx.foe.handler.store.*;
+import dannypx.foe.helper.GlyphHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.MainScreen;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 
 public class CommandRegistry {
     public static void init() {
@@ -185,6 +185,10 @@ public class CommandRegistry {
                                                 )
                                         )
                                 )
+                        )
+                        .then(command("get_color")
+                                .then(ClientCommandManager.argument("glyph", StringArgumentType.string())
+                                        .executes(Command.Helper::getColor))
                         )
                         .executes(Command.Foe::openMainScreen)
         );
@@ -554,6 +558,19 @@ public class CommandRegistry {
                     return executeCommand(context, Component.literal("Updated " + field + " " + type + " to " + value), () ->
                             StatsDataHandler.instance().updateData(set, field, type, value));
                 } else return sendFeedback(context, Component.literal("Field does not exist").withStyle(ChatFormatting.RED));
+            }
+        }
+
+        static class Helper {
+            public static int getColor(CommandContext<FabricClientCommandSource> context) {
+                String glyph = StringArgumentType.getString(context, "glyph");
+                int hex = GlyphHelper.getColor(glyph).orElse(-1);
+
+                if(hex != -1) {
+                    return sendFeedback(context, Component.literal(String.format("#%06X", hex & 0xFFFFFF)));
+                } else {
+                    return sendFeedback(context, Component.literal("No color found").withStyle(ChatFormatting.RED));
+                }
             }
         }
     }
