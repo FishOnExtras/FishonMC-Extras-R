@@ -16,7 +16,6 @@
   "client": [
     "accessor.AbstractSelectionListAccessor",
     "accessor.BossHealthOverlayAccessor",
-    "accessor.ChatScreenAccessor",
     "accessor.LevelRendererAccessor",
     "accessor.MinecraftAccessor",
     "accessor.PlayerTabOverlayAccessor",
@@ -24,8 +23,10 @@
     "inject.AbstractRecipeBookScreenMixin",
     "inject.AbstractSelectionListMixin",
     "inject.BossHealthOverlayMixin",
+    "inject.ChatScreenMixin",
     "inject.ClientPacketListenerMixin",
     "inject.ContextualBarRendererMixin",
+    "inject.EditBoxMixin",
     "inject.EntityRenderDispatcherMixin",
     "inject.ExperienceBarRendererMixin",
     "inject.FishingHookRendererMixin",
