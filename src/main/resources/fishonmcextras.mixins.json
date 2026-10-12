@@ -5,7 +5,8 @@
   "mixins": [
     "inject.BlockLightSectionStorageMixin",
     "inject.EntityMixin",
-    "inject.FishingHookEntityMixin"
+    "inject.FishingHookEntityMixin",
+    "inject.TextDisplayMixin"
   ],
   "injectors": {
     "defaultRequire": 1

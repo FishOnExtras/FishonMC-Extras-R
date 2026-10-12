@@ -647,6 +647,29 @@ public class PlaceholderRegistry {
                 )
         );
 
+        register(node("chummer")
+                .branch(node("is_chummer_nearby").valueBoolean(ChummerContext::hasChummerNearby)
+                        .description("Returns whether there is a chummer nearby.")
+                )
+                .branch(node("is_in_range").valueBoolean(ChummerContext::isInRange)
+                        .description("Returns whether the player is in the chummer range.")
+                )
+                .branch(node("rarity").valueString(ChummerContext::getRarity)
+                        .description("Returns the chummer rarity.")
+                )
+                .branch(node("player").valueString(ChummerContext::getPlayer)
+                        .description("Returns the player who placed the chummer.")
+                )
+                .branch(node("time")
+                        .branch(node("minute").valueNumber(ChummerContext::getTimeMinutes)
+                                .description("Returns the minute hand of the time left of the chummer.")
+                        )
+                        .branch(node("second").valueNumber(ChummerContext::getTimeSeconds)
+                                .description("Returns the second hand of the time left of the chummer.")
+                        )
+                )
+        );
+
         register(node("constant_data")
                 .branch(node("data")
                         .branch(node("fish")
@@ -2116,6 +2139,37 @@ public class PlaceholderRegistry {
     static class ScreenContext {
         static MutableComponent getLastScreen() {
             return ScreenHander.instance().getLastScreen().copy();
+        }
+    }
+
+    static class ChummerContext {
+        static Boolean isInRange() {
+            ChummerHandler.ChummerInfo chummer = ChummerHandler.instance().getChummer();
+            return chummer != null ? chummer.isInRange() : null;
+        }
+
+        static Boolean hasChummerNearby() {
+            return ChummerHandler.instance().getChummer() != null;
+        }
+
+        static String getPlayer() {
+            ChummerHandler.ChummerInfo chummer = ChummerHandler.instance().getChummer();
+            return chummer != null ? chummer.getPlayer() : null;
+        }
+
+        static String getRarity() {
+            ChummerHandler.ChummerInfo chummer = ChummerHandler.instance().getChummer();
+            return chummer != null ? chummer.getRarity() : null;
+        }
+
+        static Number getTimeMinutes() {
+            ChummerHandler.ChummerInfo chummer = ChummerHandler.instance().getChummer();
+            return chummer != null ? chummer.getMinutes() : null;
+        }
+
+        static Number getTimeSeconds() {
+            ChummerHandler.ChummerInfo chummer = ChummerHandler.instance().getChummer();
+            return chummer != null ? chummer.getSeconds() : null;
         }
     }
 

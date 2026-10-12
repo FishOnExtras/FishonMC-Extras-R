@@ -184,6 +184,11 @@ public class MixinConfig extends Config {
     @ConfigGroup.Pop
     public ValidatedBoolean editBoxMixinOnDragReturn = new ValidatedBoolean(true);
 
+    @Name("TextDisplay Mixin")
+    public ConfigGroup textDisplayMixinGroup = new ConfigGroup("text_display_mixin_group");
+
+    public ValidatedBoolean textDisplayMixinOnSyncedDataUpdated = new ValidatedBoolean(true);
+
     @Override
     public @NotNull FileType fileType() {
         return FileType.JSON;

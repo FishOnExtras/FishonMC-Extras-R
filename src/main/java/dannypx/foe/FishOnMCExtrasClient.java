@@ -11,6 +11,7 @@ import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.PlaceholderHandler;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -22,8 +23,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -42,6 +45,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(this::onEndClientTick);
         ClientReceiveMessageEvents.GAME.register(this::receiveGameMessage);
         ClientSendMessageEvents.MODIFY_CHAT.register(this::modifyChatMessage);
+        ClientEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
 
@@ -72,6 +76,12 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ScreenHander.instance().onAfterInitScreen(minecraft, screen, scaledWidth, scaledHeight);
     }
 
+
+
+    private void onEntityUnload(Entity entity, ClientLevel clientLevel) {
+        ChummerHandler.instance().onEntityUnload(entity, clientLevel);
+    }
+
     private void initHudRenderer() {
         HudRenderHandler.instance().initializeHudRenderer();
     }
@@ -89,7 +99,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         LoadingHandler.instance().onLeave();
 
         InventoryHandler.instance().onLeave();
-
+        ChummerHandler.instance().onLeave();
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
