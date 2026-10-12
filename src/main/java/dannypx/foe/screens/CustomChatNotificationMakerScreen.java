@@ -220,7 +220,7 @@ public class CustomChatNotificationMakerScreen extends Screen implements ScreenC
                                 String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
                                 Gson gson = new GsonBuilder().create();
-                                Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, Integer.class).getType());
+                                Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
 
                                 if(data.value3() > FishOnMCExtras.CHAT_NOTIFICATION_VERSION) {
                                     SystemToast.add(this.minecraft.getToastManager(),
