@@ -85,13 +85,20 @@ public class RendererConfig extends Config {
     public ValidatedBoolean showStackCountOnBait = new ValidatedBoolean(true);
 
     @Name("Tab Renderer")
-    @Desc("§7This is the renderer for tab extras")
+    @Desc("§7This is the renderer for tab")
     public ConfigGroup tabRendererGroup = new ConfigGroup("tab_renderer_group");
 
     @ConfigGroup.Pop
     @Name("Show online crew members")
     public ValidatedBoolean showOnlineCrewMembers = new ValidatedBoolean(true);
 
+    @Name("Chat Renderer")
+    @Desc("§7This is the renderer for chat")
+    public ConfigGroup chatRendererGroup = new ConfigGroup("chat_renderer_group");
+
+    @ConfigGroup.Pop
+    @Name("Show crew chat marker")
+    public ValidatedBoolean showCrewChatMarker = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {
