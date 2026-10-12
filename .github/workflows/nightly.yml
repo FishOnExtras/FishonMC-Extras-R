@@ -30,9 +30,12 @@ jobs:
           LAST_RELEASE_NOTES=$([ -z "$LAST_NIGHTLY_TAG" ] || gh release view "$LAST_NIGHTLY_TAG" -R "$REPOSITORY" --json body -q .body)
           SKIP_BUILD=true
           for BRANCH_NAME in 1.21.11 26.1; do
-            echo "$LAST_RELEASE_NOTES" | grep -qx "$BRANCH_NAME: $(gh api "repos/$REPOSITORY/commits/$BRANCH_NAME" -q .sha)" || SKIP_BUILD=false
+            CURRENT_SHA=$(gh api "repos/$REPOSITORY/branches/$BRANCH_NAME" -q .commit.sha)
+            echo "$BRANCH_NAME HEAD: $CURRENT_SHA"
+            echo "$LAST_RELEASE_NOTES" | grep -qx "$BRANCH_NAME: $CURRENT_SHA" || SKIP_BUILD=false
           done
           [ "${{ inputs.force }}" = "true" ] && SKIP_BUILD=false
+          echo "Compared against: ${LAST_NIGHTLY_TAG:-none} -> skip=$SKIP_BUILD"
           echo "skip=$SKIP_BUILD" >> "$GITHUB_OUTPUT"
 
   build:
