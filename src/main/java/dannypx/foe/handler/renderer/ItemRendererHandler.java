@@ -3,6 +3,7 @@ package dannypx.foe.handler.renderer;
 import dannypx.foe.FishOnMCExtras;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.store.ConstantDataHandler;
+import dannypx.foe.helper.GlyphHelper;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.*;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,6 +36,7 @@ public class ItemRendererHandler extends Handler {
 
     //region Fields
     private final Identifier petItemMarker = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "icons/pet_item");
+    private final Identifier rarityMarker = Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "icons/rarity");
     //endregion
 
     //region Methods
@@ -53,42 +56,8 @@ public class ItemRendererHandler extends Handler {
             if(rarityComponent.getString().isBlank()) rarityComponent = Component.literal(validateItem.value2().getRarityComponent().getString());
 
             if(!Objects.equals(rarityComponent, Component.empty())) {
-                int markerX = x;
-                int markerY = y - 1;
-
-                guiGraphics.pose().pushMatrix();
-
-                //TOP
-                int bgX = markerX;
-                int bgY = markerY - 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
-
-                //BOTTOM
-                bgY = markerY + 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
-
-                //LEFT
-                bgX = markerX - 1;
-                bgY = markerY;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
-
-                //RIGHT
-                bgX = markerX + 1;
-                guiGraphics.enableScissor(bgX, bgY + 2, bgX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, bgX, bgY, CommonColors.LIGHT_GRAY, false);
-                guiGraphics.disableScissor();
-
-                guiGraphics.enableScissor(markerX, bgY + 2, markerX + 2, bgY + 4);
-                guiGraphics.drawString(font, rarityComponent, markerX, markerY, CommonColors.WHITE, false);
-                guiGraphics.disableScissor();
-
-                guiGraphics.pose().popMatrix();
+                int color = GlyphHelper.getColor(rarityComponent.getString()).orElse(-1);
+                if(color != -1) guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, rarityMarker, x, y, 16, 16, ARGB.color(0xFFFFFF, color));
             }
         }
     }

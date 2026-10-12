@@ -10,7 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 7)
+@Version(version = 8)
 @Translatable.Name("§7§oDev§8§o: §f§oMixin Toggles")
 @Translatable.Desc("§4WARNING §7These are the toggles to mixins. Do not touch these unless you know what you are doing")
 public class MixinConfig extends Config {
@@ -29,6 +29,12 @@ public class MixinConfig extends Config {
 
     @ConfigGroup.Pop
     public ValidatedBoolean bossHealthOverlayMixinRender = new ValidatedBoolean(true);
+
+    @Name("ChatScreenMixin")
+    public ConfigGroup chatScreenMixinGroup = new ConfigGroup("chat_screen_mixin_group");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean chatScreenMixinInit = new ValidatedBoolean(true);
 
     @Name("ClientPlayNetworkHandler Mixin")
     public ConfigGroup clientPlayNetworkHandlerMixinGroup = new ConfigGroup("client_play_network_handler_mixin_group");
@@ -161,6 +167,22 @@ public class MixinConfig extends Config {
 
     @ConfigGroup.Pop
     public ValidatedBoolean entityRenderDispatcherMixinShouldRender = new ValidatedBoolean(true);
+
+    @Name("EditBox Mixin")
+    public ConfigGroup editBoxMixinGroup = new ConfigGroup("edit_box_mixin_group");
+
+    public ValidatedBoolean editBoxMixinRenderWidgetHead = new ValidatedBoolean(true);
+
+    public ValidatedBoolean editBoxMixinRenderWidgetReturn = new ValidatedBoolean(true);
+
+    public ValidatedBoolean editBoxMixinOnClickHead = new ValidatedBoolean(true);
+
+    public ValidatedBoolean editBoxMixinOnClickReturn = new ValidatedBoolean(true);
+
+    public ValidatedBoolean editBoxMixinOnDragHead = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean editBoxMixinOnDragReturn = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {
