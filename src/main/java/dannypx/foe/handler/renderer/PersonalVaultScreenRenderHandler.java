@@ -64,7 +64,7 @@ public class PersonalVaultScreenRenderHandler extends ScreenHandler {
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
 
-        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, mouseX, mouseY, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.renderHelp(guiGraphics, mouseX, mouseY, tickDelta);
     }
 
     public boolean checkMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount, boolean consumed) {

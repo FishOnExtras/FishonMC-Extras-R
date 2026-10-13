@@ -62,7 +62,7 @@ public class TackleBoxScreenRenderHandler extends ScreenHandler {
     public void render(Screen screen, GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         super.render(screen, guiGraphics, mouseX, mouseY, tickDelta);
 
-        if(searchBarWidget != null) searchBarWidget.render(guiGraphics, mouseX, mouseY, tickDelta);
+        if(searchBarWidget != null) searchBarWidget.renderHelp(guiGraphics, mouseX, mouseY, tickDelta);
     }
 
     public boolean checkMouseClick(Screen screen, MouseButtonEvent context, boolean consumed) {
