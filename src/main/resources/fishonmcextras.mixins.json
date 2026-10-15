@@ -27,6 +27,7 @@
     "inject.ChatScreenMixin",
     "inject.ClientPacketListenerMixin",
     "inject.ContextualBarRendererMixin",
+    "inject.CustomHeadLayerMixin",
     "inject.EditBoxMixin",
     "inject.EntityRenderDispatcherMixin",
     "inject.ExperienceBarRendererMixin",
@@ -39,6 +40,8 @@
     "inject.ItemInHandLayerMixin",
     "inject.JumpableVehicleBarMixin",
     "inject.LevelRendererBrightnessGetterMixin",
+    "inject.LivingEntityRendererMixin",
+    "inject.LivingEntityRenderStateMixin",
     "inject.LocatorBarMixin",
     "inject.PlayerTabOverlayMixin",
     "inject.RecipeBookWidgetMixin"

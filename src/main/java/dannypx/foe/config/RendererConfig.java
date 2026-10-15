@@ -8,6 +8,7 @@ import me.fzzyhmstrs.fzzy_config.config.ConfigGroup;
 import me.fzzyhmstrs.fzzy_config.util.Translatable;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString;
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt;
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.resources.Identifier;
@@ -20,6 +21,16 @@ public class RendererConfig extends Config {
     public RendererConfig() {
         super(Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "renderer_config"));
     }
+
+    @Name("Hat Renderer")
+    @Desc("§7This is the hat renderer for server hats")
+    public ConfigGroup hatGroup = new ConfigGroup("hat_group");
+
+    @Name("The hat height")
+    public ValidatedNumber<Float> hatHeight = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The hat scale")
+    public ValidatedNumber<Float> hatScale = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Item Marker")
     @Desc("§7This is the small markers on items")
