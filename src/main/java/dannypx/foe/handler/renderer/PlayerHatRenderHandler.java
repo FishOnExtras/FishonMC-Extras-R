@@ -44,6 +44,14 @@ public class PlayerHatRenderHandler extends Handler {
         if (isSelf(uuid)) return Configs.rendererConfig.hatScale.get();
         return SCALES.getOrDefault(uuid, DEFAULT_SCALE);
     }
+
+    public void putHeights(UUID uuid, Float f) {
+        HEIGHTS.put(uuid, f);
+    }
+
+    public void putScale(UUID uuid, Float f) {
+        SCALES.put(uuid, f);
+    }
     //endregion
 
     //region Dev

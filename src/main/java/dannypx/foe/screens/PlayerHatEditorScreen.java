@@ -1,10 +1,12 @@
 package dannypx.foe.screens;
 
 import dannypx.foe.config.Configs;
+import dannypx.foe.nearby_dispatcher.types.HatType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -15,7 +17,7 @@ import java.util.Locale;
 
 public class PlayerHatEditorScreen extends DefaultModScreen {
     //region Fields
-    private static final int PREVIEW_SCALE = 140;
+    private static final int PREVIEW_SCALE = 190;
     private static final float HEAD_FOCUS = 0.8f;
 
     private static final int EDIT_BUTTON_WIDTH = 24;
@@ -69,16 +71,16 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         widgets.add(this.getScaleEditBox());
         widgets.add(this.getHeightEditBox());
 
-        widgets.add(this.getScaleButton("--", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH) * 2, -SCALE_STEP_BIG));
-        widgets.add(this.getScaleButton("-", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH), -SCALE_STEP_SMALL));
-        widgets.add(this.getScaleButton("+", scaleBoxX() + BOX_WIDTH + GAP, SCALE_STEP_SMALL));
-        widgets.add(this.getScaleButton("++", scaleBoxX() + BOX_WIDTH + (GAP + EDIT_BUTTON_WIDTH) + GAP, SCALE_STEP_BIG));
+        widgets.add(this.getScaleButton("--", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH) * 2, -SCALE_STEP_BIG, Tooltip.create(Component.literal("Decrease scale by 0.1"))));
+        widgets.add(this.getScaleButton("-", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH), -SCALE_STEP_SMALL, Tooltip.create(Component.literal("Decrease scale by 0.01"))));
+        widgets.add(this.getScaleButton("+", scaleBoxX() + BOX_WIDTH + GAP, SCALE_STEP_SMALL, Tooltip.create(Component.literal("Increase scale by 0.01"))));
+        widgets.add(this.getScaleButton("++", scaleBoxX() + BOX_WIDTH + (GAP + EDIT_BUTTON_WIDTH) + GAP, SCALE_STEP_BIG, Tooltip.create(Component.literal("Increase scale by 0.1"))));
 
         int rowStep = EDIT_BUTTON_HEIGHT + GAP;
-        widgets.add(this.getHeightButton("++", heightBoxY() - rowStep * 2, HEIGHT_STEP_BIG));
-        widgets.add(this.getHeightButton("+", heightBoxY() - rowStep, HEIGHT_STEP_SMALL));
-        widgets.add(this.getHeightButton("-", heightBoxY() + rowStep, -HEIGHT_STEP_SMALL));
-        widgets.add(this.getHeightButton("--", heightBoxY() + rowStep * 2, -HEIGHT_STEP_BIG));
+        widgets.add(this.getHeightButton("--", heightBoxY() + rowStep * 2, -HEIGHT_STEP_BIG, Tooltip.create(Component.literal("Decrease height by 0.1"))));
+        widgets.add(this.getHeightButton("-", heightBoxY() + rowStep, -HEIGHT_STEP_SMALL, Tooltip.create(Component.literal("Decrease height by 0.01"))));
+        widgets.add(this.getHeightButton("+", heightBoxY() - rowStep, HEIGHT_STEP_SMALL, Tooltip.create(Component.literal("Increase height by 0.01"))));
+        widgets.add(this.getHeightButton("++", heightBoxY() - rowStep * 2, HEIGHT_STEP_BIG, Tooltip.create(Component.literal("Increase height by 0.1"))));
 
         widgets.forEach(this::addRenderableWidget);
     }
@@ -88,11 +90,11 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     }
 
     private int scaleBoxY() {
-        return height - EDIT_BUTTON_HEIGHT - 10;
+        return height - EDIT_BUTTON_HEIGHT - PADDING_HALF;
     }
 
     private int heightBoxX() {
-        return width - BOX_WIDTH - 20;
+        return width - BOX_WIDTH - PADDING_HALF;
     }
 
     private int heightBoxY() {
@@ -101,31 +103,33 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private EditBox getScaleEditBox() {
         scaleEditBox = new EditBox(font, scaleBoxX(), scaleBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Scale"));
-        scaleEditBox.setMaxLength(8);
         scaleEditBox.setFilter(text -> text.matches("[0-9]*\\.?[0-9]*"));
         scaleEditBox.setValue(format(Configs.rendererConfig.hatScale.get()));
         scaleEditBox.setResponder(this::onScaleChanged);
+        scaleEditBox.setTooltip(Tooltip.create(Component.literal("Scale")));
         return scaleEditBox;
     }
 
     private EditBox getHeightEditBox() {
         heightEditBox = new EditBox(font, heightBoxX(), heightBoxY(), BOX_WIDTH, EDIT_BUTTON_HEIGHT, Component.literal("Height"));
-        heightEditBox.setMaxLength(8);
         heightEditBox.setFilter(text -> text.matches("-?[0-9]*\\.?[0-9]*"));
         heightEditBox.setValue(format(Configs.rendererConfig.hatHeight.get()));
         heightEditBox.setResponder(this::onHeightChanged);
+        heightEditBox.setTooltip(Tooltip.create(Component.literal("Height")));
         return heightEditBox;
     }
 
-    private Button getScaleButton(String label, int x, float step) {
+    private Button getScaleButton(String label, int x, float step, Tooltip tooltip) {
         return Button.builder(Component.literal(label), button -> adjust(scaleEditBox, step))
                 .bounds(x, scaleBoxY(), EDIT_BUTTON_WIDTH, EDIT_BUTTON_HEIGHT)
+                .tooltip(tooltip)
                 .build();
     }
 
-    private Button getHeightButton(String label, int y, float step) {
+    private Button getHeightButton(String label, int y, float step, Tooltip tooltip) {
         return Button.builder(Component.literal(label), button -> adjust(heightEditBox, step))
                 .bounds(heightBoxX(), y, BOX_WIDTH, EDIT_BUTTON_HEIGHT)
+                .tooltip(tooltip)
                 .build();
     }
 
@@ -177,6 +181,7 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     @Override
     public void onClose() {
+        HatType.reload();
         super.onClose();
     }
 
