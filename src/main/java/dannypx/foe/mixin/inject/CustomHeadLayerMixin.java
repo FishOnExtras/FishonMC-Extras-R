@@ -2,7 +2,7 @@ package dannypx.foe.mixin.inject;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dannypx.foe.handler.renderer.PlayerHatRenderHandler;
-import dannypx.foe.interfaces.IHatHeightHolder;
+import dannypx.foe.interfaces.IHatSettingsHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -21,7 +21,7 @@ public abstract class CustomHeadLayerMixin<S extends LivingEntityRenderState, M 
 
     @Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HeadedModel;translateToHead(Lcom/mojang/blaze3d/vertex/PoseStack;)V", shift = At.Shift.AFTER))
     private void injectSubmit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, S livingEntityRenderState, float f, float g, CallbackInfo ci) {
-        IHatHeightHolder holder = (IHatHeightHolder) livingEntityRenderState;
+        IHatSettingsHolder holder = (IHatSettingsHolder) livingEntityRenderState;
         float height = holder.foer$getHatHeight();
         float scale = holder.foer$getHatScale();
         if(height == PlayerHatRenderHandler.DEFAULT_HEIGHT && scale == PlayerHatRenderHandler.DEFAULT_SCALE) return;

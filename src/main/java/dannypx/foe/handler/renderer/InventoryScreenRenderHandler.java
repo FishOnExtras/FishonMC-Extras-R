@@ -10,6 +10,7 @@ import dannypx.foe.handler.store.StatsDataHandler;
 import dannypx.foe.helper.GuiGraphicsHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.PlayerHatEditorScreen;
+import dannypx.foe.screens.RodEditorScreen;
 import dannypx.foe.type.StringStyle;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.config.Configs;
@@ -153,6 +154,16 @@ public class InventoryScreenRenderHandler extends ScreenHandler {
                     Tooltip.create(Component.literal("Edit Hat Position")),
                     Component.literal("Edit Hat Position"),
                     (button) -> minecraft.setScreen(new PlayerHatEditorScreen(minecraft.screen))
+            ));
+
+            widgets.add(new SmallButtonWidget(
+                    minecraft.getWindow().getGuiScaledWidth() / 2 - 88,
+                    minecraft.getWindow().getGuiScaledHeight() / 2 + 61,
+                    7, 13,
+                    "⏴",
+                    Tooltip.create(Component.literal("Edit Rod Position")),
+                    Component.literal("Edit Rod Position"),
+                    (button) -> minecraft.setScreen(new RodEditorScreen(minecraft.screen))
             ));
 
             for (int i = 0; i < CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(CustomButtonDataHandler.CustomButtonDataModel.INVENTORY_SCREEN, Pair.of(new ArrayList<>(), false)).value1().size(); i++) {

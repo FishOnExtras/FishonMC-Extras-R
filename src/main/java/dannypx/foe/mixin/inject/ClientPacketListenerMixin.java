@@ -7,6 +7,7 @@ import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.nearby_dispatcher.NearbyDispatcher;
 import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.nearby_dispatcher.types.RodType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -54,6 +55,7 @@ public abstract class ClientPacketListenerMixin {
             for (UUID uuid : packet.profileIds()) {
                 CrewHandler.instance().onPlayerLeave(uuid);
                 HatType.onPlayerLeave(uuid);
+                RodType.onPlayerLeave(uuid);
             }
         }
     }

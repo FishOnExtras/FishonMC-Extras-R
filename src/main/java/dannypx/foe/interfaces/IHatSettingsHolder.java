@@ -1,6 +1,6 @@
 package dannypx.foe.interfaces;
 
-public interface IHatHeightHolder {
+public interface IHatSettingsHolder {
     float foer$getHatHeight();
     void foer$setHatHeight(float height);
     float foer$getHatScale();

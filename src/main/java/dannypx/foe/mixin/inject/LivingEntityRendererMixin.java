@@ -1,7 +1,9 @@
 package dannypx.foe.mixin.inject;
 
 import dannypx.foe.handler.renderer.PlayerHatRenderHandler;
-import dannypx.foe.interfaces.IHatHeightHolder;
+import dannypx.foe.handler.renderer.RodRendererHandler;
+import dannypx.foe.interfaces.IHatSettingsHolder;
+import dannypx.foe.interfaces.IRodSettingsHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -22,8 +24,14 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             height = PlayerHatRenderHandler.instance().getHeight(player.getUUID());
             scale = PlayerHatRenderHandler.instance().getScale(player.getUUID());
         }
-        IHatHeightHolder holder = (IHatHeightHolder) livingEntityRenderState;
+        IHatSettingsHolder holder = (IHatSettingsHolder) livingEntityRenderState;
         holder.foer$setHatHeight(height);
         holder.foer$setHatScale(scale);
+
+        RodRendererHandler.RodSettings rodSettings = RodRendererHandler.RodSettings.DEFAULT;
+        if (livingEntity instanceof Player player) {
+            rodSettings = RodRendererHandler.instance().get(player.getUUID());
+        }
+        ((IRodSettingsHolder) livingEntityRenderState).foer$setRodSettings(rodSettings);
     }
 }

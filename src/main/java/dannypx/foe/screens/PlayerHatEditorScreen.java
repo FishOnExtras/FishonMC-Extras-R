@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,7 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private static final int EDIT_BUTTON_WIDTH = 24;
     private static final int EDIT_BUTTON_HEIGHT = 20;
-    private static final int BOX_WIDTH = 50;
-    private static final int GAP = 2;
+    private static final int BOX_WIDTH = 40;
 
     private static final float SCALE_STEP_SMALL = 0.01f;
     private static final float SCALE_STEP_BIG = 0.1f;
@@ -65,18 +65,35 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         }
     }
 
+    @Override
+    public void render(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        guiGraphics.nextStratum();
+
+        this.renderTitles(guiGraphics);
+    }
+
+    private void renderTitles(GuiGraphics guiGraphics) {
+        int scaleTitleY = scaleBoxY() - font.lineHeight - PADDING_QUART;
+        guiGraphics.drawCenteredString(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
+
+        int topButtonY = heightBoxY() - (EDIT_BUTTON_HEIGHT + PADDING_QUART) * 2;
+        int heightTitleY = topButtonY - font.lineHeight - PADDING_QUART;
+        guiGraphics.drawCenteredString(font, Component.literal("Height"), heightBoxX() + BOX_WIDTH / 2, heightTitleY, 0xFFFFFFFF);
+    }
+
     private void renderWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.getScaleEditBox());
         widgets.add(this.getHeightEditBox());
 
-        widgets.add(this.getScaleButton("--", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH) * 2, -SCALE_STEP_BIG, Tooltip.create(Component.literal("Decrease scale by 0.1"))));
-        widgets.add(this.getScaleButton("-", scaleBoxX() - (GAP + EDIT_BUTTON_WIDTH), -SCALE_STEP_SMALL, Tooltip.create(Component.literal("Decrease scale by 0.01"))));
-        widgets.add(this.getScaleButton("+", scaleBoxX() + BOX_WIDTH + GAP, SCALE_STEP_SMALL, Tooltip.create(Component.literal("Increase scale by 0.01"))));
-        widgets.add(this.getScaleButton("++", scaleBoxX() + BOX_WIDTH + (GAP + EDIT_BUTTON_WIDTH) + GAP, SCALE_STEP_BIG, Tooltip.create(Component.literal("Increase scale by 0.1"))));
+        widgets.add(this.getScaleButton("--", scaleBoxX() - (PADDING_QUART + EDIT_BUTTON_WIDTH) * 2, -SCALE_STEP_BIG, Tooltip.create(Component.literal("Decrease scale by 0.1"))));
+        widgets.add(this.getScaleButton("-", scaleBoxX() - (PADDING_QUART + EDIT_BUTTON_WIDTH), -SCALE_STEP_SMALL, Tooltip.create(Component.literal("Decrease scale by 0.01"))));
+        widgets.add(this.getScaleButton("+", scaleBoxX() + BOX_WIDTH + PADDING_QUART, SCALE_STEP_SMALL, Tooltip.create(Component.literal("Increase scale by 0.01"))));
+        widgets.add(this.getScaleButton("++", scaleBoxX() + BOX_WIDTH + (PADDING_QUART + EDIT_BUTTON_WIDTH) + PADDING_QUART, SCALE_STEP_BIG, Tooltip.create(Component.literal("Increase scale by 0.1"))));
 
-        int rowStep = EDIT_BUTTON_HEIGHT + GAP;
+        int rowStep = EDIT_BUTTON_HEIGHT + PADDING_QUART;
         widgets.add(this.getHeightButton("--", heightBoxY() + rowStep * 2, -HEIGHT_STEP_BIG, Tooltip.create(Component.literal("Decrease height by 0.1"))));
         widgets.add(this.getHeightButton("-", heightBoxY() + rowStep, -HEIGHT_STEP_SMALL, Tooltip.create(Component.literal("Decrease height by 0.01"))));
         widgets.add(this.getHeightButton("+", heightBoxY() - rowStep, HEIGHT_STEP_SMALL, Tooltip.create(Component.literal("Increase height by 0.01"))));

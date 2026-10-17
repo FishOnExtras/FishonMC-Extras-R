@@ -13,6 +13,7 @@ import dannypx.foe.handler.logic.PlaceholderHandler;
 import dannypx.foe.nearby_dispatcher.types.NearbyBigType;
 import dannypx.foe.nearby_dispatcher.NearbyDispatcher;
 import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.nearby_dispatcher.types.RodType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -100,6 +101,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
         NearbyBigType.init();
         HatType.init();
+        RodType.init();
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {

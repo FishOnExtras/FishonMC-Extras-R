@@ -29,8 +29,35 @@ public class RendererConfig extends Config {
     @Name("The hat height")
     public ValidatedNumber<Float> hatHeight = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
 
+    @ConfigGroup.Pop
     @Name("The hat scale")
     public ValidatedNumber<Float> hatScale = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("Rod Renderer")
+    @Desc("§7This is the rod renderer for server rods")
+    public ConfigGroup rodGroup = new ConfigGroup("rod_group");
+
+    @Name("The rod scale")
+    public ValidatedNumber<Float> rodScale = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The rod x position")
+    public ValidatedNumber<Float> rodXPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The rod y position")
+    public ValidatedNumber<Float> rodYPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The rod z position")
+    public ValidatedNumber<Float> rodZPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The line x position after rod scaling")
+    public ValidatedNumber<Float> lineXPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @Name("The rod y position  after rod scaling")
+    public ValidatedNumber<Float> lineYPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+
+    @ConfigGroup.Pop
+    @Name("The rod z position  after rod scaling")
+    public ValidatedNumber<Float> lineZPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Item Marker")
     @Desc("§7This is the small markers on items")
