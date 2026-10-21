@@ -6,9 +6,9 @@ import dannypx.foe.screens.interfaces.ScreenConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
@@ -45,24 +45,33 @@ public class DefaultModScreen extends Screen implements ScreenConstants {
         widgets.forEach(this::addRenderableWidget);
     }
 
-    private Button backButton() {
-        return !isMiddle ? Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(50, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return !isMiddle ? new SmallButtonBuilder(
+                width - PADDING_HALF - 50,
+                height - PADDING_HALF - BUTTON_HEIGHT,
+                50, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build()
-                : Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width / 2 - 50 / 2, height / 2 - BUTTON_HEIGHT / 2)
-                .size(50, BUTTON_HEIGHT)
+        : new SmallButtonBuilder(
+                width / 2 - 50 / 2,
+                height / 2 - BUTTON_HEIGHT / 2,
+                50, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
-    private Button debugButton() {
-        return Button.builder(Component.literal("Debug"), button ->
-                        this.minecraft.setScreen(new DebugHandlerScreen(this.minecraft.screen)))
-                .pos(width - PADDING_HALF - 50 - PADDING_HALF - 50, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(50, BUTTON_HEIGHT)
+    private AbstractWidget debugButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - 50 - PADDING_HALF - 50,
+                height - PADDING_HALF - BUTTON_HEIGHT,
+                50, BUTTON_HEIGHT,
+                button -> this.minecraft.setScreen(new DebugHandlerScreen(this.minecraft.screen)))
+                .icon("Debug")
+                .color(0xFF800000)
                 .build();
     }
 

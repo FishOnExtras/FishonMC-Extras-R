@@ -11,6 +11,7 @@ import dannypx.foe.handler.store.CustomTimerDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.tuple.Quartet;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
@@ -19,7 +20,6 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -748,158 +748,162 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
     }
 
     private AbstractWidget getNewButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Create Timer"),
-                        (button) -> {
-                            String id = "Custom Timer " + UUID.randomUUID();
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String id = "Custom Timer " + UUID.randomUUID();
 
-                            CustomTimerDataHandler.instance().createNewCustomTimer(id);
+                    CustomTimerDataHandler.instance().createNewCustomTimer(id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(id);
+                    ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(id);
 
-                            buttonList.addEntry(buttonEntry);
-                            buttonEntryMap.put(id, buttonEntry);
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                    buttonList.addEntry(buttonEntry);
+                    buttonEntryMap.put(id, buttonEntry);
+                })
+                .icon("New Timer")
+                .color(0xFF00CA3A)
                 .build();
     }
 
     private AbstractWidget getDeleteButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Delete Selected"),
-                        (button) -> {
-                            if(selectedTimerId != null) {
-                                CustomTimerDataHandler.instance().deleteCustomTimer(selectedTimerId);
-                                TimerHandler.instance().initTimers();
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedTimerId != null) {
+                        CustomTimerDataHandler.instance().deleteCustomTimer(selectedTimerId);
+                        TimerHandler.instance().initTimers();
 
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedTimerId);
+                        ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedTimerId);
 
-                                buttonList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedTimerId);
+                        buttonList.removeEntry(entry);
+                        buttonEntryMap.remove(selectedTimerId);
 
-                                selectedTimerId = null;
-                                resetFields();
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                        selectedTimerId = null;
+                        resetFields();
+                    }
+                })
+                .icon("Delete Selected")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget getImportButton() {
-        return Button.builder(
-                        Component.literal("Import"),
-                        (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
-                            try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
+                    try {
+                        String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
-                                Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(
-                                        Quartet.class,
-                                        String.class,
-                                        CustomTimerDataHandler.CustomTimer.class,
-                                        Boolean.class,
-                                        Integer.class).getType()
-                                );
+                        Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
+                        Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> data = gson.fromJson(json, TypeToken.getParameterized(
+                                Quartet.class,
+                                String.class,
+                                CustomTimerDataHandler.CustomTimer.class,
+                                Boolean.class,
+                                Integer.class).getType()
+                        );
 
-                                if(data.value3()) {
-                                    data = gson.fromJson(json, TypeToken.getParameterized(
-                                            Quartet.class,
-                                            String.class,
-                                            CustomTimerDataHandler.CustomTimer.class,
-                                            Boolean.class,
-                                            Integer.class).getType()
-                                    );
-                                }
+                        if(data.value3()) {
+                            data = gson.fromJson(json, TypeToken.getParameterized(
+                                    Quartet.class,
+                                    String.class,
+                                    CustomTimerDataHandler.CustomTimer.class,
+                                    Boolean.class,
+                                    Integer.class).getType()
+                            );
+                        }
 
-                                if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Could not Import. Imported Timer is made on a newer version"));
-                                    return;
-                                }
+                        if(data.value4() > FishOnMCExtras.TIMER_VERSION) {
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Could not Import. Imported Timer is made on a newer version"));
+                            return;
+                        }
 
-                                if(CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(data.value1())) {
-                                    CustomTimerDataHandler.CustomTimer trigger = data.value2();
-                                    trigger.setName(data.value1() + " (Duplicate)");
+                        if(CustomTimerDataHandler.instance().getCustomTimerData().timerList.containsKey(data.value1())) {
+                            CustomTimerDataHandler.CustomTimer trigger = data.value2();
+                            trigger.setName(data.value1() + " (Duplicate)");
 
-                                    data = Quartet.of(data.value1() + " (Duplicate)", trigger, data.value3(), data.value4());
-                                }
+                            data = Quartet.of(data.value1() + " (Duplicate)", trigger, data.value3(), data.value4());
+                        }
 
-                                String id = data.value1();
+                        String id = data.value1();
 
-                                CustomTimerDataHandler.instance().createNewCustomTimer(data.value1(), data.value2());
-                                TimerHandler.instance().initTimers();
+                        CustomTimerDataHandler.instance().createNewCustomTimer(data.value1(), data.value2());
+                        TimerHandler.instance().initTimers();
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(id);
+                        ButtonListWidget.ButtonEntry buttonEntry = createTimerEntry(id);
 
-                                buttonList.addEntry(buttonEntry);
-                                buttonEntryMap.put(id, buttonEntry);
+                        buttonList.addEntry(buttonEntry);
+                        buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Imported Timer"));
-                            } catch (Exception e) {
-                                LoggerHandler.error(e);
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Imported Timer"));
+                    } catch (Exception e) {
+                        LoggerHandler.error(e);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Could not Import. Data invalid"));
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Could not Import. Data invalid"));
+                    }
+                })
                 .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
+                .icon("Import")
+                .color(0xFF1E90FF)
                 .build();
     }
 
     private AbstractWidget getExportButton() {
-        return Button.builder(
-                        Component.literal("Export Selected"),
-                        (button) -> {
-                            if(selectedTimerId != null) {
-                                try {
-                                    Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> dataButton = Quartet.of(
-                                            selectedTimerId,
-                                            selectedTimer,
-                                            selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod,
-                                            FishOnMCExtras.TIMER_VERSION
-                                    );
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedTimerId != null) {
+                        try {
+                            Quartet<String, CustomTimerDataHandler.CustomTimer, Boolean, Integer> dataButton = Quartet.of(
+                                    selectedTimerId,
+                                    selectedTimer,
+                                    selectedTimer instanceof CustomTimerDataHandler.CustomTimerPeriod,
+                                    FishOnMCExtras.TIMER_VERSION
+                            );
 
-                                    String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
-                                    );
+                            String rawData = Base64.getEncoder().encodeToString(
+                                    TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                            );
 
-                                    String dataToCopy = "**Custom Timer: **" + selectedTimerId + "\n" +
-                                            "```\n" +
-                                            rawData + "\n" +
-                                            "```\n" +
-                                            "-# Using Timer version: " + "`v" + FishOnMCExtras.TIMER_VERSION + "`";
+                            String dataToCopy = "**Custom Timer: **" + selectedTimerId + "\n" +
+                                    "```\n" +
+                                    rawData + "\n" +
+                                    "```\n" +
+                                    "-# Using Timer version: " + "`v" + FishOnMCExtras.TIMER_VERSION + "`";
 
-                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
+                            this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Exported Button on your clipboard"));
-                                } catch (Exception e) {
-                                    LoggerHandler.error(e);
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Exported Button on your clipboard"));
+                        } catch (Exception e) {
+                            LoggerHandler.error(e);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("An error has occurred"));
-                                }
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("An error has occurred"));
+                        }
+                    }
+                })
+                .icon("Export Selected")
                 .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
@@ -924,15 +928,18 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return buttonList;
     }
 
-    private Button saveBackButton() {
-        return Button.builder(Component.literal("Save and Return"), button -> {
-            if(this.save()) {
-                this.onClose();
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-        .build();
+    private AbstractWidget saveBackButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        this.onClose();
+                    }
+                })
+                .icon("Save and Return")
+                .color(0xFF00CA3A)
+                .build();
     }
 
     private boolean save() {
@@ -1048,8 +1055,11 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
         return false;
     }
 
-    private Button saveButton() {
-        return Button.builder(Component.literal("Save"), button -> {
+    private AbstractWidget saveButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     if(this.save()) {
                         SystemToast.add(this.minecraft.getToastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -1057,24 +1067,25 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                 Component.literal(selectedTimerId));
                     }
                 })
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Save")
+                .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
                 .build();
     }
 
-    private Button backButton() {
-        return Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createTimerEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                Button.builder(
-                        Component.literal(id),
+                new SmallButtonBuilder(
                         button -> {
                             selectedTimer = CustomTimerDataHandler.instance().getCustomTimerData().timerList.get(id);
 
@@ -1082,8 +1093,10 @@ public class CustomTimerMakerScreen extends Screen implements ScreenConstants {
                                 selectedTimerId = id;
                                 this.setFields();
                             }
-                        }
-                ).width(BUTTON_WIDTH).build()
+                        })
+                        .icon(id)
+                        .style(SmallButtonBuilder.Style.NO_SMALL_CAPS)
+                        .build()
         );
     }
 

@@ -11,7 +11,6 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.screens.element.Element;
 import dannypx.foe.type.StringStyle;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -52,7 +51,7 @@ public class ProfileElement extends Element {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphics guiGraphics) {
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.profileElementScale.get()));
         int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.profileElementScale.get()));
 

@@ -9,6 +9,7 @@ import dannypx.foe.handler.store.CustomEventTriggerDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.event.EventTrigger;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
@@ -336,139 +337,139 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
     }
 
     private AbstractWidget getNewButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Create Event Trigger"),
-                        (button) -> {
-                            String id = "Custom Event Trigger #" + UUID.randomUUID();
+        return new SmallButtonBuilder(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String id = "Custom Event Trigger #" + UUID.randomUUID();
 
-                            CustomEventTriggerDataHandler.instance().createNewCustomEventTrigger(id);
+                    CustomEventTriggerDataHandler.instance().createNewCustomEventTrigger(id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(id);
+                    ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(id);
 
-                            buttonList.addEntry(buttonEntry);
-                            buttonEntryMap.put(id, buttonEntry);
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                    buttonList.addEntry(buttonEntry);
+                    buttonEntryMap.put(id, buttonEntry);
+                })
+                .icon("New Event Trig.")
+                .color(0xFF00CA3A)
                 .build();
     }
 
     private AbstractWidget getDeleteButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Delete Selected"),
-                        (button) -> {
-                            if(selectedEventTriggerId != null) {
-                                CustomEventTriggerDataHandler.instance().deleteCustomEventTrigger(selectedEventTriggerId);
+        return new SmallButtonBuilder(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedEventTriggerId != null) {
+                        CustomEventTriggerDataHandler.instance().deleteCustomEventTrigger(selectedEventTriggerId);
 
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedEventTriggerId);
+                        ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedEventTriggerId);
 
-                                buttonList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedEventTriggerId);
+                        buttonList.removeEntry(entry);
+                        buttonEntryMap.remove(selectedEventTriggerId);
 
-                                selectedEventTriggerId = null;
-                                resetFields();
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                        selectedEventTriggerId = null;
+                        resetFields();
+                    }
+                })
+                .icon("Delete Selected")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget getImportButton() {
-        return Button.builder(
-                        Component.literal("Import"),
-                        (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
-                            try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+        return new SmallButtonBuilder(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
+                    try {
+                        String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
-                                Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomEventTriggerDataHandler.CustomEventTrigger.class, Integer.class).getType());
+                        Gson gson = new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create();
+                        Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomEventTriggerDataHandler.CustomEventTrigger.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.EVENT_TRIGGER_VERSION) {
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Could not Import. Imported Event Trigger is made on a newer version"));
-                                    return;
-                                }
+                        if(data.value3() > FishOnMCExtras.EVENT_TRIGGER_VERSION) {
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Could not Import. Imported Event Trigger is made on a newer version"));
+                            return;
+                        }
 
-                                if(CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.containsKey(data.value1())) {
-                                    CustomEventTriggerDataHandler.CustomEventTrigger trigger = data.value2();
-                                    trigger.setName(data.value1() + " (Duplicate)");
+                        if(CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.containsKey(data.value1())) {
+                            CustomEventTriggerDataHandler.CustomEventTrigger trigger = data.value2();
+                            trigger.setName(data.value1() + " (Duplicate)");
 
-                                    data = Triplet.of(data.value1() + " (Duplicate)", trigger, data.value3());
-                                }
+                            data = Triplet.of(data.value1() + " (Duplicate)", trigger, data.value3());
+                        }
 
-                                String id = data.value1();
+                        String id = data.value1();
 
-                                CustomEventTriggerDataHandler.instance().createNewCustomEventTrigger(data.value1(), data.value2());
+                        CustomEventTriggerDataHandler.instance().createNewCustomEventTrigger(data.value1(), data.value2());
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(id);
+                        ButtonListWidget.ButtonEntry buttonEntry = createEventTriggerEntry(id);
 
-                                buttonList.addEntry(buttonEntry);
-                                buttonEntryMap.put(id, buttonEntry);
+                        buttonList.addEntry(buttonEntry);
+                        buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Imported Event Trigger"));
-                            } catch (Exception e) {
-                                LoggerHandler.error(e);
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Imported Event Trigger"));
+                    } catch (Exception e) {
+                        LoggerHandler.error(e);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Could not Import. Data invalid"));
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Could not Import. Data invalid"));
+                    }
+                })
                 .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
+                .icon("Import")
+                .color(0xFF1E90FF)
                 .build();
     }
 
     private AbstractWidget getExportButton() {
-        return Button.builder(
-                        Component.literal("Export Selected"),
-                        (button) -> {
-                            if(selectedEventTriggerId != null) {
-                                try {
-                                    Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> dataButton = Triplet.of(
-                                            selectedEventTriggerId,
-                                            selectedEventTrigger,
-                                            FishOnMCExtras.EVENT_TRIGGER_VERSION
-                                    );
+        return new SmallButtonBuilder(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedEventTriggerId != null) {
+                        try {
+                            Triplet<String, CustomEventTriggerDataHandler.CustomEventTrigger, Integer> dataButton = Triplet.of(
+                                    selectedEventTriggerId,
+                                    selectedEventTrigger,
+                                    FishOnMCExtras.EVENT_TRIGGER_VERSION
+                            );
 
-                                    String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
-                                    );
+                            String rawData = Base64.getEncoder().encodeToString(
+                                    TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                            );
 
-                                    String dataToCopy = "**Custom Event Trigger: **" + selectedEventTriggerId + "\n" +
-                                            "```\n" +
-                                            rawData + "\n" +
-                                            "```\n" +
-                                            "-# Using Event Trigger version: " + "`v" + FishOnMCExtras.EVENT_TRIGGER_VERSION + "`";
+                            String dataToCopy = "**Custom Event Trigger: **" + selectedEventTriggerId + "\n" +
+                                    "```\n" +
+                                    rawData + "\n" +
+                                    "```\n" +
+                                    "-# Using Event Trigger version: " + "`v" + FishOnMCExtras.EVENT_TRIGGER_VERSION + "`";
 
-                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
+                            this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Exported Button on your clipboard"));
-                                } catch (Exception e) {
-                                    LoggerHandler.error(e);
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Exported Button on your clipboard"));
+                        } catch (Exception e) {
+                            LoggerHandler.error(e);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("An error has occurred"));
-                                }
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("An error has occurred"));
+                        }
+                    }
+                })
+                .icon("Export Selected")
                 .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
@@ -493,15 +494,18 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         return buttonList;
     }
 
-    private Button saveBackButton() {
-        return Button.builder(Component.literal("Save and Return"), button -> {
-            if(this.save()) {
-                this.onClose();
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-        .build();
+    private AbstractWidget saveBackButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        this.onClose();
+                    }
+                })
+                .icon("Save and Return")
+                .color(0xFF00CA3A)
+                .build();
     }
 
     private boolean save() {
@@ -563,8 +567,10 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
         return false;
     }
 
-    private Button saveButton() {
-        return Button.builder(Component.literal("Save"), button -> {
+    private AbstractWidget saveButton() {
+        return new SmallButtonBuilder(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     if(this.save()) {
                         SystemToast.add(this.minecraft.getToastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -572,33 +578,34 @@ public class CustomEventTriggerMakerScreen extends Screen implements ScreenConst
                                 Component.literal(selectedEventTriggerId));
                     }
                 })
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Save")
+                .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
                 .build();
     }
 
-    private Button backButton() {
-        return Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createEventTriggerEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                Button.builder(
-                        Component.literal(id),
-                        button -> {
-                            selectedEventTrigger = CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.get(id);
+                new SmallButtonBuilder(button -> {
+                    selectedEventTrigger = CustomEventTriggerDataHandler.instance().getCustomEventTriggerData().eventTriggerList.get(id);
 
-                            if(selectedEventTrigger != null) {
-                                selectedEventTriggerId = id;
-                                this.setFields();
-                            }
-                        }
-                ).width(BUTTON_WIDTH).build()
+                    if(selectedEventTrigger != null) {
+                        selectedEventTriggerId = id;
+                        this.setFields();
+                    }})
+                        .icon(id)
+                        .style(SmallButtonBuilder.Style.NO_SMALL_CAPS)
+                        .build()
         );
     }
 

@@ -11,12 +11,12 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.placeholder.editbox.PlaceholderMultiLineEditBox;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.tuple.Triplet;
 import dannypx.foe.type.type_adapter.PatternAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.toasts.SystemToast;
@@ -163,138 +163,142 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
     }
 
     private AbstractWidget getNewButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Create Snippet"),
-                        (button) -> {
-                            String id = "Custom Snippet #" + UUID.randomUUID();
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String id = "Custom Snippet #" + UUID.randomUUID();
 
-                            CustomSnippetDataHandler.instance().createNewSnippet(id);
+                    CustomSnippetDataHandler.instance().createNewSnippet(id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createSnippetEntry(id);
+                    ButtonListWidget.ButtonEntry buttonEntry = createSnippetEntry(id);
 
-                            buttonList.addEntry(buttonEntry);
-                            buttonEntryMap.put(id, buttonEntry);
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                    buttonList.addEntry(buttonEntry);
+                    buttonEntryMap.put(id, buttonEntry);
+                })
+                .icon("New Snippet")
+                .color(0xFF00CA3A)
                 .build();
     }
 
     private AbstractWidget getDeleteButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Delete Selected"),
-                        (button) -> {
-                            if(selectedSnippetId != null) {
-                                CustomSnippetDataHandler.instance().deleteCustomSnippet(selectedSnippetId);
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedSnippetId != null) {
+                        CustomSnippetDataHandler.instance().deleteCustomSnippet(selectedSnippetId);
 
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedSnippetId);
+                        ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedSnippetId);
 
-                                buttonList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedSnippetId);
+                        buttonList.removeEntry(entry);
+                        buttonEntryMap.remove(selectedSnippetId);
 
-                                selectedSnippetId = null;
-                                resetFields();
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                        selectedSnippetId = null;
+                        resetFields();
+                    }
+                })
+                .icon("Delete Selected")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget getImportButton() {
-        return Button.builder(
-                        Component.literal("Import"),
-                        (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
-                            try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
+                    try {
+                        String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().create();
-                                Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
+                        Gson gson = new GsonBuilder().create();
+                        Triplet<String, String, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, String.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.SNIPPET_VERSION) {
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Could not Import. Imported Chat Notification is made on a newer version"));
-                                    return;
-                                }
+                        if(data.value3() > FishOnMCExtras.SNIPPET_VERSION) {
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Could not Import. Imported Chat Notification is made on a newer version"));
+                            return;
+                        }
 
-                                if(CustomSnippetDataHandler.instance().getCustomSnippetData().snippetList.containsKey(data.value1())) {
-                                    String snippet = data.value1() + " (Duplicate)";
+                        if(CustomSnippetDataHandler.instance().getCustomSnippetData().snippetList.containsKey(data.value1())) {
+                            String snippet = data.value1() + " (Duplicate)";
 
-                                    data = Triplet.of(data.value1() + " (Duplicate)", snippet, data.value3());
-                                }
+                            data = Triplet.of(data.value1() + " (Duplicate)", snippet, data.value3());
+                        }
 
-                                String id = data.value1();
+                        String id = data.value1();
 
-                                CustomSnippetDataHandler.instance().createNewSnippet(data.value1(), data.value2());
+                        CustomSnippetDataHandler.instance().createNewSnippet(data.value1(), data.value2());
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createSnippetEntry(id);
+                        ButtonListWidget.ButtonEntry buttonEntry = createSnippetEntry(id);
 
-                                buttonList.addEntry(buttonEntry);
-                                buttonEntryMap.put(id, buttonEntry);
+                        buttonList.addEntry(buttonEntry);
+                        buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Imported Snippet"));
-                            } catch (Exception e) {
-                                LoggerHandler.error(e);
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Imported Snippet"));
+                    } catch (Exception e) {
+                        LoggerHandler.error(e);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Could not Import. Data invalid"));
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Could not Import. Data invalid"));
+                    }
+                })
                 .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
+                .icon("Import")
+                .color(0xFF1E90FF)
                 .build();
     }
 
     private AbstractWidget getExportButton() {
-        return Button.builder(
-                        Component.literal("Export Selected"),
-                        (button) -> {
-                            if(selectedSnippetId != null) {
-                                try {
-                                    Triplet<String, String, Integer> dataButton = Triplet.of(
-                                            selectedSnippetId,
-                                            snippetEditBox.getValue(),
-                                            FishOnMCExtras.SNIPPET_VERSION
-                                    );
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedSnippetId != null) {
+                        try {
+                            Triplet<String, String, Integer> dataButton = Triplet.of(
+                                    selectedSnippetId,
+                                    snippetEditBox.getValue(),
+                                    FishOnMCExtras.SNIPPET_VERSION
+                            );
 
-                                    String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
-                                    );
+                            String rawData = Base64.getEncoder().encodeToString(
+                                    TextHelper.compress(new GsonBuilder().registerTypeAdapter(Pattern.class, new PatternAdapter()).create().toJson(dataButton))
+                            );
 
-                                    String dataToCopy = "**Custom Snippet: **" + selectedSnippetId + "\n" +
-                                            "```\n" +
-                                            rawData + "\n" +
-                                            "```\n" +
-                                            "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.SNIPPET_VERSION + "`";
+                            String dataToCopy = "**Custom Snippet: **" + selectedSnippetId + "\n" +
+                                    "```\n" +
+                                    rawData + "\n" +
+                                    "```\n" +
+                                    "-# Using Chat Trigger version: " + "`v" + FishOnMCExtras.SNIPPET_VERSION + "`";
 
-                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
+                            this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Exported Snippet on your clipboard"));
-                                } catch (Exception e) {
-                                    LoggerHandler.error(e);
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Exported Snippet on your clipboard"));
+                        } catch (Exception e) {
+                            LoggerHandler.error(e);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("An error has occurred"));
-                                }
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("An error has occurred"));
+                        }
+                    }
+                })
+                .icon("Export Selected")
                 .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
@@ -319,19 +323,25 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
         return buttonList;
     }
 
-    private Button saveBackButton() {
-        return Button.builder(Component.literal("Save and Return"), button -> {
-            if(this.save()) {
-                this.onClose();
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-        .build();
+    private AbstractWidget saveBackButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        this.onClose();
+                    }
+                })
+                .icon("Save and Return")
+                .color(0xFF00CA3A)
+                .build();
 }
 
-    private Button saveButton() {
-        return Button.builder(Component.literal("Save"), button -> {
+    private AbstractWidget saveButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     if(this.save()) {
                         SystemToast.add(this.minecraft.getToastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -339,22 +349,27 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                                 Component.literal(selectedSnippetId));
                     }
                 })
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Save")
+                .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
                 .build();
     }
 
-    private Button backButton() {
-        return Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget wikiButton() {
-        return Button.builder(Component.literal("Wiki"), button -> {
+        return new SmallButtonBuilder(
+                PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
                     this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
@@ -365,21 +380,20 @@ public class CustomSnippetMakerScreen extends Screen implements ScreenConstants 
                         this.minecraft.setScreen(null);
                     }, url, true));
                 })
-                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Wiki")
                 .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createSnippetEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                Button.builder(
-                        Component.literal(id),
-                        button -> {
-                            selectedSnippetId = id;
-                            this.setFields();
-                        }
-                ).width(BUTTON_WIDTH).build()
+                new SmallButtonBuilder(button -> {
+                    selectedSnippetId = id;
+                    this.setFields();
+                })
+                        .icon(id)
+                        .style(SmallButtonBuilder.Style.NO_SMALL_CAPS)
+                        .build()
         );
     }
 

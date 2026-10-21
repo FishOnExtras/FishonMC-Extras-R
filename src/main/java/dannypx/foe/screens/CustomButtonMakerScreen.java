@@ -8,6 +8,7 @@ import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.store.CustomButtonDataHandler;
 import dannypx.foe.helper.TextHelper;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
@@ -16,7 +17,6 @@ import java.util.regex.Pattern;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -268,136 +268,140 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
     }
 
     private AbstractWidget getNewButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Create Button"),
-                        (button) -> {
-                            String id = "Custom Button #" + UUID.randomUUID();
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String id = "Custom Button #" + UUID.randomUUID();
 
-                            CustomButtonDataHandler.instance().createNewButton(screenId, id);
+                    CustomButtonDataHandler.instance().createNewButton(screenId, id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(id);
+                    ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(id);
 
-                            buttonList.addEntry(buttonEntry);
-                            buttonEntryMap.put(id, buttonEntry);
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                    buttonList.addEntry(buttonEntry);
+                    buttonEntryMap.put(id, buttonEntry);
+                })
+                .icon("Create Button")
+                .color(0xFF00CA3A)
                 .build();
     }
 
     private AbstractWidget getDeleteButtonElementButton() {
-        return Button.builder(
-                        Component.literal("Delete Selected"),
-                        (button) -> {
-                            if(selectedButtonId != null) {
-                                CustomButtonDataHandler.instance().deleteButton(screenId, selectedButtonId);
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedButtonId != null) {
+                        CustomButtonDataHandler.instance().deleteButton(screenId, selectedButtonId);
 
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedButtonId);
+                        ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedButtonId);
 
-                                buttonList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedButtonId);
+                        buttonList.removeEntry(entry);
+                        buttonEntryMap.remove(selectedButtonId);
 
-                                selectedButtonId = null;
-                                resetFields();
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                        selectedButtonId = null;
+                        resetFields();
+                    }
+                })
+                .icon("Delete Selected")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget getImportButton() {
-        return Button.builder(
-                        Component.literal("Import"),
-                        (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
-                            try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
+                    try {
+                        String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().create();
-                                Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
+                        Gson gson = new GsonBuilder().create();
+                        Pair<CustomButtonDataHandler.CustomButton, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Pair.class, CustomButtonDataHandler.CustomButton.class, Integer.class).getType());
 
-                                if(data.value2() > FishOnMCExtras.BUTTON_VERSION) {
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Could not Import. Imported Button is made on a newer version"));
+                        if(data.value2() > FishOnMCExtras.BUTTON_VERSION) {
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Could not Import. Imported Button is made on a newer version"));
 
-                                    return;
-                                }
+                            return;
+                        }
 
-                                if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().anyMatch(b -> Objects.equals(b.name, data.value1().name))) {
-                                    data.value1().name = data.value1().name + " (Duplicate)";
-                                }
+                        if(CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().anyMatch(b -> Objects.equals(b.name, data.value1().name))) {
+                            data.value1().name = data.value1().name + " (Duplicate)";
+                        }
 
-                                String id = data.value1().name;
+                        String id = data.value1().name;
 
-                                CustomButtonDataHandler.instance().createNewButton(screenId, data.value1());
+                        CustomButtonDataHandler.instance().createNewButton(screenId, data.value1());
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(id);
+                        ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(id);
 
-                                buttonList.addEntry(buttonEntry);
-                                buttonEntryMap.put(id, buttonEntry);
+                        buttonList.addEntry(buttonEntry);
+                        buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Imported Button"));
-                            } catch (Exception e) {
-                                LoggerHandler.error(e);
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Imported Button"));
+                    } catch (Exception e) {
+                        LoggerHandler.error(e);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Could not Import. Data invalid"));
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Could not Import. Data invalid"));
+                    }
+                })
+                .icon("Import")
                 .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
     private AbstractWidget getExportButton() {
-        return Button.builder(
-                        Component.literal("Export Selected"),
-                        (button) -> {
-                            if(selectedButtonId != null) {
-                                try {
-                                    Pair<CustomButtonDataHandler.CustomButton, Integer> dataButton = Pair.of(
-                                            selectedButton,
-                                            FishOnMCExtras.BUTTON_VERSION
-                                    );
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(selectedButtonId != null) {
+                        try {
+                            Pair<CustomButtonDataHandler.CustomButton, Integer> dataButton = Pair.of(
+                                    selectedButton,
+                                    FishOnMCExtras.BUTTON_VERSION
+                            );
 
-                                    String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
-                                    );
+                            String rawData = Base64.getEncoder().encodeToString(
+                                    TextHelper.compress(new GsonBuilder().create().toJson(dataButton))
+                            );
 
-                                    String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
-                                            "```\n" +
-                                            rawData + "\n" +
-                                            "```\n" +
-                                            "-# Using Button version: " + "`v" + FishOnMCExtras.BUTTON_VERSION + "`";
+                            String dataToCopy = "**Custom Button: **" + selectedButtonId + "\n" +
+                                    "```\n" +
+                                    rawData + "\n" +
+                                    "```\n" +
+                                    "-# Using Button version: " + "`v" + FishOnMCExtras.BUTTON_VERSION + "`";
 
-                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
+                            this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Exported Button on your clipboard"));
-                                } catch (Exception e) {
-                                    LoggerHandler.error(e);
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Exported Button on your clipboard"));
+                        } catch (Exception e) {
+                            LoggerHandler.error(e);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("An error has occurred"));
-                                }
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("An error has occurred"));
+                        }
+                    }
+                })
+                .icon("Export Selected")
                 .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
@@ -422,15 +426,18 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         return buttonList;
     }
 
-    private Button saveBackButton() {
-        return Button.builder(Component.literal("Save and Return"), button -> {
-            if(this.save()) {
-                this.onClose();
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-        .build();
+    private AbstractWidget saveBackButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        this.onClose();
+                    }
+                })
+                .icon("Save and Return")
+                .color(0xFF00CA3A)
+                .build();
     }
 
     private boolean save() {
@@ -499,33 +506,37 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
         return false;
     }
 
-    private Button saveButton() {
-        return Button.builder(Component.literal("Save"), button -> {
-            if(this.save()) {
-                SystemToast.add(this.minecraft.getToastManager(),
-                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                        Component.literal("Button saved"),
-                        Component.literal(selectedButtonId));
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
-        .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
-        .build();
+    private AbstractWidget saveButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Button saved"),
+                                Component.literal(selectedButtonId));
+                    }
+                })
+                .icon("Save")
+                .color(0xFF00CA3A)
+                .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
+                .build();
     }
 
-    private Button backButton() {
-        return Button.builder(Component.literal("Return"), button ->
-                    this.onClose())
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private ButtonListWidget.ButtonEntry createButtonEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                Button.builder(
-                        Component.literal(TextHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()),
+                new SmallButtonBuilder(
                         button -> {
                             selectedButton = CustomButtonDataHandler.instance().getCustomButtonData().buttonList.getOrDefault(screenId, Pair.of(new ArrayList<>(), false)).value1().stream().filter(buttonObject -> Objects.equals(buttonObject.name, id)).findAny().orElse(null);
 
@@ -533,52 +544,58 @@ public class CustomButtonMakerScreen extends Screen implements ScreenConstants {
                                 selectedButtonId = id;
                                 this.setFields();
                             }
-                        }
-                ).width(BUTTON_WIDTH / 4 * 3).build(),
-                Button.builder(
-                                Component.literal("Add"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
-                                    String newId = "Custom Hud #" + UUID.randomUUID();
+                        })
+                        .icon(Component.literal(TextHelper.parseLegacyWithStyle(id.replace("&", "§")).value1().getString()))
+                        .width(BUTTON_WIDTH / 4 * 3)
+                        .style(SmallButtonBuilder.Style.NO_SMALL_CAPS)
+                        .build(),
+                new SmallButtonBuilder(
+                        button -> CodeExecuterHandler.runLater(1, () -> {
+                            String newId = "Custom Hud #" + UUID.randomUUID();
 
-                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
+                            int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
-                                    CustomButtonDataHandler.instance().createNewButton(screenId, newId, pos);
+                            CustomButtonDataHandler.instance().createNewButton(screenId, newId, pos);
 
-                                    ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(newId);
+                            ButtonListWidget.ButtonEntry buttonEntry = createButtonEntry(newId);
 
-                                    buttonList.addEntryAtPos(buttonEntry, pos);
-                                    buttonEntryMap.put(newId, buttonEntry);
-                                }))
+                            buttonList.addEntryAtPos(buttonEntry, pos);
+                            buttonEntryMap.put(newId, buttonEntry);
+                        }))
+                        .icon("Add")
                         .width(25)
                         .tooltip(Tooltip.create(Component.literal("Add new button")))
+                        .color(0xFF00CA3A)
                         .build(),
-                Button.builder(
-                                Component.literal("⏶"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
-                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
+                new SmallButtonBuilder(
+                        button -> CodeExecuterHandler.runLater(1, () -> {
+                            int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
-                                    if(pos > 0) {
-                                        CustomButtonDataHandler.instance().swapUp(screenId, pos);
+                            if(pos > 0) {
+                                CustomButtonDataHandler.instance().swapUp(screenId, pos);
 
-                                        buttonList.swapUp(pos);
-                                    }
-                                }))
+                                buttonList.swapUp(pos);
+                            }
+                        }))
+                        .icon("⏶")
                         .size(25, 8)
                         .tooltip(Tooltip.create(Component.literal("Move button up")))
+                        .color(0xFF1E90FF)
                         .build(),
-                Button.builder(
-                                Component.literal("⏷"),
-                                button -> CodeExecuterHandler.runLater(1, () -> {
-                                    int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
+                new SmallButtonBuilder(
+                        button -> CodeExecuterHandler.runLater(1, () -> {
+                            int pos = buttonList.children().indexOf(buttonEntryMap.get(id));
 
-                                    if(pos < buttonList.children().size() - 1) {
-                                        CustomButtonDataHandler.instance().swapDown(screenId, pos);
+                            if(pos < buttonList.children().size() - 1) {
+                                CustomButtonDataHandler.instance().swapDown(screenId, pos);
 
-                                        buttonList.swapDown(pos);
-                                    }
-                                }))
+                                buttonList.swapDown(pos);
+                            }
+                        }))
+                        .icon("⏷")
                         .size(25, 8)
-                        .tooltip(Tooltip.create(Component.literal("Move button down")))
+                        .tooltip(Tooltip.create(Component.literal("Move button Down")))
+                        .color(0xFF1E90FF)
                         .build()
         );
     }

@@ -10,7 +10,6 @@ import dannypx.foe.screens.interfaces.ScreenConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -44,7 +43,7 @@ public class NotifierElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphics guiGraphics) {
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / Configs.hudConfig.notifierElementScale.get()));
         int scaledHeight = (int) (Minecraft.getInstance().getWindow().getGuiScaledHeight() * (1 / Configs.hudConfig.notifierElementScale.get()));
 
@@ -85,17 +84,17 @@ public class NotifierElement extends Element implements ScreenConstants {
                 default -> y;
             };
 
-            this.renderNotifications(guiGraphics, deltaTracker, x, y);
+            this.renderNotifications(guiGraphics, x, y);
         }
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderNotifications(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void renderNotifications(GuiGraphics guiGraphics, int x, int y) {
         AtomicInteger yTranslation = new AtomicInteger(y);
         for (NotificationElement notificationElement : notificationElements) {
             notificationElement.setX(x);
             notificationElement.setY(yTranslation.get());
-            notificationElement.render(guiGraphics, deltaTracker);
+            notificationElement.render(guiGraphics);
 
             yTranslation.addAndGet(notificationElement.height + PADDING_QUART);
         }

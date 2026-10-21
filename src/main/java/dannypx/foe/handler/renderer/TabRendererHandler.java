@@ -45,7 +45,7 @@ public class TabRendererHandler extends Handler {
                 int width = 40;
 
                 Element crewBox = new BoxElement(x1, y1 - (height - 5) - 1, -1, width, height, true, false, true, true, false, true);
-                crewBox.render(guiGraphics, minecraft.getDeltaTracker());
+                crewBox.render(guiGraphics);
 
                 Component crewComponent = Component.literal(ScoreboardHandler.instance().getCrew().getString());
 
@@ -58,7 +58,7 @@ public class TabRendererHandler extends Handler {
 
                 // Left Bar
                 Element leftBar = new BoxElement(x1 - 5, y1 - 1, -1, 5, CrewHandler.instance().getOnlineMembers().size() * 9 + 1, true, false, true, false, true, true);
-                leftBar.render(guiGraphics, minecraft.getDeltaTracker());
+                leftBar.render(guiGraphics);
 
                 int gradientWidth = 150;
 

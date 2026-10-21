@@ -119,6 +119,20 @@ public class TextHelper {
         return gson.setPrettyPrinting().create().toJson(ComponentSerialization.CODEC.listOf().encodeStart(JsonOps.INSTANCE, list).getOrThrow());
     }
 
+    public static Component smallCaps(Component text) {
+        MutableComponent result = Component.empty();
+
+        text.visit((style, string) -> {
+            String stringSmall = TextHelper.smallCaps(string);
+
+            result.append(Component.literal(stringSmall).withStyle(style));
+
+            return Optional.empty();
+        }, Style.EMPTY);
+
+        return result;
+    }
+
     public static String smallCaps(String string) {
         return smallLetter(smallNumber(string));
     }

@@ -43,7 +43,7 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
     private final Checkbox useTrackerCheckbox;
     public Boolean useTracker;
 
-    private final Button trackerTypeButton;
+    private final AbstractWidget trackerTypeButton;
     public TrackerType trackerType;
 
     private final Checkbox isPersistentCheckbox;
@@ -92,15 +92,11 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 .build();
         useTracker = true;
 
-        trackerTypeButton = Button.builder(
-                Component.literal(TrackerType.BOOLEAN.name()), button -> {
-                    this.changeTrackerType();
-                        })
-                .pos(
-                        getX() + width / 2,
-                        getY() + headerHeight + PADDING + editBoxHeight + PADDING
-                )
-                .size(50, 20)
+        trackerTypeButton = new SmallButtonBuilder(getX() + width / 2,
+                getY() + headerHeight + PADDING + editBoxHeight + PADDING,
+                50, 20,
+                button -> this.changeTrackerType())
+                .icon(TrackerType.BOOLEAN.name())
                 .build();
         trackerType = TrackerType.BOOLEAN;
 
@@ -500,8 +496,8 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
         private final EditBox trackerActionEditBoxWidget;
         private final PlaceholderEditBox conditionEditBoxWidget;
         private final PlaceholderEditBox valueToUseEditBoxWidget;
-        private final Button addButton;
-        private final Button deleteButton;
+        private final AbstractWidget addButton;
+        private final AbstractWidget deleteButton;
 
         public String actionId;
         public String trackerAction;
@@ -626,16 +622,20 @@ public class EditCustomTrackerWidget extends AbstractWidget implements ScreenCon
                 valueToUseEditBoxWidget.setHint(Component.literal(s));
             });
 
-            addButton = Button.builder(Component.literal("Add"),
-                            (buttonWidget) -> callback.onAdd(this))
+            addButton = new SmallButtonBuilder(
+                    button -> callback.onAdd(this))
                     .size(BUTTON_SIZE, 20)
+                    .icon("Add")
                     .tooltip(Tooltip.create(Component.literal("Add line")))
+                    .color(0xFF00CA3A)
                     .build();
 
-            deleteButton = Button.builder(Component.literal("Del"),
-                    (buttonWidget) -> callback.onDelete(this))
+            deleteButton = new SmallButtonBuilder(
+                    button -> callback.onDelete(this))
                     .size(BUTTON_SIZE, 20)
+                    .icon("Del")
                     .tooltip(Tooltip.create(Component.literal("Delete line")))
+                    .color(0xFFCC0000)
                     .build();
         }
 

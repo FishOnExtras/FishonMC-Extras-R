@@ -336,8 +336,8 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
         Minecraft minecraftClient = Minecraft.getInstance();
 
         private final PlaceholderEditBox editBoxWidget;
-        private final Button addButton;
-        private final Button deleteButton;
+        private final AbstractWidget addButton;
+        private final AbstractWidget deleteButton;
 
         public String lineString;
         public int width;
@@ -370,16 +370,20 @@ public class EditCustomNotificationWidget extends AbstractWidget implements Scre
                 editBoxWidget.setHint(Component.literal(s));
             });
 
-            addButton = Button.builder(Component.literal("Add"),
-                            (buttonWidget) -> callback.onAdd(this))
+            addButton = new SmallButtonBuilder(
+                    button -> callback.onAdd(this))
                     .size(BUTTON_SIZE, 20)
+                    .icon("Add")
                     .tooltip(Tooltip.create(Component.literal("Add line")))
+                    .color(0xFF00CA3A)
                     .build();
 
-            deleteButton = Button.builder(Component.literal("Del"),
-                    (buttonWidget) -> callback.onDelete(this))
+            deleteButton = new SmallButtonBuilder(
+                    button -> callback.onDelete(this))
                     .size(BUTTON_SIZE, 20)
+                    .icon("Del")
                     .tooltip(Tooltip.create(Component.literal("Delete line")))
+                    .color(0xFFCC0000)
                     .build();
         }
 

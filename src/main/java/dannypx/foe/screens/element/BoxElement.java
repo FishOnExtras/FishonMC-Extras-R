@@ -1,9 +1,6 @@
 package dannypx.foe.screens.element;
 
 import dannypx.foe.FishOnMCExtras;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -18,8 +15,8 @@ public class BoxElement extends Element {
 
     private final boolean isSolid;
     private final boolean isAlt;
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
     private final int z;
 
     private final boolean showTop;
@@ -87,7 +84,7 @@ public class BoxElement extends Element {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphics guiGraphics) {
         this.renderBox(guiGraphics);
     }
 
@@ -183,6 +180,19 @@ public class BoxElement extends Element {
                 5, 5,
                 15, 15
         );
+    }
+
+    @Override
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public void setSize(int width, int height) {
+        super.setSize(width, height);
+        this.width = width;
+        this.height = height;
     }
     //endregion
 }

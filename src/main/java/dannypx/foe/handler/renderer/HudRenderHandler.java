@@ -88,23 +88,23 @@ public class HudRenderHandler extends Handler {
         LoggerHandler.info("Register Elements");
         HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_foreground"), (guiGraphics, deltaTracker) -> {
             elements.forEach(element -> {
-                if (Configs.mainConfig.enableMod.get()) element.value2().render(guiGraphics, deltaTracker);
+                if (Configs.mainConfig.enableMod.get()) element.value2().render(guiGraphics);
             });
 
-            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphics, deltaTracker);
+            if (Configs.mainConfig.enableMod.get()) this.render(guiGraphics);
         });
 
         LoggerHandler.info("Register Priority Elements");
         HudElementRegistry.attachElementAfter(VanillaHudElements.EXPERIENCE_LEVEL, Identifier.fromNamespaceAndPath(FishOnMCExtras.MOD_ID, "foer_hud_priority"), (guiGraphics, deltaTracker) -> {
-            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics, deltaTracker);
+            if (Configs.mainConfig.enableMod.get()) this.renderAfterSubtitles(guiGraphics);
         });
     }
 
-    private void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
-        customHudElements.forEach(element -> element.value2().render(guiGraphics, deltaTracker));
+    private void render(GuiGraphics guiGraphics) {
+        customHudElements.forEach(element -> element.value2().render(guiGraphics));
     }
 
-    private void renderAfterSubtitles(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    private void renderAfterSubtitles(GuiGraphics guiGraphics) {
         this.renderTooltip(guiGraphics);
 
         if((!LoadingHandler.instance().isLoadingDone()

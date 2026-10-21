@@ -13,6 +13,7 @@ import dannypx.foe.helper.TextHelper;
 import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.screens.widget.ButtonListWidget;
 import dannypx.foe.screens.widget.EditCustomTrackerWidget;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import dannypx.foe.type.custom_value.*;
 import dannypx.foe.type.tracker.TrackerAction;
 import dannypx.foe.type.tracker.TrackerType;
@@ -100,138 +101,142 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
     }
 
     private AbstractWidget getNewTrackerElementButton() {
-        return Button.builder(
-                        Component.literal("Create Tracker"),
-                        (button) -> {
-                            String id = "Custom Tracker #" + UUID.randomUUID();
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String id = "Custom Tracker #" + UUID.randomUUID();
 
-                            CustomTrackerDataHandler.instance().createNewCustomTracker(id);
+                    CustomTrackerDataHandler.instance().createNewCustomTracker(id);
 
-                            ButtonListWidget.ButtonEntry buttonEntry = createTrackerEntry(id);
+                    ButtonListWidget.ButtonEntry buttonEntry = createTrackerEntry(id);
 
-                            buttonList.addEntry(buttonEntry);
-                            buttonEntryMap.put(id, buttonEntry);
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                    buttonList.addEntry(buttonEntry);
+                    buttonEntryMap.put(id, buttonEntry);
+                })
+                .icon("New Tracker")
+                .color(0xFF00CA3A)
                 .build();
     }
 
     private AbstractWidget getDeleteTrackerElementButton() {
-        return Button.builder(
-                        Component.literal("Delete Selected"),
-                        (button) -> {
-                            if(editCustomTrackerWidget.hasSelectedOption) {
-                                CustomTrackerDataHandler.instance().deleteCustomTracker(selectedTrackerId);
-                                editCustomTrackerWidget.reset();
-                                ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedTrackerId);
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(editCustomTrackerWidget.hasSelectedOption) {
+                        CustomTrackerDataHandler.instance().deleteCustomTracker(selectedTrackerId);
+                        editCustomTrackerWidget.reset();
+                        ButtonListWidget.ButtonEntry entry = buttonEntryMap.get(selectedTrackerId);
 
-                                buttonList.removeEntry(entry);
-                                buttonEntryMap.remove(selectedTrackerId);
+                        buttonList.removeEntry(entry);
+                        buttonEntryMap.remove(selectedTrackerId);
 
-                                selectedTrackerId = null;
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT)
+                        selectedTrackerId = null;
+                    }
+                })
+                .icon("Delete Selected")
+                .color(0xFFCC0000)
                 .build();
     }
 
     private AbstractWidget getImportButton() {
-        return Button.builder(
-                        Component.literal("Import"),
-                        (button) -> {
-                            String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
-                            try {
-                                String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
+        return new SmallButtonBuilder(
+                PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT,
+                button -> {
+                    String rawData = this.minecraft.keyboardHandler.getClipboard().trim();
+                    try {
+                        String json = TextHelper.decompress(Base64.getDecoder().decode(rawData));
 
-                                Gson gson = new GsonBuilder().registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter()).create();
-                                Triplet<String, CustomTrackerDataHandler.CustomTracker, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTrackerDataHandler.CustomTracker.class, Integer.class).getType());
+                        Gson gson = new GsonBuilder().registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter()).create();
+                        Triplet<String, CustomTrackerDataHandler.CustomTracker, Integer> data = gson.fromJson(json, TypeToken.getParameterized(Triplet.class, String.class, CustomTrackerDataHandler.CustomTracker.class, Integer.class).getType());
 
-                                if(data.value3() > FishOnMCExtras.TRACKER_VERSION) {
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Could not Import. Imported Tracker is made on a newer version"));
+                        if(data.value3() > FishOnMCExtras.TRACKER_VERSION) {
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Could not Import. Imported Tracker is made on a newer version"));
 
-                                    return;
-                                }
+                            return;
+                        }
 
-                                if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(data.value1())) {
-                                    data = Triplet.of(data.value1() + " (Duplicate)", data.value2(), data.value3());
-                                }
+                        if(CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.containsKey(data.value1())) {
+                            data = Triplet.of(data.value1() + " (Duplicate)", data.value2(), data.value3());
+                        }
 
-                                String id = data.value1();
+                        String id = data.value1();
 
-                                CustomTrackerDataHandler.instance().createNewCustomTracker(id, data.value2());
+                        CustomTrackerDataHandler.instance().createNewCustomTracker(id, data.value2());
 
-                                ButtonListWidget.ButtonEntry buttonEntry = createTrackerEntry(id);
+                        ButtonListWidget.ButtonEntry buttonEntry = createTrackerEntry(id);
 
-                                buttonList.addEntry(buttonEntry);
-                                buttonEntryMap.put(id, buttonEntry);
+                        buttonList.addEntry(buttonEntry);
+                        buttonEntryMap.put(id, buttonEntry);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Imported Notification"));
-                            } catch (Exception e) {
-                                LoggerHandler.error(e);
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Imported Notification"));
+                    } catch (Exception e) {
+                        LoggerHandler.error(e);
 
-                                SystemToast.add(this.minecraft.getToastManager(),
-                                        SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                        Component.literal("Fish On Extras Rebirth"),
-                                        Component.literal("Could not Import. Data invalid"));
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING, BUTTON_HEIGHT)
-                .pos(PADDING_HALF, this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                        SystemToast.add(this.minecraft.getToastManager(),
+                                SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                Component.literal("Fish On Extras Rebirth"),
+                                Component.literal("Could not Import. Data invalid"));
+                    }
+                })
                 .tooltip(Tooltip.create(Component.literal("Imports from the code on your clipboard")))
+                .icon("Import")
+                .color(0xFF1E90FF)
                 .build();
     }
 
     private AbstractWidget getExportButton() {
-        return Button.builder(
-                        Component.literal("Export Selected"),
-                        (button) -> {
-                            if(editCustomTrackerWidget.hasSelectedOption) {
-                                try {
-                                    Triplet<String, CustomTrackerDataHandler.CustomTracker, Integer> dataTracker = Triplet.of(
-                                            editCustomTrackerWidget.currentSelectedTracker,
-                                            CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(editCustomTrackerWidget.currentSelectedTracker),
-                                            FishOnMCExtras.TRACKER_VERSION
-                                    );
-                                    String rawData = Base64.getEncoder().encodeToString(
-                                            TextHelper.compress(new GsonBuilder()
-                                                    .registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter())
-                                                    .create().toJson(dataTracker)
-                                            )
-                                    );
+        return new SmallButtonBuilder(
+                PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF,
+                BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT,
+                button -> {
+                    if(editCustomTrackerWidget.hasSelectedOption) {
+                        try {
+                            Triplet<String, CustomTrackerDataHandler.CustomTracker, Integer> dataTracker = Triplet.of(
+                                    editCustomTrackerWidget.currentSelectedTracker,
+                                    CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(editCustomTrackerWidget.currentSelectedTracker),
+                                    FishOnMCExtras.TRACKER_VERSION
+                            );
+                            String rawData = Base64.getEncoder().encodeToString(
+                                    TextHelper.compress(new GsonBuilder()
+                                            .registerTypeAdapter(TrackerValue.class, new TrackerValueAdapter())
+                                            .create().toJson(dataTracker)
+                                    )
+                            );
 
-                                    String dataToCopy = "**Custom Tracker: **" + selectedTrackerId + "\n" +
-                                            "```\n" +
-                                            rawData + "\n" +
-                                            "```\n" +
-                                            "-# Using Tracker version: " + "`v" + FishOnMCExtras.TRACKER_VERSION + "`";
+                            String dataToCopy = "**Custom Tracker: **" + selectedTrackerId + "\n" +
+                                    "```\n" +
+                                    rawData + "\n" +
+                                    "```\n" +
+                                    "-# Using Tracker version: " + "`v" + FishOnMCExtras.TRACKER_VERSION + "`";
 
-                                    this.minecraft.keyboardHandler.setClipboard(dataToCopy);
+                            this.minecraft.keyboardHandler.setClipboard(dataToCopy);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("Exported Tracker on your clipboard"));
-                                } catch (Exception e) {
-                                    LoggerHandler.error(e);
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("Exported Tracker on your clipboard"));
+                        } catch (Exception e) {
+                            LoggerHandler.error(e);
 
-                                    SystemToast.add(this.minecraft.getToastManager(),
-                                            SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                                            Component.literal("Fish On Extras Rebirth"),
-                                            Component.literal("An error has occurred"));
-                                }
-                            }
-                        })
-                .size(BUTTON_WIDTH / 2 - PADDING_HALF, BUTTON_HEIGHT)
-                .pos(PADDING + (BUTTON_WIDTH / 2 - PADDING_HALF), this.minecraft.getWindow().getGuiScaledHeight() - PADDING_HALF - BUTTON_HEIGHT * 2 - PADDING_HALF)
+                            SystemToast.add(this.minecraft.getToastManager(),
+                                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                                    Component.literal("Fish On Extras Rebirth"),
+                                    Component.literal("An error has occurred"));
+                        }
+                    }
+                })
+                .icon("Export Selected")
                 .tooltip(Tooltip.create(Component.literal("Save first before exporting")))
+                .color(0xFF1E90FF)
                 .build();
     }
 
@@ -258,27 +263,31 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
 
     private ButtonListWidget.ButtonEntry createTrackerEntry(String id) {
         return new ButtonListWidget.ButtonEntry(
-                Button.builder(
-                        Component.literal(id),
+                new SmallButtonBuilder(
                         button -> {
                             selectedTrackerId = id;
                             editCustomTrackerWidget.selectTracker(
                                     id,
                                     CustomTrackerDataHandler.instance().getCustomTrackerData().trackerList.get(id));
-                        }
-                ).width(BUTTON_WIDTH).build()
+                        })
+                        .icon(id)
+                        .style(SmallButtonBuilder.Style.NO_SMALL_CAPS)
+                        .build()
         );
     }
 
-    private Button saveBackButton() {
-        return Button.builder(Component.literal("Save and Return"), button -> {
-            if(this.save()) {
-                this.onClose();
-            }
-        })
-        .pos(width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT)
-        .size(BUTTON_WIDTH / 2, BUTTON_HEIGHT)
-        .build();
+    private AbstractWidget saveBackButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 2, BUTTON_HEIGHT,
+                button -> {
+                    if(this.save()) {
+                        this.onClose();
+                    }
+                })
+                .icon("Save and Return")
+                .color(0xFF00CA3A)
+                .build();
     }
 
     private boolean save() {
@@ -476,8 +485,11 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
         return false;
     }
 
-    private Button saveButton() {
-        return Button.builder(Component.literal("Save"), button -> {
+    private AbstractWidget saveButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     if(this.save()) {
                         SystemToast.add(this.minecraft.getToastManager(),
                                 SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -485,34 +497,42 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                                 Component.literal(selectedTrackerId));
                     }
                 })
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Save")
+                .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Can also use Ctrl+S")))
                 .build();
     }
 
-    private Button backButton() {
-        return Button.builder(Component.literal("Return"), button ->
-                        this.onClose())
-                .pos(width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+    private AbstractWidget backButton() {
+        return new SmallButtonBuilder(
+                width - PADDING_HALF - BUTTON_WIDTH / 2 - (PADDING_HALF + BUTTON_WIDTH / 4) * 2, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> this.onClose())
+                .icon("Return")
+                .color(0xFFCC0000)
                 .build();
     }
 
-    private Button addLine() {
-        return Button.builder(Component.literal("Add Line"), button -> {
+    private AbstractWidget addLine() {
+        return new SmallButtonBuilder(
+                PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     if(editCustomTrackerWidget.hasSelectedOption) {
                         editCustomTrackerWidget.addNewEntry();
                     }
                 })
-                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2), height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Add Line")
+                .color(0xFF00CA3A)
                 .tooltip(Tooltip.create(Component.literal("Add line to the bottom")))
                 .build();
     }
 
     private AbstractWidget wikiButton() {
-        return Button.builder(Component.literal("Wiki"), button -> {
+        return new SmallButtonBuilder(
+                PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 4, height - PADDING_HALF - BUTTON_HEIGHT,
+                BUTTON_WIDTH / 4, BUTTON_HEIGHT,
+                button -> {
                     String url = Configs.mainConfig.wikiUrl.get();
 
                     this.minecraft.setScreen(new ConfirmLinkScreen((confirmed) -> {
@@ -523,8 +543,7 @@ public class CustomTrackerMakerScreen extends Screen implements ScreenConstants 
                         this.minecraft.setScreen(null);
                     }, url, true));
                 })
-                .pos(PADDING_HALF + (BUTTON_WIDTH + PADDING * 2) + PADDING_HALF + BUTTON_WIDTH / 4, height - PADDING_HALF - BUTTON_HEIGHT)
-                .size(BUTTON_WIDTH / 4, BUTTON_HEIGHT)
+                .icon("Wiki")
                 .tooltip(Tooltip.create(Component.literal("Open Wiki to Placeholders")))
                 .build();
     }

@@ -2,9 +2,9 @@ package dannypx.foe.screens;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -136,16 +136,24 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         return heightEditBox;
     }
 
-    private Button getScaleButton(String label, int x, float step, Tooltip tooltip) {
-        return Button.builder(Component.literal(label), button -> adjust(scaleEditBox, step))
-                .bounds(x, scaleBoxY(), EDIT_BUTTON_WIDTH, EDIT_BUTTON_HEIGHT)
+    private AbstractWidget getScaleButton(String label, int x, float step, Tooltip tooltip) {
+        return new SmallButtonBuilder(
+                x + PADDING_QUART, scaleBoxY() + PADDING_QUART,
+                EDIT_BUTTON_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
+                button -> adjust(scaleEditBox, step))
+                .icon(label)
+                .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
                 .build();
     }
 
-    private Button getHeightButton(String label, int y, float step, Tooltip tooltip) {
-        return Button.builder(Component.literal(label), button -> adjust(heightEditBox, step))
-                .bounds(heightBoxX(), y, BOX_WIDTH, EDIT_BUTTON_HEIGHT)
+    private AbstractWidget getHeightButton(String label, int y, float step, Tooltip tooltip) {
+        return new SmallButtonBuilder(
+                heightBoxX() + PADDING_QUART, y + PADDING_QUART,
+                BOX_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
+                button -> adjust(heightEditBox, step))
+                .icon(label)
+                .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
                 .build();
     }

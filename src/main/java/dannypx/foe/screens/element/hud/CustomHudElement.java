@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -57,7 +56,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphics guiGraphics) {
         if(!customHud.isShowElement()) { return; }
 
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHud.getScale()));
@@ -103,14 +102,14 @@ public class CustomHudElement extends Element implements ScreenConstants {
                     default -> 0;
                 };
 
-                this.renderBox(guiGraphics, deltaTracker, x, y);
-                this.renderComponent(guiGraphics, deltaTracker, x, y);
+                this.renderBox(guiGraphics, x, y);
+                this.renderComponent(guiGraphics, x, y);
             }
         }
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void renderComponent(GuiGraphics guiGraphics, int x, int y) {
         int componentX;
         int componentY;
 
@@ -160,7 +159,7 @@ public class CustomHudElement extends Element implements ScreenConstants {
         });
     }
 
-    private void renderBox(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void renderBox(GuiGraphics guiGraphics, int x, int y) {
         int boxX = x;
         int boxY = y;
 

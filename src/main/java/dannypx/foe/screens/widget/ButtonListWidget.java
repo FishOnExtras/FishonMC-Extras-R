@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -101,19 +102,19 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
 
     public static class ButtonEntry extends ContainerObjectSelectionList.Entry<@NotNull ButtonEntry> {
 
-        private final Button button;
-        private final Button smallButton;
-        private final Button upButton;
-        private final Button downButton;
+        private final AbstractWidget button;
+        private final AbstractWidget smallButton;
+        private final AbstractWidget upButton;
+        private final AbstractWidget downButton;
 
-        public ButtonEntry(Button button) {
+        public ButtonEntry(AbstractWidget button) {
             this.button = button;
             this.smallButton = null;
             this.upButton = null;
             this.downButton = null;
         }
 
-        public ButtonEntry(Button button, Button smallButton, Button upButton, Button downButton) {
+        public ButtonEntry(AbstractWidget button, AbstractWidget smallButton, AbstractWidget upButton, AbstractWidget downButton) {
             this.button = button;
             this.smallButton = smallButton;
             this.upButton = upButton;
@@ -122,7 +123,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
 
         @Override
         public @NotNull List<? extends GuiEventListener> children() {
-            List<Button> children = new ArrayList<>(List.of(button));
+            List<AbstractWidget> children = new ArrayList<>(List.of(button));
 
             if(smallButton != null) {
                 children.add(smallButton);
@@ -136,7 +137,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
 
         @Override
         public @NotNull List<? extends NarratableEntry> narratables() {
-            List<Button> children = new ArrayList<>(List.of(button));
+            List<AbstractWidget> children = new ArrayList<>(List.of(button));
 
             if(smallButton != null) {
                 children.add(smallButton);
@@ -174,7 +175,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
             if(upButton != null) {
                 upButton.setPosition(
                         getX() + CONTENT_PADDING,
-                        getY()
+                        getY() + 1
                 );
 
                 upButton.render(guiGraphics, mouseX, mouseY, delta);
@@ -183,7 +184,7 @@ public class ButtonListWidget extends AbstractSelectionList<ButtonListWidget.@No
             if(downButton != null) {
                 downButton.setPosition(
                         getX() + CONTENT_PADDING,
-                        getY() + getContentHeight() / 2 + 2
+                        getY() + getContentHeight() / 2 + 1
                 );
 
                 downButton.render(guiGraphics, mouseX, mouseY, delta);

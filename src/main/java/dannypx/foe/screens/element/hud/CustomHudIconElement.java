@@ -13,7 +13,6 @@ import dannypx.foe.screens.interfaces.ScreenConstants;
 import dannypx.foe.type.Alignment;
 import dannypx.foe.type.custom_value.ItemStackValue;
 import dannypx.foe.type.tuple.Pair;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -53,7 +52,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
 
     //region Methods
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphics guiGraphics) {
         if(!customHudIcon.isShowElement()) { return; }
 
         int scaledWidth = (int) (Minecraft.getInstance().getWindow().getGuiScaledWidth() * (1 / customHudIcon.getScale()));
@@ -97,13 +96,13 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
                 default -> 0;
             };
 
-            this.renderBox(guiGraphics, deltaTracker, x, y);
-            this.renderComponent(guiGraphics, deltaTracker, x, y);
+            this.renderBox(guiGraphics, x, y);
+            this.renderComponent(guiGraphics, x, y);
         }
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderComponent(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void renderComponent(GuiGraphics guiGraphics, int x, int y) {
         int componentX;
         int componentY;
 
@@ -159,7 +158,7 @@ public class CustomHudIconElement extends Element implements ScreenConstants {
         };
     }
 
-    private void renderBox(GuiGraphics guiGraphics, DeltaTracker deltaTracker, int x, int y) {
+    private void renderBox(GuiGraphics guiGraphics, int x, int y) {
         int boxX = x;
         int boxY = y;
 
