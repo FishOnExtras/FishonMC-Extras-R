@@ -1959,31 +1959,37 @@ public class PlaceholderRegistry {
 
         static MutableComponent getLastCaughtItemName(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return Component.empty();
             return CatchingHandler.instance().getLastCaughtItems().get(index).value1().getName().copy();
         }
 
         static Number getLastCaughtItemStackAmount(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return null;
             return CatchingHandler.instance().getLastCaughtItems().get(index).value2();
         }
 
         static String getLastCaughtItemId(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return "";
             return CatchingHandler.instance().getLastCaughtItems().get(index).value3().value1();
         }
 
         static Number getLastCaughtItemDryStreak(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return null;
             return CatchingHandler.instance().getLastCaughtItems().get(index).value3().value2();
         }
 
         static MutableComponent getLastCaughtItemLore(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return Component.empty();
             return getLoreValue(CatchingHandler.instance().getLastCaughtItems().get(index).value1(), indices.get(1));
         }
 
         static PlaceholderValue getLastCaughtItemNbt(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CatchingHandler.instance().getLastCaughtItems().isEmpty() || CatchingHandler.instance().getLastCaughtItems().size() >= index) return PlaceholderValue.emptyText();
             return getNbtValue(CatchingHandler.instance().getLastCaughtItems().get(index).value1(), indices.subList(1, indices.size()));
         }
 
@@ -2112,26 +2118,31 @@ public class PlaceholderRegistry {
 
         static MutableComponent getLastRewardedItemName(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(QuestHandler.instance().getLastRewardedItems().isEmpty() || QuestHandler.instance().getLastRewardedItems().size() >= index) return Component.empty();
             return QuestHandler.instance().getLastRewardedItems().get(index).value1().getName().copy();
         }
 
         static MutableComponent getLastRewardedItemRarity(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(QuestHandler.instance().getLastRewardedItems().isEmpty() || QuestHandler.instance().getLastRewardedItems().size() >= index) return Component.empty();
             return QuestHandler.instance().getLastRewardedItems().get(index).value1().getRarityComponent().copy();
         }
 
         static Number getLastRewardedItemAmount(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(QuestHandler.instance().getLastRewardedItems().isEmpty() || QuestHandler.instance().getLastRewardedItems().size() >= index) return null;
             return QuestHandler.instance().getLastRewardedItems().get(index).value2();
         }
 
         static MutableComponent getLastRewardedItemLore(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(QuestHandler.instance().getLastRewardedItems().isEmpty() || QuestHandler.instance().getLastRewardedItems().size() >= index) return Component.empty();
             return getLoreValue(QuestHandler.instance().getLastRewardedItems().get(index).value1(), indices.get(1));
         }
 
         static PlaceholderValue getLastRewardedItemNbt(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(QuestHandler.instance().getLastRewardedItems().isEmpty() || QuestHandler.instance().getLastRewardedItems().size() >= index) return PlaceholderValue.emptyText();
             return getNbtValue(QuestHandler.instance().getLastRewardedItems().get(index).value1(), indices.subList(1, indices.size()));
         }
     }
@@ -2329,11 +2340,13 @@ public class PlaceholderRegistry {
     static class CrewDataContext {
         static String getUuid(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CrewHandler.instance().getCrewListOrdered().isEmpty() || CrewHandler.instance().getCrewListOrdered().size() >= index) return "";
             return CrewHandler.instance().getCrewListOrdered().get(index).value1().toString();
         }
 
         static String getName(List<String> indices) {
             int index = Integer.parseInt(indices.getFirst());
+            if(CrewHandler.instance().getCrewListOrdered().isEmpty() || CrewHandler.instance().getCrewListOrdered().size() >= index) return "";
             return CrewHandler.instance().getCrewListOrdered().get(index).value2();
         }
     }
