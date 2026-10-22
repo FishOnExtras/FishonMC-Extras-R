@@ -31,12 +31,6 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
 
     @Inject(method = "submitArmWithItem", at = @At("HEAD"), cancellable = true)
     private void injectSubmitArmWithItemHead(S armedEntityRenderState, ItemStackRenderState itemStackRenderState, ItemStack itemStack, HumanoidArm humanoidArm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int packedLight, CallbackInfo ci) {
-        RodRendererHandler.RodSettings settings = getRodSettings(armedEntityRenderState, itemStack);
-        if(settings == null) return;
-        float side = humanoidArm == HumanoidArm.RIGHT ? 1.0f : -1.0f;
-        poseStack.pushPose();
-        poseStack.translate(-side * settings.offsetRight(), -settings.offsetUp(), -settings.offsetForward());
-
         if (ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && !Configs.rendererConfig.showPet.get()
@@ -44,9 +38,14 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
                 && Configs.mixinConfig.itemInHandLayerMixinSubmitArmWithItem.get()
                 && ValidateItem.isPet(itemStack).value1()
         ) {
-            poseStack.popPose();
             ci.cancel();
         }
+
+        RodRendererHandler.RodSettings settings = getRodSettings(armedEntityRenderState, itemStack);
+        if(settings == null) return;
+        float side = humanoidArm == HumanoidArm.RIGHT ? 1.0f : -1.0f;
+        poseStack.pushPose();
+        poseStack.translate(-side * settings.offsetRight(), -settings.offsetUp(), -settings.offsetForward());
     }
 
     @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"))

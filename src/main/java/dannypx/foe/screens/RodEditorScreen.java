@@ -2,14 +2,17 @@ package dannypx.foe.screens;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.nearby_dispatcher.types.RodType;
+import dannypx.foe.screens.element.BoxElement;
+import dannypx.foe.screens.element.Element;
+import dannypx.foe.screens.widget.SmallButtonBuilder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +25,7 @@ import java.util.Locale;
 
 public class RodEditorScreen extends DefaultModScreen {
     //region Fields
-    private static final int PREVIEW_SCALE = 170;
+    private static int PREVIEW_SCALE = 170;
     private static final float HEAD_FOCUS = 0.4f;
 
     private static final int EDIT_BUTTON_WIDTH = 24;
@@ -46,6 +49,17 @@ public class RodEditorScreen extends DefaultModScreen {
     private static final float TIP_UP = 0.37f;
     private static final float TIP_FORWARD = 0.6f;
 
+    private static final float CUBE_HALF = 0.02f;
+
+    private static final float AVATAR_MODEL_SCALE = 0.9375f;
+    private static final float MODEL_ORIGIN_HEIGHT = 1.501f;
+
+    public record CubeBounds(float centerX, float centerY, float centerZ, float halfEdge) {}
+
+    private record LocalPoint(float right, float forward, float up) {}
+
+    private List<Element> elements = new ArrayList<>();
+
     private EditBox scaleEditBox;
     private EditBox offsetXEditBox;
     private EditBox offsetYEditBox;
@@ -68,7 +82,8 @@ public class RodEditorScreen extends DefaultModScreen {
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.initWidgets();
+        this.initElements();
     }
 
     @Override
@@ -96,10 +111,9 @@ public class RodEditorScreen extends DefaultModScreen {
             } finally {
                 minecraft.player.tickCount = originalTickCount;
             }
-
-            float[] screenPos = this.projectLineOrigin(minecraft.player, mouseX, mouseY);
-            this.drawRedDot(guiGraphics, Math.round(screenPos[0]), Math.round(screenPos[1]));
         }
+
+        this.renderBoxes(guiGraphics);
     }
 
     @Override
@@ -108,6 +122,11 @@ public class RodEditorScreen extends DefaultModScreen {
         guiGraphics.nextStratum();
 
         this.renderTitles(guiGraphics);
+        this.renderHints(guiGraphics);
+    }
+
+    private void renderBoxes(GuiGraphics guiGraphics) {
+        elements.forEach(element -> element.render(guiGraphics));
     }
 
     private void renderTitles(GuiGraphics guiGraphics) {
@@ -132,11 +151,19 @@ public class RodEditorScreen extends DefaultModScreen {
         guiGraphics.drawCenteredString(font, Component.literal("Scale"), scaleBoxX() + BOX_WIDTH / 2, scaleTitleY, 0xFFFFFFFF);
     }
 
-    private float[] projectLineOrigin(Player player, int mouseX, int mouseY) {
+    private void renderHints(GuiGraphics guiGraphics) {
+        guiGraphics.drawString(font,
+                "\uDB80\uDC67 Scroll to zoom",
+                PADDING, minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight,
+                CommonColors.WHITE,
+                true
+        );
+    }
+
+    private LocalPoint lineOriginLocalPoint(Player player) {
         float playerScale = player.getScale();
 
-        HumanoidArm holdingArm = player.getMainHandItem().is(Items.FISHING_ROD)
-                ? player.getMainArm() : player.getMainArm().getOpposite();
+        HumanoidArm holdingArm = player.getMainHandItem().is(Items.FISHING_ROD) ? player.getMainArm() : player.getMainArm().getOpposite();
         float side = holdingArm == HumanoidArm.RIGHT ? 1.0f : -1.0f;
 
         float scaleChange = boxValue(scaleEditBox, 1.0f) - 1.0f;
@@ -147,21 +174,20 @@ public class RodEditorScreen extends DefaultModScreen {
         float localRight = side * (HAND_OUTWARD + outward) * playerScale;
         float localForward = (HAND_FORWARD + forward) * playerScale;
         float localUp = player.getEyeHeight() - (player.isCrouching() ? CROUCH_DROP : 0f) - HAND_DOWN * playerScale + up * playerScale;
+        return new LocalPoint(localRight, localForward, localUp);
+    }
 
-        float centerX = width / 2f;
-        float centerY = height / 2f;
-        float yawFactor = (float) Math.atan((centerX - mouseX) / 40f);
-        float pitchFactor = (float) Math.atan((centerY - mouseY) / 40f);
-        double bodyYaw = Math.toRadians(180.0 + yawFactor * 20.0);
-        double tilt = Math.toRadians(pitchFactor * 20.0);
+    public CubeBounds cubeInModelSpace(Player player) {
+        LocalPoint origin = lineOriginLocalPoint(player);
+        float worldToModel = 1.0f / (player.getScale() * AVATAR_MODEL_SCALE);
+        float worldHalfEdge = CUBE_HALF * player.getScale() * boxValue(scaleEditBox, 1.0f);
 
-        double worldX = -Math.cos(bodyYaw) * localRight - Math.sin(bodyYaw) * localForward;
-        double worldZ = -Math.sin(bodyYaw) * localRight + Math.cos(bodyYaw) * localForward;
-        double tiltedY = localUp * Math.cos(tilt) - worldZ * Math.sin(tilt);
-
-        float screenX = centerX - PREVIEW_SCALE * (float) worldX;
-        float screenY = centerY + PREVIEW_SCALE * (player.getBbHeight() / 2f + HEAD_FOCUS * playerScale - (float) tiltedY);
-        return new float[]{screenX, screenY};
+        return new CubeBounds(
+                -origin.right() * worldToModel,
+                MODEL_ORIGIN_HEIGHT - origin.up() * worldToModel,
+                -origin.forward() * worldToModel,
+                worldHalfEdge * worldToModel
+        );
     }
 
     private float boxValue(EditBox box, float fallback) {
@@ -170,13 +196,7 @@ public class RodEditorScreen extends DefaultModScreen {
         return value != null ? value : fallback;
     }
 
-    private void drawRedDot(GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.fill(x - 4, y - 2, x + 4, y + 2, 0xFF8B0000);
-        guiGraphics.fill(x - 2, y - 4, x + 2, y + 4, 0xFF8B0000);
-        guiGraphics.fill(x - 2, y - 2, x + 2, y + 2, 0xFFFF0000);
-    }
-
-    private void renderWidgets() {
+    private void initWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.getScaleEditBox());
@@ -224,6 +244,38 @@ public class RodEditorScreen extends DefaultModScreen {
         widgets.add(this.getLineOffsetButton("++", offsetBoxY() - rowStep * 2, 2, STEP_BIG, lineOffsetZEditBox, Tooltip.create(Component.literal("Increase offset by 0.1"))));
 
         widgets.forEach(this::addRenderableWidget);
+    }
+
+    private void initElements() {
+        this.elements.clear();
+
+        int topButtonY = offsetBoxY() - (EDIT_BUTTON_HEIGHT + PADDING_QUART) * 2;
+        int axisY = topButtonY - font.lineHeight - PADDING_QUART;
+        int titleY = axisY - font.lineHeight - PADDING_QUART;
+
+        this.elements.add(
+                new BoxElement(
+                        - 5, titleY - PADDING_QUART - 4,
+                        BOX_WIDTH * 3 + PADDING_HALF * 3 + PADDING_QUART + 8, EDIT_BUTTON_HEIGHT * 5 + font.lineHeight * 2 + PADDING_QUART * 8 + 8,
+                        false, false
+                )
+        );
+
+        this.elements.add(
+                new BoxElement(
+                        width + 3 - (BOX_WIDTH * 3 + PADDING_HALF * 3 + PADDING_QUART + 8), titleY - PADDING_QUART - 4,
+                        BOX_WIDTH * 3 + PADDING_HALF * 3 + PADDING_QUART * 2 + 8, EDIT_BUTTON_HEIGHT * 5 + font.lineHeight * 2 + PADDING_QUART * 8 + 8,
+                        false, false
+                )
+        );
+
+        this.elements.add(
+                new BoxElement(
+                        scaleBoxX() - (PADDING_QUART + EDIT_BUTTON_WIDTH) * 2 - PADDING_HALF, scaleBoxY() - PADDING_HALF * 2 - font.lineHeight,
+                        EDIT_BUTTON_WIDTH * 4 + BOX_WIDTH + PADDING_QUART * 3 + PADDING_HALF * 3, PADDING_HALF * 2 + EDIT_BUTTON_HEIGHT + PADDING + font.lineHeight,
+                        false, false
+                )
+        );
     }
 
     private int scaleBoxX() {
@@ -309,23 +361,35 @@ public class RodEditorScreen extends DefaultModScreen {
         return lineOffsetZEditBox;
     }
 
-    private Button getScaleButton(String label, int x, float step, Tooltip tooltip) {
-        return Button.builder(Component.literal(label), button -> adjustScale(scaleEditBox, step))
-                .bounds(x, scaleBoxY(), EDIT_BUTTON_WIDTH, EDIT_BUTTON_HEIGHT)
+    private AbstractWidget getScaleButton(String label, int x, float step, Tooltip tooltip) {
+        return new SmallButtonBuilder(
+                x + PADDING_QUART, scaleBoxY() + PADDING_QUART,
+                EDIT_BUTTON_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
+                button -> adjustScale(scaleEditBox, step))
+                .icon(label)
+                .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
                 .build();
     }
 
-    private Button getOffsetButton(String label, int y, int column, float step, EditBox editBox, Tooltip tooltip) {
-        return Button.builder(Component.literal(label), button -> adjustOffset(editBox, step))
-                .bounds(offsetBoxX(column), y, BOX_WIDTH, EDIT_BUTTON_HEIGHT)
+    private AbstractWidget getOffsetButton(String label, int y, int column, float step, EditBox editBox, Tooltip tooltip) {
+        return new SmallButtonBuilder(
+                offsetBoxX(column) + PADDING_QUART, y + PADDING_QUART,
+                BOX_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
+                button -> adjustOffset(editBox, step))
+                .icon(label)
+                .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
                 .build();
     }
 
-    private Button getLineOffsetButton(String label, int y, int column, float step, EditBox editBox, Tooltip tooltip) {
-        return Button.builder(Component.literal(label), button -> adjustOffset(editBox, step))
-                .bounds(lineOffsetBoxX(column), y, BOX_WIDTH, EDIT_BUTTON_HEIGHT)
+    private AbstractWidget getLineOffsetButton(String label, int y, int column, float step, EditBox editBox, Tooltip tooltip) {
+        return new SmallButtonBuilder(
+                lineOffsetBoxX(column) + PADDING_QUART, y + PADDING_QUART,
+                BOX_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
+                button -> adjustOffset(editBox, step))
+                .icon(label)
+                .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
                 .build();
     }
@@ -435,6 +499,14 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private static String format(float value) {
         return String.format(Locale.US, "%.2f", value);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if(verticalAmount > 0 && PREVIEW_SCALE > 0) PREVIEW_SCALE += 3;
+        else if(PREVIEW_SCALE > 0) PREVIEW_SCALE -= 3;
+
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     @Override
