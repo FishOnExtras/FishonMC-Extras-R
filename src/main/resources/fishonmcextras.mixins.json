@@ -23,6 +23,8 @@
     "inject.AbstractContainerScreenMixin",
     "inject.AbstractRecipeBookScreenMixin",
     "inject.AbstractSelectionListMixin",
+    "inject.AvatarRenderMixin",
+    "inject.AvatarRenderStateMixin",
     "inject.BossHealthOverlayMixin",
     "inject.ChatScreenMixin",
     "inject.ClientPacketListenerMixin",
@@ -38,11 +40,13 @@
     "inject.HumanoidArmorLayerMixin",
     "inject.InventoryScreenMixin",
     "inject.ItemInHandLayerMixin",
+    "inject.ItemInHandRendererMixin",
     "inject.JumpableVehicleBarMixin",
     "inject.LevelRendererBrightnessGetterMixin",
     "inject.LivingEntityRendererMixin",
     "inject.LivingEntityRenderStateMixin",
     "inject.LocatorBarMixin",
+    "inject.PlayerModelMixin",
     "inject.PlayerTabOverlayMixin",
     "inject.RecipeBookWidgetMixin"
   ]
