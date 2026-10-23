@@ -49,6 +49,7 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
 
         if (ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
                 && Configs.mixinConfig.itemInHandLayerMixinSubmitArmWithItemHead.get()
         ) {
             RodRendererHandler.RodSettings settings = getRodSettings(armedEntityRenderState, itemStack);
@@ -91,6 +92,7 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
 
         if (ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
                 && Configs.mixinConfig.itemInHandLayerMixinSubmitArmWithItemHead.get()
         ) {
             RodRendererHandler.RodSettings settings = getRodSettings(armedEntityRenderState, itemStack);
@@ -103,6 +105,7 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
     private void injectSubmitArmWithItemReturn(S armedEntityRenderState, ItemStackRenderState itemStackRenderState, ItemStack itemStack, HumanoidArm humanoidArm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, CallbackInfo ci) {
         if (ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
                 && Configs.mixinConfig.itemInHandLayerMixinSubmitArmWithItemReturn.get()
         ) {
             if(getRodSettings(armedEntityRenderState, itemStack) == null) return;

@@ -1,5 +1,7 @@
 package dannypx.foe.mixin.inject;
 
+import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.item.FishingRodTagObject;
 import dannypx.foe.item.ValidateItem;
 import dannypx.foe.type.tuple.Pair;
@@ -30,7 +32,9 @@ public abstract class FishingHookEntityMixin implements IFishingHookEntity {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void injectTick(CallbackInfo ci) {
-        if(this.getPlayerOwner() != null
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && this.getPlayerOwner() != null
                 && currentFishingRod.getItemStack() == ItemStack.EMPTY
         ) {
             Pair<Boolean, @Nullable FishingRodTagObject> validatedFishingRod = ValidateItem.isFishingRod(this.getPlayerOwner().getMainHandItem());

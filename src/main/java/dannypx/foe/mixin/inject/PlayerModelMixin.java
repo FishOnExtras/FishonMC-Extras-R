@@ -20,7 +20,7 @@ public abstract class PlayerModelMixin {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.rendererConfig.useBothHandsHoldingFishThirdPerson.get()
-                && Configs.mixinConfig.avatarRenderMixinExtractRenderState.get()
+                && Configs.mixinConfig.playerModelMixinSetupAnim.get()
         ) {
             if(!((IFishPoseState) avatarRenderState).foer$isHoldingFish()) return;
 
