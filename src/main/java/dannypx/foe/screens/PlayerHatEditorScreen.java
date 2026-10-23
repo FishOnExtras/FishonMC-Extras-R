@@ -2,6 +2,8 @@ package dannypx.foe.screens;
 
 import dannypx.foe.config.Configs;
 import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.screens.element.BoxElement;
+import dannypx.foe.screens.element.Element;
 import dannypx.foe.screens.widget.SmallButtonBuilder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -10,6 +12,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import java.util.Locale;
 
 public class PlayerHatEditorScreen extends DefaultModScreen {
     //region Fields
-    private static final int PREVIEW_SCALE = 190;
+    private static int PREVIEW_SCALE = 190;
     private static final float HEAD_FOCUS = 0.8f;
 
     private static final int EDIT_BUTTON_WIDTH = 24;
@@ -35,6 +38,8 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private EditBox scaleEditBox;
     private EditBox heightEditBox;
+
+    private List<Element> elements = new ArrayList<>();
     //endregion
 
     //region Methods
@@ -45,7 +50,8 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     @Override
     protected void init() {
         super.init();
-        this.renderWidgets();
+        this.initWidgets();
+        this.initElements();
     }
 
     @Override
@@ -63,6 +69,8 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
             InventoryScreen.renderEntityInInventoryFollowsMouse(
                     guiGraphics, 0, 0, width, height, PREVIEW_SCALE, HEAD_FOCUS, mouseX, mouseY, minecraft.player);
         }
+
+        this.renderBoxes(guiGraphics);
     }
 
     @Override
@@ -71,6 +79,11 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         guiGraphics.nextStratum();
 
         this.renderTitles(guiGraphics);
+        this.renderHints(guiGraphics);
+    }
+
+    private void renderBoxes(GuiGraphics guiGraphics) {
+        elements.forEach(element -> element.render(guiGraphics));
     }
 
     private void renderTitles(GuiGraphics guiGraphics) {
@@ -82,7 +95,16 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         guiGraphics.drawCenteredString(font, Component.literal("Height"), heightBoxX() + BOX_WIDTH / 2, heightTitleY, 0xFFFFFFFF);
     }
 
-    private void renderWidgets() {
+    private void renderHints(GuiGraphics guiGraphics) {
+        guiGraphics.drawString(font,
+                "\uDB80\uDC67 Scroll to zoom",
+                PADDING, minecraft.getWindow().getGuiScaledHeight() - PADDING - font.lineHeight,
+                CommonColors.WHITE,
+                true
+        );
+    }
+
+    private void initWidgets() {
         List<AbstractWidget> widgets = new ArrayList<>();
 
         widgets.add(this.getScaleEditBox());
@@ -100,6 +122,29 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         widgets.add(this.getHeightButton("++", heightBoxY() - rowStep * 2, HEIGHT_STEP_BIG, Tooltip.create(Component.literal("Increase height by 0.1"))));
 
         widgets.forEach(this::addRenderableWidget);
+    }
+
+    private void initElements() {
+        this.elements.clear();
+
+        int topButtonY = heightBoxY() - (EDIT_BUTTON_HEIGHT + PADDING_QUART) * 2;
+        int heightTitleY = topButtonY - font.lineHeight - PADDING_QUART;
+
+        this.elements.add(
+                new BoxElement(
+                        width + 3 - (BOX_WIDTH + PADDING_HALF + PADDING_QUART + 8), heightTitleY - PADDING_QUART - 4,
+                        BOX_WIDTH + PADDING_HALF + PADDING_QUART * 2 + 8, EDIT_BUTTON_HEIGHT * 5 + font.lineHeight + PADDING_QUART * 8 + 8,
+                        false, false
+                )
+        );
+
+        this.elements.add(
+                new BoxElement(
+                        scaleBoxX() - (PADDING_QUART + EDIT_BUTTON_WIDTH) * 2 - PADDING_HALF, scaleBoxY() - PADDING_HALF * 2 - font.lineHeight,
+                        EDIT_BUTTON_WIDTH * 4 + BOX_WIDTH + PADDING_QUART * 3 + PADDING_HALF * 3, PADDING_HALF * 2 + EDIT_BUTTON_HEIGHT + PADDING + font.lineHeight,
+                        false, false
+                )
+        );
     }
 
     private int scaleBoxX() {
@@ -202,6 +247,14 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
 
     private static String format(float value) {
         return String.format(Locale.US, "%.2f", value);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        if(verticalAmount > 0 && PREVIEW_SCALE > 0) PREVIEW_SCALE += 3;
+        else if(PREVIEW_SCALE > 0) PREVIEW_SCALE -= 3;
+
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
     @Override

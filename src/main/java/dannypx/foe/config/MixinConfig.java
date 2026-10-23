@@ -10,7 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 8)
+@Version(version = 9)
 @Translatable.Name("§7§oDev§8§o: §f§oMixin Toggles")
 @Translatable.Desc("§4WARNING §7These are the toggles to mixins. Do not touch these unless you know what you are doing")
 public class MixinConfig extends Config {
@@ -135,8 +135,19 @@ public class MixinConfig extends Config {
     @Name("ItemInHandLayer Mixin")
     public ConfigGroup itemInHandLayerMixinGroup = new ConfigGroup("item_in_hand_layer_mixin");
 
+    public ValidatedBoolean itemInHandLayerMixinSubmitArmWithItemInvoke = new ValidatedBoolean(true);
+
+
+    public ValidatedBoolean itemInHandLayerMixinSubmitArmWithItemReturn = new ValidatedBoolean(true);
+
     @ConfigGroup.Pop
-    public ValidatedBoolean itemInHandLayerMixinSubmitArmWithItem = new ValidatedBoolean(true);
+    public ValidatedBoolean itemInHandLayerMixinSubmitArmWithItemHead = new ValidatedBoolean(true);
+
+    @Name("ItemInHandRenderer Mixin")
+    public ConfigGroup itemInHandRendererMixinGroup = new ConfigGroup("item_in_hand_renderer_mixin");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean itemInHandLayerMixinRenderArmWithItem = new ValidatedBoolean(true);
 
     @Name("LevelRendererBrightnessGetter Mixin")
     public ConfigGroup levelRendererBrightnessGetterMixinGroup = new ConfigGroup("level_renderer_brightness_getter_mixin");
@@ -187,7 +198,22 @@ public class MixinConfig extends Config {
     @Name("TextDisplay Mixin")
     public ConfigGroup textDisplayMixinGroup = new ConfigGroup("text_display_mixin_group");
 
+    @ConfigGroup.Pop
     public ValidatedBoolean textDisplayMixinOnSyncedDataUpdated = new ValidatedBoolean(true);
+
+    @Name("AvatarRender Mixin")
+    public ConfigGroup avatarRenderMixinGroup = new ConfigGroup("avatar_render_mixin_group");
+
+    public ValidatedBoolean avatarRenderMixinExtractRenderState = new ValidatedBoolean(true);
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean avatarRenderMixinRenderHand = new ValidatedBoolean(true);
+
+    @Name("PlayerModelMixin Mixin")
+    public ConfigGroup PlayerModelMixinGroup = new ConfigGroup("player_model_mixin_group");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean playerModelMixinSetupAnim = new ValidatedBoolean(true);
 
     @Override
     public @NotNull FileType fileType() {

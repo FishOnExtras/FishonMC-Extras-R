@@ -83,6 +83,8 @@ public class CommandRegistry {
                                         .then(command("name_plates").executes(Command.Toggle::toggleNamePlates))
                                         .then(command("fishingHook_model").executes(Command.Toggle::toggleFishingHookModel))
                                         .then(command("bait_on_fishing_hook").executes(Command.Toggle::toggleBaitOnFishingHook))
+                                        .then(command("hold_fish_first_person").executes(Command.Toggle::toggleHoldFishFirstPerson))
+                                        .then(command("hold_fish_third_person").executes(Command.Toggle::toggleHoldFishThirdPerson))
                                 )
                         )
                         .then(command("tracker")
@@ -373,6 +375,20 @@ public class CommandRegistry {
             public static int toggleBaitOnFishingHook(CommandContext<FabricClientCommandSource> context) {
                 return executeCommand(context, Component.literal("Toggled Bait on Fishing Hook"), () -> {
                     Configs.rendererConfig.showBaitOnFishingHook.accept(!Configs.rendererConfig.showBaitOnFishingHook.get());
+                    Configs.rendererConfig.save();
+                });
+            }
+
+            public static int toggleHoldFishFirstPerson(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Toggled Hold Fish in First Person"), () -> {
+                    Configs.rendererConfig.useBothHandsHoldingFishFirstPerson.accept(!Configs.rendererConfig.useBothHandsHoldingFishFirstPerson.get());
+                    Configs.rendererConfig.save();
+                });
+            }
+
+            public static int toggleHoldFishThirdPerson(CommandContext<FabricClientCommandSource> context) {
+                return executeCommand(context, Component.literal("Toggled Hold Fish in Third Person"), () -> {
+                    Configs.rendererConfig.useBothHandsHoldingFishThirdPerson.accept(!Configs.rendererConfig.useBothHandsHoldingFishThirdPerson.get());
                     Configs.rendererConfig.save();
                 });
             }

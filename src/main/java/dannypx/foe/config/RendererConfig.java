@@ -14,7 +14,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 7)
+@Version(version = 8)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
@@ -90,6 +90,28 @@ public class RendererConfig extends Config {
 
     @Name("Use the 3D fishing hook texture")
     public ValidatedBoolean showNewFishingHook = new ValidatedBoolean(true);
+
+    @Name("Fish Holding")
+    public ConfigGroup fishHolding = new ConfigGroup("fish_holding_group");
+
+    @Name("Hold fish in both hands in third person")
+    public ValidatedBoolean useBothHandsHoldingFishThirdPerson = new ValidatedBoolean(true);
+
+    @Name("Hold fish in both hands in first person")
+    public ValidatedBoolean useBothHandsHoldingFishFirstPerson = new ValidatedBoolean(true);
+
+    public ValidatedFloat firstPersonMinimumScaleInUnits = new ValidatedFloat(256, 2048, 16);
+
+    public ValidatedFloat firstPersonMaximumScaleInUnits = new ValidatedFloat(1400, 2048, 16);
+
+    public ValidatedFloat firstPersonRateScaleInUnits = new ValidatedFloat(1.00F, 10.00F, 0.01F, ValidatedNumber.WidgetType.SLIDER);
+
+    public ValidatedFloat thirdPersonMinimumScaleInUnits = new ValidatedFloat(16, 2048, 16);
+
+    public ValidatedFloat thirdPersonMaximumScaleInUnits = new ValidatedFloat(50, 2048, 16);
+
+    @ConfigGroup.Pop
+    public ValidatedFloat thirdPersonRateScaleInUnits = new ValidatedFloat(0.60F, 10.00F, 0.01F, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Fishing Hook Light")
     @Desc("§7This is the light that emits from the fishing hook")

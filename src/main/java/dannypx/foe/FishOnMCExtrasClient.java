@@ -2,6 +2,7 @@ package dannypx.foe;
 
 import dannypx.foe.command.CommandRegistry;
 import dannypx.foe.entity.FishingHookEntityModel;
+import dannypx.foe.entity.RodCubeLayer;
 import dannypx.foe.handler.fetch.*;
 import dannypx.foe.handler.io.ChangelogFetcherHandler;
 import dannypx.foe.handler.logic.*;
@@ -23,14 +24,20 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -52,8 +59,15 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         ClientEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
         ScreenEvents.AFTER_INIT.register(this::onAfterInitScreen);
         ItemTooltipCallback.EVENT.register(this::onItemTooltip);
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::onLivingEntityFeatureRenderingRegistrationCallback);
 
         this.initHudRenderer();
+    }
+
+    private void onLivingEntityFeatureRenderingRegistrationCallback(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?,?,?> livingEntityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, EntityRendererProvider.Context context) {
+        if (entityType == EntityType.PLAYER && livingEntityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
+            registrationHelper.register(RodCubeLayer.create(avatarRenderer));
+        }
     }
 
     private void onItemTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipType, List<Component> lines) {
@@ -79,8 +93,6 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
     private void onAfterInitScreen(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
         ScreenHander.instance().onAfterInitScreen(minecraft, screen, scaledWidth, scaledHeight);
     }
-
-
 
     private void onEntityUnload(Entity entity, ClientLevel clientLevel) {
         ChummerHandler.instance().onEntityUnload(entity, clientLevel);
