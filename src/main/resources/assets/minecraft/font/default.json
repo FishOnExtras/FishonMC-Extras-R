@@ -238,6 +238,15 @@
       "chars": [
         "\uDB80\uDC69"
       ]
+    },
+    {
+      "type": "bitmap",
+      "file": "minecraft:font/icons/icon.png",
+      "height": 21,
+      "ascent": 14,
+      "chars": [
+        "\uDB80\uDC6A"
+      ]
     }
   ]
 }

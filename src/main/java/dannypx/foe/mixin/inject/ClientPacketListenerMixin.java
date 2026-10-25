@@ -5,8 +5,10 @@ import dannypx.foe.handler.logic.CatchingHandler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.CrewHandler;
 import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.TextDisplayHandler;
 import dannypx.foe.nearby_dispatcher.NearbyDispatcher;
 import dannypx.foe.nearby_dispatcher.types.HatType;
+import dannypx.foe.nearby_dispatcher.types.ModUserType;
 import dannypx.foe.nearby_dispatcher.types.RodType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
@@ -56,6 +58,7 @@ public abstract class ClientPacketListenerMixin {
                 CrewHandler.instance().onPlayerLeave(uuid);
                 HatType.onPlayerLeave(uuid);
                 RodType.onPlayerLeave(uuid);
+                ModUserType.onPlayerLeave(uuid);
             }
         }
     }

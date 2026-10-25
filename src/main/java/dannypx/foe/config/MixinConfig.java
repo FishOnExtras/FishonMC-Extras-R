@@ -201,6 +201,12 @@ public class MixinConfig extends Config {
     @ConfigGroup.Pop
     public ValidatedBoolean textDisplayMixinOnSyncedDataUpdated = new ValidatedBoolean(true);
 
+    @Name("TextDisplayRenderer Mixin")
+    public ConfigGroup textDisplayRendererMixinGroup = new ConfigGroup("text_display_renderer_mixin_group");
+
+    @ConfigGroup.Pop
+    public ValidatedBoolean textDisplayRendererMixinExtractRenderState = new ValidatedBoolean(true);
+
     @Name("AvatarRender Mixin")
     public ConfigGroup avatarRenderMixinGroup = new ConfigGroup("avatar_render_mixin_group");
 

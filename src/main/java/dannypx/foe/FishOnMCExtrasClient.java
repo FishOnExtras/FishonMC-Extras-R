@@ -11,6 +11,7 @@ import dannypx.foe.handler.store.*;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.config.Configs;
 import dannypx.foe.handler.logic.PlaceholderHandler;
+import dannypx.foe.nearby_dispatcher.types.ModUserType;
 import dannypx.foe.nearby_dispatcher.types.NearbyBigType;
 import dannypx.foe.nearby_dispatcher.NearbyDispatcher;
 import dannypx.foe.nearby_dispatcher.types.HatType;
@@ -114,6 +115,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         NearbyBigType.init();
         HatType.init();
         RodType.init();
+        ModUserType.init();
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
@@ -122,6 +124,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
 
         InventoryHandler.instance().onLeave();
         ChummerHandler.instance().onLeave();
+        TextDisplayHandler.instance().onLeave();
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
@@ -132,6 +135,7 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
             ConstantDataHandler.instance().init();
             QuestDataHandler.instance().init();
             CrewDataHandler.instance().init();
+            TextDisplayHandler.instance().init();
             CustomHudDataHandler.instance().init();
             CustomHudIconDataHandler.instance().init();
             CustomButtonDataHandler.instance().init();

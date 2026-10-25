@@ -48,6 +48,7 @@
     "inject.LocatorBarMixin",
     "inject.PlayerModelMixin",
     "inject.PlayerTabOverlayMixin",
-    "inject.RecipeBookWidgetMixin"
+    "inject.RecipeBookWidgetMixin",
+    "inject.TextDisplayRendererMixin"
   ]
 }

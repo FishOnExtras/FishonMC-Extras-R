@@ -26,7 +26,7 @@ public class NearbyDispatcher {
     private static final int BUNDLE_ENTRY_HEADER_SIZE = 2;
 
     private static final long FRAME_TIMEOUT_MILLIS = 2000;
-    private static final int STABLE_TICKS_REQUIRED = 10;
+    private static final int STABLE_TICKS_REQUIRED = 5;
     private static final long MIN_FRAME_GAP_MILLIS = 1000;
 
     public interface Handler {
