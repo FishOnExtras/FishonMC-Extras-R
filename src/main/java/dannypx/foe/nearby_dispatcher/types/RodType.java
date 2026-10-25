@@ -17,9 +17,6 @@ public class RodType {
     private static final ByteQuantizer ROD_SCALE = new ByteQuantizer(0.50f, 1.50f, 100);
     private static final ByteQuantizer ROD_OFFSET = new ByteQuantizer(-0.50f, 0.50f, 100);
 
-    private static final double NEARBY_RANGE = 24.0;
-    private static final int NEWCOMER_DELAY_TICKS = 10;
-
     private static final Set<UUID> announcedTo = new HashSet<>();
     private static final Map<UUID, Integer> ticksInRange = new HashMap<>();
 
@@ -38,7 +35,7 @@ public class RodType {
         queueCurrent(self);
 
         for (Player other : minecraft.level.players()) {
-            if (other != self && other.distanceToSqr(self) < NEARBY_RANGE * NEARBY_RANGE) {
+            if (other != self && other.distanceToSqr(self) < NearbyDispatcher.NEARBY_RANGE * NearbyDispatcher.NEARBY_RANGE) {
                 announcedTo.add(other.getUUID());
             }
         }
@@ -60,8 +57,8 @@ public class RodType {
             loaded.add(otherUuid);
             if (announcedTo.contains(otherUuid)) continue;
 
-            if (other.distanceToSqr(self) < NEARBY_RANGE * NEARBY_RANGE) {
-                if (ticksInRange.merge(otherUuid, 1, Integer::sum) >= NEWCOMER_DELAY_TICKS) {
+            if (other.distanceToSqr(self) < NearbyDispatcher.NEARBY_RANGE * NearbyDispatcher.NEARBY_RANGE) {
+                if (ticksInRange.merge(otherUuid, 1, Integer::sum) >= NearbyDispatcher.NEWCOMER_DELAY_TICKS) {
                     readyNewcomers.add(otherUuid);
                 }
             } else {

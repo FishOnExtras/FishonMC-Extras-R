@@ -131,6 +131,9 @@ public class RendererConfig extends Config {
     @Name("Show bait on fishing hook")
     public ValidatedBoolean showBaitOnFishingHook = new ValidatedBoolean(true);
 
+    @Name("Show ripple on bite")
+    public ValidatedBoolean showRippleOnBite = new ValidatedBoolean(true);
+
     @Name("Hide armor on players")
     public ValidatedBoolean hideArmor = new ValidatedBoolean(false);
 

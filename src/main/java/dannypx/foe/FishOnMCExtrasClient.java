@@ -106,14 +106,11 @@ public class FishOnMCExtrasClient implements ClientModInitializer {
         this.registerEntityModels();
         CodeExecuterHandler.instance().init();
         CommandRegistry.init();
+        ParticleHandler.instance().init();
         PlaceholderHandler.instance().init();
         ChangelogFetcherHandler.instance().fetch(false);
 
         NearbyDispatcher.init();
-
-        NearbyBigType.init();
-        HatType.init();
-        RodType.init();
     }
 
     private void onLeave(ClientPacketListener clientPacketListener, Minecraft minecraft) {
