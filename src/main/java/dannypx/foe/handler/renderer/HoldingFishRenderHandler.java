@@ -55,7 +55,9 @@ public class HoldingFishRenderHandler extends Handler {
         float fishLength = validatedFish.value2().getLength();
         if (fishLength > 0.0f) {
             float fishPixels = FIRST_PERSON_FISH_SPRITE_PIXELS * (float) Math.pow(fishLength / FIRST_PERSON_FISH_SPRITE_INCHES, Configs.rendererConfig.firstPersonRateScaleInUnits.get());
-            float clampedPixels = Math.clamp(fishPixels + Configs.rendererConfig.firstPersonMinimumScaleInUnits.get() - FIRST_PERSON_FISH_SPRITE_PIXELS, Configs.rendererConfig.firstPersonMinimumScaleInUnits.get(), Configs.rendererConfig.firstPersonMaximumScaleInUnits.get());
+            float clampedPixels = Math.clamp(fishPixels + Configs.rendererConfig.firstPersonMinimumScaleInUnits.get() - FIRST_PERSON_FISH_SPRITE_PIXELS,
+                    Math.min(Configs.rendererConfig.firstPersonMinimumScaleInUnits.get(), Configs.rendererConfig.firstPersonMaximumScaleInUnits.get()),
+                    Math.max(Configs.rendererConfig.firstPersonMinimumScaleInUnits.get(), Configs.rendererConfig.firstPersonMaximumScaleInUnits.get()));
             fishScale = clampedPixels / FIRST_PERSON_FISH_SPRITE_PIXELS;
         }
 

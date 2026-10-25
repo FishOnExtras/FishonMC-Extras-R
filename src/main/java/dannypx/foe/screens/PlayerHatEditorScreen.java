@@ -34,7 +34,9 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     private static final float HEIGHT_STEP_BIG = 0.1f;
 
     private static final float VALUE_MIN = 0.50f;
-    private static final float VALUE_MAX = 1.50f;
+    private static final float VALUE_SCALE_MAX = 1.25f;
+    private static final float VALUE_HEIGHT_MAX = 1.50f;
+
 
     private EditBox scaleEditBox;
     private EditBox heightEditBox;
@@ -57,8 +59,8 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     @Override
     public void tick() {
         super.tick();
-        this.snapIfOutOfRange(scaleEditBox);
-        this.snapIfOutOfRange(heightEditBox);
+        this.snapIfOutOfRangeScale(scaleEditBox);
+        this.snapIfOutOfRangeHeight(heightEditBox);
     }
 
     @Override
@@ -185,7 +187,7 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         return new SmallButtonBuilder(
                 x + PADDING_QUART, scaleBoxY() + PADDING_QUART,
                 EDIT_BUTTON_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
-                button -> adjust(scaleEditBox, step))
+                button -> adjustScale(scaleEditBox, step))
                 .icon(label)
                 .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
@@ -196,7 +198,7 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         return new SmallButtonBuilder(
                 heightBoxX() + PADDING_QUART, y + PADDING_QUART,
                 BOX_WIDTH - PADDING_QUART, EDIT_BUTTON_HEIGHT - PADDING_QUART,
-                button -> adjust(heightEditBox, step))
+                button -> adjustHeight(heightEditBox, step))
                 .icon(label)
                 .color(step < 0 ? 0xFFCC0000 : 0xFF00CA3A)
                 .tooltip(tooltip)
@@ -206,7 +208,7 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     private void onScaleChanged(String text) {
         Float value = parseFloat(text);
         if (value == null) return;
-        float clamped = Math.clamp(value, VALUE_MIN, VALUE_MAX);
+        float clamped = Math.clamp(value, VALUE_MIN, VALUE_SCALE_MAX);
 
         Configs.rendererConfig.hatScale.accept(clamped);
         Configs.rendererConfig.save();
@@ -215,16 +217,23 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
     private void onHeightChanged(String text) {
         Float value = parseFloat(text);
         if (value == null) return;
-        float clamped = Math.clamp(value, VALUE_MIN, VALUE_MAX);
+        float clamped = Math.clamp(value, VALUE_MIN, VALUE_HEIGHT_MAX);
 
         Configs.rendererConfig.hatHeight.accept(clamped);
         Configs.rendererConfig.save();
     }
 
-    private void adjust(EditBox box, float delta) {
+    private void adjustScale(EditBox box, float delta) {
         Float current = parseFloat(box.getValue());
         float base = current != null ? current : 1.0f;
-        float next = Math.clamp(Math.round((base + delta) * 100.0f) / 100.0f, VALUE_MIN, VALUE_MAX);
+        float next = Math.clamp(Math.round((base + delta) * 100.0f) / 100.0f, VALUE_MIN, VALUE_SCALE_MAX);
+        box.setValue(format(next));
+    }
+
+    private void adjustHeight(EditBox box, float delta) {
+        Float current = parseFloat(box.getValue());
+        float base = current != null ? current : 1.0f;
+        float next = Math.clamp(Math.round((base + delta) * 100.0f) / 100.0f, VALUE_MIN, VALUE_HEIGHT_MAX);
         box.setValue(format(next));
     }
 
@@ -236,10 +245,19 @@ public class PlayerHatEditorScreen extends DefaultModScreen {
         }
     }
 
-    private void snapIfOutOfRange(EditBox box) {
+    private void snapIfOutOfRangeScale(EditBox box) {
         if (box == null || box.isFocused()) return;
         Float value = parseFloat(box.getValue());
-        float target = value != null ? Math.clamp(value, VALUE_MIN, VALUE_MAX) : 1.0f;
+        float target = value != null ? Math.clamp(value, VALUE_MIN, VALUE_SCALE_MAX) : 1.0f;
+        if (value == null || value != target) {
+            box.setValue(format(target));
+        }
+    }
+
+    private void snapIfOutOfRangeHeight(EditBox box) {
+        if (box == null || box.isFocused()) return;
+        Float value = parseFloat(box.getValue());
+        float target = value != null ? Math.clamp(value, VALUE_MIN, VALUE_HEIGHT_MAX) : 1.0f;
         if (value == null || value != target) {
             box.setValue(format(target));
         }

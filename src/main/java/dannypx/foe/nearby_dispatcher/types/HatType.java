@@ -14,7 +14,8 @@ import java.util.*;
 public class HatType {
     private static final int PACKET_TYPE = 1;
 
-    private static final ByteQuantizer HAT_VALUES = new ByteQuantizer(0.50f, 1.50f, 100);
+    private static final ByteQuantizer HAT_VALUES_SCALE = new ByteQuantizer(0.50f, 1.25f, 100);
+    private static final ByteQuantizer HAT_VALUES_HEIGHT = new ByteQuantizer(0.50f, 1.50f, 100);
 
     private static final Set<UUID> announcedTo = new HashSet<>();
     private static final Map<UUID, Integer> ticksInRange = new HashMap<>();
@@ -80,16 +81,16 @@ public class HatType {
 
     private static void queueCurrent(Player self) {
         byte[] payload = {
-                HAT_VALUES.encode(PlayerHatRenderHandler.instance().getHeight(self.getUUID())),
-                HAT_VALUES.encode(PlayerHatRenderHandler.instance().getScale(self.getUUID()))
+                HAT_VALUES_HEIGHT.encode(PlayerHatRenderHandler.instance().getHeight(self.getUUID())),
+                HAT_VALUES_SCALE.encode(PlayerHatRenderHandler.instance().getScale(self.getUUID()))
         };
         NearbyDispatcher.queue(PACKET_TYPE, payload);
     }
 
     private static void onReceive(UUID sender, byte[] payload) {
         if (payload.length != 2) return;
-        PlayerHatRenderHandler.instance().putHeights(sender, HAT_VALUES.decode(payload[0]));
-        PlayerHatRenderHandler.instance().putScale(sender, HAT_VALUES.decode(payload[1]));
+        PlayerHatRenderHandler.instance().putHeights(sender, HAT_VALUES_HEIGHT.decode(payload[0]));
+        PlayerHatRenderHandler.instance().putScale(sender, HAT_VALUES_SCALE.decode(payload[1]));
     }
 
     public static void onPlayerLeave(UUID playerUuid) {
