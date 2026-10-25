@@ -83,7 +83,9 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
                 float fishLength = validatedFish.value2().getLength();
                 if (fishLength > 0.0f) {
                     float fishPixels = HoldingFishRenderHandler.FISH_SPRITE_PIXELS * (float) Math.pow(fishLength / HoldingFishRenderHandler.FISH_SPRITE_INCHES, Configs.rendererConfig.thirdPersonRateScaleInUnits.get());
-                    float clampedPixels = Math.clamp(fishPixels, Configs.rendererConfig.thirdPersonMinimumScaleInUnits.get(), Configs.rendererConfig.thirdPersonMaximumScaleInUnits.get());
+                    float clampedPixels = Math.clamp(fishPixels,
+                            Math.min(Configs.rendererConfig.thirdPersonMinimumScaleInUnits.get(), Configs.rendererConfig.thirdPersonMaximumScaleInUnits.get()),
+                            Math.max(Configs.rendererConfig.thirdPersonMinimumScaleInUnits.get(), Configs.rendererConfig.thirdPersonMaximumScaleInUnits.get()));
                     float fishScale = clampedPixels / HoldingFishRenderHandler.FISH_SPRITE_PIXELS;
                     poseStack.scale(fishScale, fishScale, fishScale);
                 }

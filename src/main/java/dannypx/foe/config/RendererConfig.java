@@ -31,7 +31,7 @@ public class RendererConfig extends Config {
 
     @ConfigGroup.Pop
     @Name("The hat scale")
-    public ValidatedNumber<Float> hatScale = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> hatScale = new ValidatedFloat(1.00f, 1.25f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Rod Renderer")
     @Desc("§7This is the rod renderer for server rods")
