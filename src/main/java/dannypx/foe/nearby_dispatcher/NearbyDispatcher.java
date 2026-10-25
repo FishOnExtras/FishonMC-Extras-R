@@ -2,10 +2,7 @@ package dannypx.foe.nearby_dispatcher;
 
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.nearby_dispatcher.types.HatType;
-import dannypx.foe.nearby_dispatcher.types.NearbyBigType;
-import dannypx.foe.nearby_dispatcher.types.RippleType;
-import dannypx.foe.nearby_dispatcher.types.RodType;
+import dannypx.foe.nearby_dispatcher.types.*;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -67,6 +64,7 @@ public class NearbyDispatcher {
         HatType.init();
         RodType.init();
         RippleType.init();
+        ModUserType.init();
     }
 
     private static void requireValidType(int type) {
