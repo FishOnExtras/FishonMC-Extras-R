@@ -91,6 +91,12 @@ public class RendererConfig extends Config {
     @Name("Use the 3D fishing hook texture")
     public ValidatedBoolean showNewFishingHook = new ValidatedBoolean(true);
 
+    @Name("Use custom hat positions")
+    public ValidatedBoolean showHatPositions = new ValidatedBoolean(true);
+
+    @Name("Use custom fishing rod positions")
+    public ValidatedBoolean showFishingRodPositions = new ValidatedBoolean(true);
+
     @Name("Fish Holding")
     public ConfigGroup fishHolding = new ConfigGroup("fish_holding_group");
 
@@ -130,6 +136,9 @@ public class RendererConfig extends Config {
     @ConfigGroup.Pop
     @Name("Show bait on fishing hook")
     public ValidatedBoolean showBaitOnFishingHook = new ValidatedBoolean(true);
+
+    @Name("Show ripple on bite")
+    public ValidatedBoolean showRippleOnBite = new ValidatedBoolean(true);
 
     @Name("Hide armor on players")
     public ValidatedBoolean hideArmor = new ValidatedBoolean(false);

@@ -2,6 +2,7 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CatchingHandler;
+import dannypx.foe.handler.logic.RippleHandler;
 import dannypx.foe.type.tuple.Pair;
 
 import java.util.Map;
@@ -44,6 +45,7 @@ public class TitleHandler extends Handler {
     }
 
     private void forwardTitleEvent(Component title) {
+        RippleHandler.instance().checkIfBite(title);
         CatchingHandler.instance().scanFishListener(title);
     }
 

@@ -1,5 +1,7 @@
 package dannypx.foe.mixin.inject;
 
+import dannypx.foe.config.Configs;
+import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.renderer.PlayerHatRenderHandler;
 import dannypx.foe.handler.renderer.RodRendererHandler;
 import dannypx.foe.interfaces.IHatSettingsHolder;
@@ -18,20 +20,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> {
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))
     private void injectExtractRenderState(T livingEntity, S livingEntityRenderState, float f, CallbackInfo ci) {
-        float height = PlayerHatRenderHandler.DEFAULT_HEIGHT;
-        float scale = PlayerHatRenderHandler.DEFAULT_SCALE;
-        if (livingEntity instanceof Player player) {
-            height = PlayerHatRenderHandler.instance().getHeight(player.getUUID());
-            scale = PlayerHatRenderHandler.instance().getScale(player.getUUID());
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showFishingRodPositions.get()
+                && Configs.mixinConfig.livingEntityRendererMixinExtractRenderState.get()
+        ) {
+            RodRendererHandler.RodSettings rodSettings = RodRendererHandler.RodSettings.DEFAULT;
+            if (livingEntity instanceof Player player) {
+                rodSettings = RodRendererHandler.instance().get(player.getUUID());
+            }
+            ((IRodSettingsHolder) livingEntityRenderState).foer$setRodSettings(rodSettings);
         }
-        IHatSettingsHolder holder = (IHatSettingsHolder) livingEntityRenderState;
-        holder.foer$setHatHeight(height);
-        holder.foer$setHatScale(scale);
 
-        RodRendererHandler.RodSettings rodSettings = RodRendererHandler.RodSettings.DEFAULT;
-        if (livingEntity instanceof Player player) {
-            rodSettings = RodRendererHandler.instance().get(player.getUUID());
+        if(ConnectionHandler.instance().isOnServer()
+                && Configs.mainConfig.enableMod.get()
+                && Configs.rendererConfig.showHatPositions.get()
+                && Configs.mixinConfig.livingEntityRendererMixinExtractRenderState.get()
+        ) {
+            float height = PlayerHatRenderHandler.DEFAULT_HEIGHT;
+            float scale = PlayerHatRenderHandler.DEFAULT_SCALE;
+            if (livingEntity instanceof Player player) {
+                height = PlayerHatRenderHandler.instance().getHeight(player.getUUID());
+                scale = PlayerHatRenderHandler.instance().getScale(player.getUUID());
+            }
+            IHatSettingsHolder holder = (IHatSettingsHolder) livingEntityRenderState;
+            holder.foer$setHatHeight(height);
+            holder.foer$setHatScale(scale);
         }
-        ((IRodSettingsHolder) livingEntityRenderState).foer$setRodSettings(rodSettings);
     }
 }
