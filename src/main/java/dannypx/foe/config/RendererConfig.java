@@ -14,7 +14,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-@Version(version = 8)
+@Version(version = 9)
 @Translatable.Name("Renderer Configuration")
 @Translatable.Desc("§7Configure renderer of various things")
 public class RendererConfig extends Config {
@@ -41,23 +41,23 @@ public class RendererConfig extends Config {
     public ValidatedNumber<Float> rodScale = new ValidatedFloat(1.00f, 1.50f, 0.50f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("The rod x position")
-    public ValidatedNumber<Float> rodXPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> rodXPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("The rod y position")
-    public ValidatedNumber<Float> rodYPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> rodYPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("The rod z position")
-    public ValidatedNumber<Float> rodZPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> rodZPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("The line x position after rod scaling")
-    public ValidatedNumber<Float> lineXPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> lineXPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("The rod y position  after rod scaling")
-    public ValidatedNumber<Float> lineYPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> lineYPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @ConfigGroup.Pop
     @Name("The rod z position  after rod scaling")
-    public ValidatedNumber<Float> lineZPosition = new ValidatedFloat(0.00f, 0.50f, -0.50f, ValidatedNumber.WidgetType.SLIDER);
+    public ValidatedNumber<Float> lineZPosition = new ValidatedFloat(0.00f, 0.25f, -0.25f, ValidatedNumber.WidgetType.SLIDER);
 
     @Name("Item Marker")
     @Desc("§7This is the small markers on items")
