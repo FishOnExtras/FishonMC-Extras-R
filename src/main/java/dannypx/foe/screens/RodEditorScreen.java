@@ -37,8 +37,8 @@ public class RodEditorScreen extends DefaultModScreen {
 
     private static final float SCALE_VALUE_MIN = 0.50f;
     private static final float SCALE_VALUE_MAX = 1.50f;
-    private static final float OFFSET_VALUE_MIN = -0.50f;
-    private static final float OFFSET_VALUE_MAX = 0.50f;
+    private static final float OFFSET_VALUE_MIN = -0.25f;
+    private static final float OFFSET_VALUE_MAX = 0.25f;
 
     private static final float HAND_OUTWARD = 0.35f;
     private static final float HAND_FORWARD = 0.8f;

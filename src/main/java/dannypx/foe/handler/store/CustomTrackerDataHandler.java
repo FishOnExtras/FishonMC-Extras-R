@@ -137,61 +137,62 @@ public class CustomTrackerDataHandler extends Handler {
                         PlaceholderResult condition = PlaceholderHandler.instance().resolve(action.value2(), false);
 
                         if((condition.success()[0] && !condition.success()[1]) && (Boolean.parseBoolean(condition.text().getString()) || condition.text().getString().isBlank())) {
+                            try {
+                                switch (tracker.trackerType) {
+                                    case BOOLEAN -> {
+                                        BooleanValue valueToUse = action.value3() instanceof EmptyValue
+                                                ? (BooleanValue) BooleanValue.getFalse()
+                                                : action.value3() instanceof PlaceholderStringValue(String value)
+                                                ? (BooleanValue) BooleanValue.of(Boolean.parseBoolean(PlaceholderHandler.instance().resolve(value, false).text().getString()))
+                                                : (BooleanValue) action.value3();
+                                        BooleanValue value = (BooleanValue) tracker.value;
 
-                            switch (tracker.trackerType) {
-                                case BOOLEAN -> {
-                                    BooleanValue valueToUse = action.value3() instanceof EmptyValue
-                                            ? (BooleanValue) BooleanValue.getFalse()
-                                            : action.value3() instanceof PlaceholderStringValue(String value)
-                                              ? (BooleanValue) BooleanValue.of(Boolean.parseBoolean(PlaceholderHandler.instance().resolve(value, false).text().getString()))
-                                              : (BooleanValue) action.value3();
-                                    BooleanValue value = (BooleanValue) tracker.value;
-
-                                    switch (action.value1()) {
-                                        case SET -> tracker.value = valueToUse;
-                                        case TOGGLE -> tracker.value =  value.toggleValue();
+                                        switch (action.value1()) {
+                                            case SET -> tracker.value = valueToUse;
+                                            case TOGGLE -> tracker.value =  value.toggleValue();
+                                        }
                                     }
-                                }
-                                case INTEGER -> {
-                                    NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
-                                            ? (NumberValue) NumberValue.of(Float.parseFloat(PlaceholderHandler.instance().resolve(value, false).text().getString()))
-                                            : (NumberValue) action.value3();
-                                    NumberValue value = (NumberValue) tracker.value;
+                                    case INTEGER -> {
+                                        NumberValue valueToUse = action.value3() instanceof PlaceholderStringValue(String value)
+                                                ? (NumberValue) NumberValue.of(Float.parseFloat(PlaceholderHandler.instance().resolve(value, false).text().getString()))
+                                                : (NumberValue) action.value3();
+                                        NumberValue value = (NumberValue) tracker.value;
 
-                                    switch (action.value1()) {
-                                        case SET -> tracker.value = valueToUse;
-                                        case ADD -> tracker.value = value.addValue(valueToUse.value());
-                                        case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                        switch (action.value1()) {
+                                            case SET -> tracker.value = valueToUse;
+                                            case ADD -> tracker.value = value.addValue(valueToUse.value());
+                                            case SUBTRACT -> tracker.value = value.subtractValue(valueToUse.value());
+                                        }
                                     }
-                                }
-                                case ITEMSTACK -> {
-                                    TrackerValue valueToUse;
+                                    case ITEMSTACK -> {
+                                        TrackerValue valueToUse;
 
-                                    if(action.value3() instanceof PlaceholderStringValue(String value)) {
-                                        int index = Integer.parseInt(PlaceholderHandler.instance().resolve(value, false).text().getString());
+                                        if(action.value3() instanceof PlaceholderStringValue(String value)) {
+                                            int index = Integer.parseInt(PlaceholderHandler.instance().resolve(value, false).text().getString());
 
-                                        if(index >= 0) {
-                                            try {
-                                                if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
-                                                    valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index).getItem());
-                                                } else {
-                                                    valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index));
+                                            if(index >= 0) {
+                                                try {
+                                                    if(minecraft.screen instanceof ContainerScreen genericContainerScreen) {
+                                                        valueToUse = ItemStackValue.of(genericContainerScreen.getMenu().slots.get(index).getItem());
+                                                    } else {
+                                                        valueToUse = ItemStackValue.of(minecraft.player.getInventory().getItem(index));
+                                                    }
+                                                } catch (IndexOutOfBoundsException e) {
+                                                    valueToUse = ItemStackValue.of(ItemStack.EMPTY);
                                                 }
-                                            } catch (IndexOutOfBoundsException e) {
+                                            } else {
                                                 valueToUse = ItemStackValue.of(ItemStack.EMPTY);
                                             }
-                                        } else {
-                                            valueToUse = ItemStackValue.of(ItemStack.EMPTY);
-                                        }
-                                    } else if (action.value3() instanceof ItemStackValue(Pair<ItemStack, String> value)) {
-                                        valueToUse = ItemStackValue.of(value.value2());
-                                    } else valueToUse = action.value3();
+                                        } else if (action.value3() instanceof ItemStackValue(Pair<ItemStack, String> value)) {
+                                            valueToUse = ItemStackValue.of(value.value2());
+                                        } else valueToUse = action.value3();
 
-                                    switch (action.value1()) {
-                                        case SET -> tracker.value = valueToUse;
+                                        switch (action.value1()) {
+                                            case SET -> tracker.value = valueToUse;
+                                        }
                                     }
                                 }
-                            }
+                            } catch (NullPointerException | NumberFormatException ignored) {}
                         }
                     }
 
