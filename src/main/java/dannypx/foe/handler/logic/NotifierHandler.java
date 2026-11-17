@@ -33,6 +33,7 @@ public class NotifierHandler extends Handler {
 
     public static final String IMPORT_STATS_KEY = "importStatsKey";
     public static final String IMPORT_CREW_KEY = "importCrewKey";
+    public static final String CREW_UPDATE_CHANGE_KEY = "crewUpdateChangeKey";
     public static final String EMPTY_SLOTS_KEY = "emptySlotsKey";
 
     private final int WIDTH = 200;
@@ -43,6 +44,11 @@ public class NotifierHandler extends Handler {
     public List<Notification> getNotifications() {
         return notifications;
     }
+
+    public Map<String, UUID> getPersistentNotifications() {
+        return persistentNotifications;
+    }
+
     //endregion
 
     //region Methods
@@ -279,6 +285,28 @@ public class NotifierHandler extends Handler {
         );
 
         this.persistentNotifications.put(IMPORT_CREW_KEY, importCrewUUID);
+    }
+
+    public void notifyCrewUpdateChange() {
+        UUID crewUpdateChangeUUID = this.addNotification(
+                new Notification(7, 1,
+                        new ArrayList<>(Arrays.asList(
+                                Component.literal("Due to a change on the server,").withStyle(ChatFormatting.GOLD),
+                                Component.literal("your crew info got malformed.").withStyle(ChatFormatting.GOLD),
+                                Component.empty(),
+                                TextHelper.concat(
+                                        Component.literal("Do "),
+                                        Component.literal("/foe crew import ").withStyle(ChatFormatting.GREEN),
+                                        Component.literal("to re-import")
+                                ),
+                                Component.literal("crew info"),
+                                Component.literal("This will open the crew screen").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC),
+                                Component.literal("and re-import your crew info").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
+                        ))
+                )
+        );
+
+        this.persistentNotifications.put(CREW_UPDATE_CHANGE_KEY, crewUpdateChangeUUID);
     }
 
     public void notifyImportStatsCompleted() {

@@ -2,6 +2,7 @@ package dannypx.foe.handler.fetch;
 
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.NotifierHandler;
+import dannypx.foe.handler.store.CrewDataHandler;
 import dannypx.foe.handler.store.ProfileDataHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
@@ -43,7 +44,8 @@ public class ScoreboardHandler extends Handler {
     private MutableComponent crewNearby = Component.empty();
 
     private boolean noScoreboard = true;
-    private boolean hasSentNotification = false;
+    private boolean hasSentCrewImportNotification = false;
+    private boolean hasSentCrewUpdateNotification = false;
 
     public MutableComponent getLevel() {
         return level;
@@ -98,14 +100,20 @@ public class ScoreboardHandler extends Handler {
     public void tick() {
         this.fetchFromScoreboard();
 
-
-
-        if(!this.hasSentNotification
+        if(!this.hasSentCrewImportNotification
                 && !ProfileDataHandler.instance().getProfileData().hasImportedCrew
                 && !this.getCrew().getString().isBlank()
         ) {
-            this.hasSentNotification = true;
+            this.hasSentCrewImportNotification = true;
             NotifierHandler.instance().notifyImportCrew();
+        }
+
+        if(!this.hasSentCrewUpdateNotification
+                && !this.getCrew().getString().isBlank()
+                && CrewDataHandler.instance().getCrewData().crewList.containsKey(new UUID(0L, 0L))
+        ) {
+            this.hasSentCrewUpdateNotification = true;
+            NotifierHandler.instance().notifyCrewUpdateChange();
         }
     }
 

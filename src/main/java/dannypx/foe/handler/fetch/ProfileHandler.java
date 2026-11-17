@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.CodeExecuterHandler;
 import dannypx.foe.handler.logic.LoggerHandler;
-import dannypx.foe.mixin.accessor.MinecraftAccessor;
 import dannypx.foe.type.tuple.Pair;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,7 @@ public class ProfileHandler extends Handler {
     }
 
     public ProfileHandler() {
-        profileResolver = new LocalPlayerResolver(minecraft, ((MinecraftAccessor) minecraft).getServices().profileResolver());
+        profileResolver = new LocalPlayerResolver(minecraft, minecraft.services().profileResolver());
     }
 
     //region Fields
@@ -37,26 +36,21 @@ public class ProfileHandler extends Handler {
     //region Methods
     public String getUsernameFromId(UUID uuid) {
         GameProfile cached = profileCache.get(uuid);
-        if (cached != null) {
-            return cached.name();
-        }
+        if (cached != null) return cached.name();
 
         if (!fetchingUUIDs.containsKey(uuid)) {
             LoggerHandler._debug("Fetching: " + uuid.toString());
 
             fetchingUUIDs.put(uuid, true);
 
-            profileResolver.fetchById(uuid).ifPresentOrElse(profile ->
-                    {
-                        profileCache.put(uuid, profile);
-                        fetchingUUIDs.remove(uuid);
-                    },
-                    () -> {
-                        CodeExecuterHandler.runLater(4, () -> {
-                            fetchingUUIDs.remove(uuid);
-                        });
-                    }
-            );
+            profileResolver.fetchById(uuid).ifPresentOrElse(profile -> {
+                profileCache.put(uuid, profile);
+                fetchingUUIDs.remove(uuid);
+            }, () -> {
+                CodeExecuterHandler.runLater(4, () -> {
+                    fetchingUUIDs.remove(uuid);
+                });
+            });
         }
         return null;
     }
