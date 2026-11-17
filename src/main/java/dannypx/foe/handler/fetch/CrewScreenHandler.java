@@ -57,8 +57,11 @@ public class CrewScreenHandler extends Handler {
                                 .findFirst()
                                 .orElse(null);
 
-                        if(id != null) {
-                            crewMembers.put(id, Pair.of(profile.partialProfile().name(), itemStack));
+                        if(id != null
+                                && itemStack.getCustomName() != null
+                                && itemStack.getCustomName().getSiblings().size() > 1
+                        ) {
+                            crewMembers.put(id, Pair.of(itemStack.getCustomName().getSiblings().get(1).getString().trim(), itemStack));
                         }
                     }
                 }
