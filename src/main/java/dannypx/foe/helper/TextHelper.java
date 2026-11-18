@@ -521,6 +521,10 @@ public class TextHelper {
             return Optional.empty();
         }, Style.EMPTY);
 
+        if (result.getSiblings().size() == 1) {
+            return result.getSiblings().getFirst().copy();
+        }
+
         return result;
     }
 

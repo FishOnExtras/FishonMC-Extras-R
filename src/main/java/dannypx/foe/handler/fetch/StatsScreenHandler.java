@@ -155,23 +155,25 @@ public class StatsScreenHandler extends Handler {
     }
 
     private Triplet<Boolean, String, Integer> extractStat(Map<String, Component> constants, Component line) {
-        if(line.getSiblings().size() > 2) {
-            String field = line.getSiblings().get(1).getString().trim();
-            String key = ConstantDataHandler.keysFromField(constants, field).findFirst().orElse(null);
-            if(key != null) {
-                int amount = TextHelper.toIntFromString(line.getSiblings().get(2).getString());
-
-                return Triplet.ofTrue(key, amount);
-            }
+        String field = line.getSiblings().getFirst().getString();
+        String key = ConstantDataHandler.keysFromField(constants, field.substring(0, field.indexOf(" "))).findFirst().orElse(null);
+        if(key != null) {
+            int amount = TextHelper.toIntFromString(field.substring(field.indexOf(" ")).trim());
+            return Triplet.ofTrue(key, amount);
         }
         return Triplet.ofFalse("", 0);
     }
 
     private int extractTotal(Component component) {
-        if(component.getSiblings().size() > 1) {
-            return TextHelper.toIntFromString(component.getSiblings().get(2).getString());
+        try {
+            return TextHelper.toIntFromString(
+                    component.getSiblings().getFirst()
+                            .getSiblings().getFirst()
+                            .getString()
+            );
+        } catch (Exception e) {
+            return 1;
         }
-        return 1;
     }
     //endregion
 

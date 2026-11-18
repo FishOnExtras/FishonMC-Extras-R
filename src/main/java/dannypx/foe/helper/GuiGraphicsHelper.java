@@ -18,19 +18,21 @@ public class GuiGraphicsHelper {
         EnumSet<StringStyle> styles = stringStyles.length == 0
                 ? EnumSet.noneOf(StringStyle.class)
                 : EnumSet.copyOf(Arrays.asList(stringStyles));
-        drawString(guiGraphics, font, component, x, y, styles);
+        drawString(guiGraphics, font, component, x, y, Style.EMPTY, styles);
     }
 
-    private static int drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, EnumSet<StringStyle> styles) {
-        List<Component> siblings = component.getSiblings();
+    private static int drawString(GuiGraphics guiGraphics, Font font, Component component, int x, int y, Style parentStyle, EnumSet<StringStyle> styles) {
+        Style style = component.getStyle().applyTo(parentStyle);
 
-        if (siblings.isEmpty()) {
-            return drawGlyphs(guiGraphics, font, component.getString(), x, y, component.getStyle(), styles);
+        String own = component.plainCopy().getString();
+        if (!own.isEmpty()) {
+            x = drawGlyphs(guiGraphics, font, own, x, y, style, styles);
         }
 
-        for (Component sibling : siblings) {
-            x = drawString(guiGraphics, font, sibling, x, y, styles);
+        for (Component sibling : component.getSiblings()) {
+            x = drawString(guiGraphics, font, sibling, x, y, style, styles);
         }
+
         return x;
     }
 

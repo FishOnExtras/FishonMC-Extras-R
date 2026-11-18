@@ -128,6 +128,8 @@ public class NotifierHandler extends Handler {
 
         int rows = !Configs.hudConfig.showFishDrystreakNotification.get() ? 3 : notificationComponentList.size();
 
+        LoggerHandler._debug(fish.getName());
+
         this.addNotification(
                 new NotifierHandler.Notification(fish.getItemStack(),
                         rows, 1,

@@ -1,5 +1,6 @@
 package dannypx.foe.item;
 
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,8 @@ public class PetTagObject extends TagObject {
     public static final String TRAIL = "trail";
 
     public static final int RATING_LINE = 15;
-    public static final int RATING_SIBLING = 2;
+    public static final int RATING_SIBLING = 0;
+    public static final int RATING_TEXT_SIBLING = 0;
 
     public static final int C_BASE_LUCK_LINE = 8;
     public static final int C_BASE_SCALE_LINE = 9;
@@ -59,9 +61,12 @@ public class PetTagObject extends TagObject {
         ) {
             try {
                 List<Component> componentList = this.getLore();
-                Component rating = componentList.get(RATING_LINE).getSiblings().get(RATING_SIBLING);
-                return TextHelper.trim(rating);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                Component rating = componentList.get(RATING_LINE)
+                        .getSiblings().get(RATING_SIBLING)
+                        .getSiblings().get(RATING_TEXT_SIBLING);
+                return TextHelper.trim(rating.plainCopy().setStyle(rating.getStyle()));
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
                 return Component.empty();
             }
         }

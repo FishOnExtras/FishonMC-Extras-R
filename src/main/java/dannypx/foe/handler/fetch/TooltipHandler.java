@@ -4,6 +4,7 @@ import dannypx.foe.config.Configs;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.logic.ConnectionHandler;
 import dannypx.foe.handler.logic.KeyBindHandler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.KeyBindHelper;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.ArmorTagObject;
@@ -113,16 +114,21 @@ public class TooltipHandler extends Handler {
         int qualityLine = -1;
         Component seperatorComponent = Component.empty();
 
-        for (int i = 0; i < components.size(); i++) {
-            if(components.get(i).getString().contains("Tier: ")) tierLine = i;
-            if(components.get(i).getString().contains("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ʀᴏʟʟ ʙᴏɴᴜsᴇs")) rightClickLine = i;
-            if(components.get(i).getString().contains("ꞯᴜᴀʟɪᴛʏ: ")
-                    || components.get(i).getString().contains("ᴜᴀʟɪᴛʏ ")
-            ) qualityLine = i;
-            if(Objects.equals(seperatorComponent, Component.empty())
-                    && components.get(i).getString().contains("                                               ")
-                    && components.get(i).getSiblings().get(1).getStyle().isStrikethrough()
-            ) seperatorComponent = components.get(i);
+        try {
+            for (int i = 0; i < components.size(); i++) {
+                if(components.get(i).getString().contains("Tier: ")) tierLine = i;
+                if(components.get(i).getString().contains("ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ʀᴏʟʟ ʙᴏɴᴜsᴇs")) rightClickLine = i;
+                if(components.get(i).getString().contains("ꞯᴜᴀʟɪᴛʏ: ")
+                        || components.get(i).getString().contains("ᴜᴀʟɪᴛʏ ")
+                ) qualityLine = i;
+                if(Objects.equals(seperatorComponent, Component.empty())
+                        && components.get(i).getString().contains("                                               ")
+                        && components.get(i).getSiblings().getFirst().getStyle().isStrikethrough()
+                ) seperatorComponent = components.get(i);
+            }
+        } catch (Exception e) {
+            LoggerHandler._debug(e);
+            return;
         }
 
         if(rightClickLine != -1

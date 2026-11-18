@@ -1,5 +1,6 @@
 package dannypx.foe.item;
 
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +19,10 @@ public class FishTagObject extends TagObject {
     public static final String WEIGHT = "weight";
 
     public static final int FISH_SIZE_LINE = 7;
-    public static final int FISH_SIZE_SIBLING = 2;
+    public static final int FISH_SIZE_SIBLING = 0;
+    public static final int FISH_SIZE_TEXT_SIBLING = 0;
 
     public static final int VARIANT_LINE = 1;
-    public static final int VARIANT_SIBLING = 2;
 
     public FishTagObject(CompoundTag compoundTag, ItemStack itemStack) {
         super(compoundTag, itemStack);
@@ -60,9 +61,13 @@ public class FishTagObject extends TagObject {
         ) {
             try {
                 List<Component> componentList = this.getLore();
-                Component variant = componentList.get(VARIANT_LINE).getSiblings().get(VARIANT_SIBLING);
-                return TextHelper.trim(variant);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                Component variantLine = componentList.get(VARIANT_LINE);
+                Component border = this.getBorderComponent();
+                Component stripped = TextHelper.replace(variantLine, border.getString(), "");
+                Component trimmed = TextHelper.trim(stripped);
+                return TextHelper.substring(trimmed, 2);
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
                 return Component.empty();
             }
         }
@@ -79,9 +84,12 @@ public class FishTagObject extends TagObject {
         ) {
             try {
                 List<Component> componentList = this.getLore();
-                Component fishSize = componentList.get(FISH_SIZE_LINE).getSiblings().get(FISH_SIZE_SIBLING);;
-                return TextHelper.trim(fishSize);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                Component fishSize = componentList.get(FISH_SIZE_LINE)
+                        .getSiblings().get(FISH_SIZE_SIBLING)
+                        .getSiblings().get(FISH_SIZE_TEXT_SIBLING);
+                return TextHelper.trim(fishSize.plainCopy().setStyle(fishSize.getStyle()));
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
                 return Component.empty();
             }
         }

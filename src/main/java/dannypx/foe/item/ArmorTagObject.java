@@ -1,6 +1,8 @@
 package dannypx.foe.item;
 
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.ItemStackHelper;
+import dannypx.foe.helper.TextHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -19,7 +21,8 @@ public class ArmorTagObject extends TagObject {
 
 
     public static final int ARMOR_QUALITY_LINE = 2;
-    public static final int ARMOR_QUALITY_SIBLING = 3;
+    public static final int ARMOR_QUALITY_SIBLING = 0;
+    public static final int ARMOR_QUALITY_TEXT_SIBLING = 0;
 
     public ArmorTagObject(CompoundTag compoundTag, ItemStack itemStack) {
         super(compoundTag, itemStack);
@@ -73,12 +76,13 @@ public class ArmorTagObject extends TagObject {
         if(this.itemStack.get(DataComponents.LORE) != null
                 && !this.getLore().isEmpty()
         ) {
-            List<Component> components = this.getLore();
-            Component qualityComponent;
             try {
-                qualityComponent = components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING);
-                return qualityComponent.getString().contains("%") ? qualityComponent : components.get(ARMOR_QUALITY_LINE).getSiblings().get(ARMOR_QUALITY_SIBLING + 1);
-            } catch (IndexOutOfBoundsException e) {
+                List<Component> components = this.getLore();
+                Component qualityLine = components.get(ARMOR_QUALITY_LINE);
+                Component quality = TextHelper.substring(qualityLine.copy(), qualityLine.getString().indexOf("[") + 1, qualityLine.getString().indexOf("]"));
+                return TextHelper.trim(quality);
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
                 return Component.empty();
             }
         }

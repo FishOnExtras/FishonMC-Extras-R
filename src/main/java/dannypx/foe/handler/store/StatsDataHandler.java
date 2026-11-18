@@ -3,6 +3,7 @@ package dannypx.foe.handler.store;
 import dannypx.foe.handler.Handler;
 import dannypx.foe.handler.io.DataFileHandler;
 import dannypx.foe.handler.io.DataModels;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.handler.logic.NotifierHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.item.FishTagObject;

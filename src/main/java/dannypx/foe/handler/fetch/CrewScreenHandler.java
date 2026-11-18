@@ -38,9 +38,15 @@ public class CrewScreenHandler extends Handler {
                 && crewInfoStack.get(DataComponents.LORE) != null
         ) {
             List<Component> componentList = crewInfoStack.get(DataComponents.LORE).lines();
-            if(componentList.size() > 3
-                    && componentList.get(2).getSiblings().size() > 4
-                    && Objects.equals(componentList.get(2).getSiblings().get(3).getString(), ScoreboardHandler.instance().getCrew().getString())
+            if(Objects.equals(
+                    componentList.get(2)
+                            .getSiblings().getFirst()
+                            .getSiblings().getFirst()
+                            .getSiblings().getFirst()
+                            .plainCopy()
+                            .getString(),
+                    ScoreboardHandler.instance().getCrew().getString()
+            )
             ) {
                 Map<UUID, Pair<String, ItemStack>> crewMembers = new HashMap<>();
 
@@ -59,9 +65,14 @@ public class CrewScreenHandler extends Handler {
 
                         if(id != null
                                 && itemStack.getCustomName() != null
-                                && itemStack.getCustomName().getSiblings().size() > 1
                         ) {
-                            crewMembers.put(id, Pair.of(itemStack.getCustomName().getSiblings().get(1).getString().trim(), itemStack));
+                            crewMembers.put(id, Pair.of(
+                                    itemStack.getCustomName()
+                                            .getSiblings().getFirst()
+                                            .plainCopy()
+                                            .getString().trim(),
+                                    itemStack
+                            ));
                         }
                     }
                 }

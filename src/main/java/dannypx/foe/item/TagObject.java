@@ -1,6 +1,7 @@
 package dannypx.foe.item;
 
 import com.mojang.serialization.DataResult;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.helper.ItemStackHelper;
 import dannypx.foe.helper.UUIDHelper;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -191,9 +193,13 @@ public class TagObject {
         ) {
             try {
                 List<Component> componentList = this.getLore();
-                Component rating = componentList.get(RARITY_LINE).getSiblings().get(RARITY_SIBLING);
-                return TextHelper.trim(rating);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                Component rarityLine = componentList.get(RARITY_LINE);
+                Component border = this.getBorderComponent();
+                Component stripped = TextHelper.replace(rarityLine, border.getString(), "");
+                Component trimmed = TextHelper.trim(stripped);
+                return TextHelper.substring(trimmed, 0, 1);
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
                 return Component.empty();
             }
         }
@@ -207,7 +213,7 @@ public class TagObject {
             List<Component> componentList = this.getLore();
             if(!componentList.isEmpty()) {
                 Component borderLine = componentList.get(BORDER_LINE);
-                if (!borderLine.getSiblings().isEmpty()) return borderLine.getSiblings().getFirst();
+                if (!borderLine.getSiblings().isEmpty()) return borderLine.plainCopy().setStyle(borderLine.getStyle());
             }
         }
         return Component.empty();
@@ -218,7 +224,7 @@ public class TagObject {
             List<Component> componentList = itemStack.get(DataComponents.LORE).lines();
             if(!componentList.isEmpty()) {
                 Component borderLine = componentList.get(BORDER_LINE);
-                if (!borderLine.getSiblings().isEmpty()) return borderLine.getSiblings().getFirst();
+                if (!borderLine.getSiblings().isEmpty()) return borderLine.plainCopy().setStyle(borderLine.getStyle());
             }
         }
         return Component.empty();

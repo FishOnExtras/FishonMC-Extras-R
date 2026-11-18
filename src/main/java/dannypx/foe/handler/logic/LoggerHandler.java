@@ -8,6 +8,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class LoggerHandler {
+    //region Fields
+    private static String lastMessage = "";
+    //endregion
+
     //region Methods
     public static void error(Exception e) {
         error(e.getMessage());
@@ -25,6 +29,22 @@ public class LoggerHandler {
         LoggerHandler.info(m.getString());
     }
 
+    public static  void _debug(Exception e) {
+        if(e.getMessage() == null) {
+            _debug(e.toString());
+        } else {
+            _debug(e.getMessage());
+        }
+    }
+
+    public static  void _debug(Exception e, ItemStack item) {
+        if(e.getMessage() == null) {
+            _debug(e.toString(), item);
+        } else {
+            _debug(e.getMessage(), item);
+        }
+    }
+
     public static void _debug(String m) {
         _debug(Component.literal(m).withStyle(ChatFormatting.YELLOW));
     }
@@ -34,6 +54,12 @@ public class LoggerHandler {
     }
 
     public static void _debug(Component m) {
+        if(m.getString().equals(lastMessage)) {
+            return;
+        }
+
+        lastMessage = m.getString();
+
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Component.empty().append("DEBUG: ").append(m));
 
@@ -47,6 +73,12 @@ public class LoggerHandler {
     }
 
     public static void _debug(Component m, ItemStack item) {
+        if(m.getString().equals(lastMessage)) {
+            return;
+        }
+
+        lastMessage = m.getString();
+
         if(Configs.debugConfig.debugMode.get()) {
             LoggerHandler.info(Component.empty().append("DEBUG: ").append(m));
 

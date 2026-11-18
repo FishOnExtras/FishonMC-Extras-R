@@ -80,16 +80,42 @@ public class QuestScreenHandler extends Handler {
     private QuestDataHandler.Quest extractQuestData(ItemStack stack) {
         if(stack.get(DataComponents.LORE) != null) {
             List<Component> lines = stack.get(DataComponents.LORE).lines();
-            if(lines.size() > 6) {
-                String goal = lines.get(3).getSiblings().get(3).getString().toLowerCase(Locale.US).trim();
-                int max = Integer.parseInt(lines.get(6).getSiblings().get(5).getString());
-                int current = Integer.parseInt(lines.get(6).getSiblings().get(3).getString());
+            try {
+                if(lines.size() > 6) {
+                    String goal = lines.get(3)
+                            .getSiblings().getFirst()
+                            .getSiblings().getFirst()
+                            .getSiblings().getFirst()
+                            .plainCopy()
+                            .getString().toLowerCase(Locale.US).trim();
+                    int max = Integer.parseInt(
+                            lines.get(6)
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .plainCopy()
+                                    .getString()
+                    );
+                    int current = Integer.parseInt(
+                            lines.get(6)
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .getSiblings().getFirst()
+                                    .plainCopy()
+                                    .getString()
+                    );
 
-                String location = lines.get(4).getString();
+                    String location = lines.get(4).getString();
 
-                if(location.contains(BossEventHandler.instance().getLocation().getString().trim())) {
-                    return new QuestDataHandler.Quest(goal, max, current);
+                    if(location.contains(BossEventHandler.instance().getLocation().getString().trim())) {
+                        return new QuestDataHandler.Quest(goal, max, current);
+                    }
                 }
+            } catch (Exception e) {
+                LoggerHandler._debug(e);
+                return null;
             }
         }
         return null;
