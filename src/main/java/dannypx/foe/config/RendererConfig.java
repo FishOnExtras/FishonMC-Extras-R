@@ -88,6 +88,9 @@ public class RendererConfig extends Config {
     @Name("Show nameplate on players")
     public ValidatedBoolean showPlayerNamePlate = new ValidatedBoolean(true);
 
+    @Name("Show FOER tag on nameplate")
+    public ValidatedBoolean showTagOnNamePlate = new ValidatedBoolean(true);
+
     @Name("Use the 3D fishing hook texture")
     public ValidatedBoolean showNewFishingHook = new ValidatedBoolean(true);
 
