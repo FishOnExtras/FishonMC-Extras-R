@@ -147,12 +147,10 @@ public class ItemRendererHandler extends Handler {
     public void drawPetRating(GuiGraphicsExtractor guiGraphicsExtractor, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
-        if(validatedPet.value1()
-                && !validatedPet.value2().getRatingComponent().getString().isBlank()
-        ) {
+        if(validatedPet.value1()) {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
-            if(!ratingComponent.getString().isEmpty()) {
+            if(!ratingComponent.getString().isBlank()) {
                 Component result = TextHelper.replace(
                         ratingComponent,
                         ratingComponent.getString().substring(1),
@@ -167,6 +165,12 @@ public class ItemRendererHandler extends Handler {
                 );
 
                 guiGraphicsExtractor.text(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight - 1, CommonColors.WHITE, true);
+            } else {
+                Component rating = TextHelper.literal(TextHelper.smallNumber(
+                        TextHelper.shortenNumber(validatedPet.value2().getTotalPercent() * 100, 0)
+                ));
+
+                guiGraphicsExtractor.text(font, rating, x + 17 - font.width(rating), y + 18 - font.lineHeight - 1, CommonColors.WHITE, true);
             }
         }
     }
@@ -209,7 +213,14 @@ public class ItemRendererHandler extends Handler {
                                     || (
                                             validatedItem.value2().getType().equals("lure")
                                             && validatedCursor.value2().getString("size").equals(validatedItem.value2().getString("size"))
-                                            && validatedCursor.value2().getString("color").equals(validatedItem.value2().getString("color"))
+                                            && validatedCursor.value2().getString("color")
+                                                    .replaceAll("§.", "")
+                                                    .replaceAll("<[^>]*>", "")
+                                                    .equals(
+                                                            validatedItem.value2().getString("color")
+                                                                    .replaceAll("§.", "")
+                                                                    .replaceAll("<[^>]*>", "")
+                                                    )
                                     )
                             )
                             && validatedCursor.value2().getString("name").equals(validatedItem.value2().getString("name"))

@@ -2,6 +2,7 @@ package dannypx.foe.handler.fetch;
 
 import com.google.gson.*;
 import dannypx.foe.handler.Handler;
+import dannypx.foe.handler.logic.LoggerHandler;
 import dannypx.foe.helper.TextHelper;
 import dannypx.foe.type.tuple.Pair;
 import dannypx.foe.mixin.accessor.BossHealthOverlayAccessor;
@@ -78,13 +79,12 @@ public class BossEventHandler extends Handler {
                     if(jsonObject.get("extra") != null) {
                         JsonObject locationObject = jsonObject.get("extra").getAsJsonArray().get(0).getAsJsonObject()
                                 .get("extra").getAsJsonArray().get(0).getAsJsonObject();
-                        String locationString = locationObject.get("text").getAsString().substring(4).trim();
-                        if(locationString.contains("(")) {
-                            locationString = locationString.substring(0, locationString.indexOf("(") - 1);
-                        }
 
-                        location = Component.literal(locationString)
-                                .withColor(TextColor.parseColor(locationObject.get("color").getAsString()).getOrThrow().getValue());
+                        location = TextHelper.substring(TextHelper.jsonToComponent(locationObject.toString()), 4);
+
+                        if(location.getString().contains("(")) {
+                            location = TextHelper.substring(location, 0, location.getString().indexOf("(") - 1);
+                        }
 
                         JsonObject weatherObject = jsonObject.get("extra").getAsJsonArray().get(2).getAsJsonObject()
                                 .get("extra").getAsJsonArray().get(0).getAsJsonObject();
