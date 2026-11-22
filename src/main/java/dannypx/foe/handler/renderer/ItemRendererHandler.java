@@ -146,12 +146,10 @@ public class ItemRendererHandler extends Handler {
     public void drawPetRating(GuiGraphics guiGraphics, Font font, ItemStack stack, int x, int y) {
         Pair<Boolean, PetTagObject> validatedPet = ValidateItem.isPet(stack);
 
-        if(validatedPet.value1()
-                && !validatedPet.value2().getRatingComponent().getString().isBlank()
-        ) {
+        if(validatedPet.value1()) {
             Component ratingComponent = validatedPet.value2().getRatingComponent();
 
-            if(!ratingComponent.getString().isEmpty()) {
+            if(!ratingComponent.getString().isBlank()) {
                 Component result = TextHelper.replace(
                         ratingComponent,
                         ratingComponent.getString().substring(1),
@@ -166,6 +164,12 @@ public class ItemRendererHandler extends Handler {
                 );
 
                 guiGraphics.drawString(font, ratingComponent, x + 17 - font.width(ratingComponent), y + 18 - font.lineHeight - 1, CommonColors.WHITE, true);
+            } else {
+                Component rating = TextHelper.literal(TextHelper.smallNumber(
+                        TextHelper.shortenNumber(validatedPet.value2().getTotalPercent() * 100, 0)
+                ));
+
+                guiGraphics.drawString(font, rating, x + 17 - font.width(rating), y + 18 - font.lineHeight - 1, CommonColors.WHITE, true);
             }
         }
     }
