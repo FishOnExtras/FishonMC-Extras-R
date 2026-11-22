@@ -23,6 +23,7 @@ public abstract class TextDisplayRendererMixin {
         if(ConnectionHandler.instance().isOnServer()
                 && Configs.mainConfig.enableMod.get()
                 && Configs.mixinConfig.textDisplayRendererMixinExtractRenderState.get()
+                && Configs.rendererConfig.showTagOnNamePlate.get()
         ) {
             Display.TextDisplay.TextRenderState data = textDisplayEntityRenderState.textRenderState;
             if (data == null) return;
