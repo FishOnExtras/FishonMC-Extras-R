@@ -48,6 +48,8 @@ jobs:
         include:
           - {branch: 1.21.11, java: 21}
           - {branch: 26.1, java: 25}
+          - {branch: 26.2, java: 25}
+          - {branch: 26.3, java: 25}
     steps:
       - uses: actions/checkout@v4
         with:
